@@ -1,21 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2026
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Box2DSharp", "src\Box2DSharp.csproj", "{93DBF3A4-7EA2-4848-B650-AB717968854E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "test\ConsoleTest\ConsoleTest.csproj", "{FFEAB8DD-9D3F-4076-AC04-2C965B64818D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleTest", "test\ConsoleTest\ConsoleTest.csproj", "{FFEAB8DD-9D3F-4076-AC04-2C965B64818D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testbed.Abstractions", "test\Testbed.Abstractions\Testbed.Abstractions.csproj", "{5A533A04-A4C8-4850-82F7-84CD711705C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testbed.Abstractions", "test\Testbed.Abstractions\Testbed.Abstractions.csproj", "{5A533A04-A4C8-4850-82F7-84CD711705C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testbed.TestCases", "test\Testbed.TestCases\Testbed.TestCases.csproj", "{D3F0A566-1BE7-49FB-8591-8ACA3AD74FCA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testbed.TestCases", "test\Testbed.TestCases\Testbed.TestCases.csproj", "{D3F0A566-1BE7-49FB-8591-8ACA3AD74FCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testbed", "test\Testbed\Testbed.csproj", "{E1192FE0-2F70-4A13-BF20-5F25D85C95A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testbed", "test\Testbed\Testbed.csproj", "{E1192FE0-2F70-4A13-BF20-5F25D85C95A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "test\UnitTest\UnitTest.csproj", "{7CE77CEF-6814-4A9B-BEAD-568286737191}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "test\UnitTest\UnitTest.csproj", "{7CE77CEF-6814-4A9B-BEAD-568286737191}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{95F7D13E-0031-44CB-BC42-B5BB11244718}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FixedBox2D", "FixedBox2D\FixedBox2D.csproj", "{8A7D35D5-56B5-43F8-B872-466C54985E68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,18 +49,22 @@ Global
 		{7CE77CEF-6814-4A9B-BEAD-568286737191}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CE77CEF-6814-4A9B-BEAD-568286737191}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CE77CEF-6814-4A9B-BEAD-568286737191}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A7D35D5-56B5-43F8-B872-466C54985E68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A7D35D5-56B5-43F8-B872-466C54985E68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A7D35D5-56B5-43F8-B872-466C54985E68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A7D35D5-56B5-43F8-B872-466C54985E68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {79E3F6FD-2E23-44AD-92BC-9E6F5C56B97B}
-	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FFEAB8DD-9D3F-4076-AC04-2C965B64818D} = {95F7D13E-0031-44CB-BC42-B5BB11244718}
-		{E1192FE0-2F70-4A13-BF20-5F25D85C95A6} = {95F7D13E-0031-44CB-BC42-B5BB11244718}
 		{5A533A04-A4C8-4850-82F7-84CD711705C0} = {95F7D13E-0031-44CB-BC42-B5BB11244718}
 		{D3F0A566-1BE7-49FB-8591-8ACA3AD74FCA} = {95F7D13E-0031-44CB-BC42-B5BB11244718}
+		{E1192FE0-2F70-4A13-BF20-5F25D85C95A6} = {95F7D13E-0031-44CB-BC42-B5BB11244718}
 		{7CE77CEF-6814-4A9B-BEAD-568286737191} = {95F7D13E-0031-44CB-BC42-B5BB11244718}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {79E3F6FD-2E23-44AD-92BC-9E6F5C56B97B}
 	EndGlobalSection
 EndGlobal
