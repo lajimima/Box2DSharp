@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Numerics;
-using Box2DSharp.Common;
+using FixedBox2D.Common;
 
-namespace Box2DSharp.Ropes
+namespace FixedBox2D.Ropes
 {
     public class Rope
     {

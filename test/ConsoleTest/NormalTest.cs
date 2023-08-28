@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
-using Box2DSharp.Dynamics;
+using FixedBox2D.Dynamics;
 using NETCoreTest.Framework;
 
 namespace NETCoreTest

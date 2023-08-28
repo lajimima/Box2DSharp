@@ -1,6 +1,6 @@
 using System.Numerics;
-using Box2DSharp.Collision.Shapes;
-using Box2DSharp.Dynamics;
+using FixedBox2D.Collision.Shapes;
+using FixedBox2D.Dynamics;
 using Testbed.Abstractions;
 
 namespace Testbed.TestCases

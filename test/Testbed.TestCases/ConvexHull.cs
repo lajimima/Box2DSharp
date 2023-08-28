@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
-using Box2DSharp.Collision.Shapes;
-using Box2DSharp.Common;
+using FixedBox2D.Collision.Shapes;
+using FixedBox2D.Common;
 using Testbed.Abstractions;
 using Vector2 = System.Numerics.Vector2;
-using Color = Box2DSharp.Common.Color;
+using Color = FixedBox2D.Common.Color;
 
 namespace Testbed.TestCases
 {

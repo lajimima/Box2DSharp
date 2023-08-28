@@ -1,11 +1,11 @@
 using System;
 using System.Diagnostics;
-using Box2DSharp.Collision;
-using Box2DSharp.Collision.Collider;
-using Box2DSharp.Common;
-using Box2DSharp.Dynamics.Internal;
+using FixedBox2D.Collision;
+using FixedBox2D.Collision.Collider;
+using FixedBox2D.Common;
+using FixedBox2D.Dynamics.Internal;
 using Testbed.Abstractions;
-using Color = Box2DSharp.Common.Color;
+using Color = FixedBox2D.Common.Color;
 using Random = System.Random;
 using Vector2 = System.Numerics.Vector2;
 
@@ -32,7 +32,7 @@ namespace Testbed.TestCases
 
         private RayCastOutput _rayCastOutput;
 
-        private readonly Box2DSharp.Collision.DynamicTree _tree = new Box2DSharp.Collision.DynamicTree();
+        private readonly FixedBox2D.Collision.DynamicTree _tree = new FixedBox2D.Collision.DynamicTree();
 
         private float _worldExtent;
 

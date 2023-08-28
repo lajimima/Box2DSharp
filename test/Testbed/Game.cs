@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using Box2DSharp.Common;
+using FixedBox2D.Common;
 using ImGuiNET;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -54,7 +54,7 @@ namespace Testbed
         /// <inheritdoc />
         protected override void OnLoad()
         {
-            Title = $"Box2DSharp Testbed - Runtime Version: {_environment}";
+            Title = $"FixedBox2D Testbed - Runtime Version: {_environment}";
             var testBaseType = typeof(TestBase);
             var testTypes = typeof(HelloWorld).Assembly.GetTypes()
                                               .Where(e => testBaseType.IsAssignableFrom(e) && !e.IsAbstract && e.GetCustomAttribute<TestCaseAttribute>() != null)

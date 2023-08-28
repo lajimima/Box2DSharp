@@ -1,6 +1,6 @@
 ﻿using System;
-using Box2DSharp.Collision.Shapes;
-using Box2DSharp.Common;
+using FixedBox2D.Collision.Shapes;
+using FixedBox2D.Common;
 using Shouldly;
 using Xunit;
 

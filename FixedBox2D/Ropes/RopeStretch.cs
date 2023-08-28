@@ -1,4 +1,4 @@
-﻿namespace Box2DSharp.Ropes
+﻿namespace FixedBox2D.Ropes
 {
     public struct RopeStretch
     {

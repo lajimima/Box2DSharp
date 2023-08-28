@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Box2DSharp.csproj" />
+      <ProjectReference Include="..\..\FixedBox2D\FixedBox2D.csproj" />
     </ItemGroup>
 
 </Project>

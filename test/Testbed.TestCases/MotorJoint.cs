@@ -1,10 +1,10 @@
 using System;
-using Box2DSharp.Collision.Shapes;
-using Box2DSharp.Common;
-using Box2DSharp.Dynamics;
-using Box2DSharp.Dynamics.Joints;
+using FixedBox2D.Collision.Shapes;
+using FixedBox2D.Common;
+using FixedBox2D.Dynamics;
+using FixedBox2D.Dynamics.Joints;
 using Testbed.Abstractions;
-using Color = Box2DSharp.Common.Color;
+using Color = FixedBox2D.Common.Color;
 using Vector2 = System.Numerics.Vector2;
 
 namespace Testbed.TestCases
@@ -16,7 +16,7 @@ namespace Testbed.TestCases
 
         private float _time;
 
-        private Box2DSharp.Dynamics.Joints.MotorJoint _joint;
+        private FixedBox2D.Dynamics.Joints.MotorJoint _joint;
 
         public MotorJoint()
         {
@@ -54,7 +54,7 @@ namespace Testbed.TestCases
                 mjd.Initialize(ground, body);
                 mjd.MaxForce = 1000.0f;
                 mjd.MaxTorque = 1000.0f;
-                _joint = (Box2DSharp.Dynamics.Joints.MotorJoint)World.CreateJoint(mjd);
+                _joint = (FixedBox2D.Dynamics.Joints.MotorJoint)World.CreateJoint(mjd);
             }
 
             _go = false;

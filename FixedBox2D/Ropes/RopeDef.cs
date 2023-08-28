@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace Box2DSharp.Ropes
+namespace FixedBox2D.Ropes
 {
     /// 
     public struct RopeDef

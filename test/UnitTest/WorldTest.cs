@@ -1,8 +1,8 @@
 ﻿using System.Numerics;
-using Box2DSharp.Collision.Collider;
-using Box2DSharp.Collision.Shapes;
-using Box2DSharp.Dynamics;
-using Box2DSharp.Dynamics.Contacts;
+using FixedBox2D.Collision.Collider;
+using FixedBox2D.Collision.Shapes;
+using FixedBox2D.Dynamics;
+using FixedBox2D.Dynamics.Contacts;
 using Shouldly;
 using Xunit;
 

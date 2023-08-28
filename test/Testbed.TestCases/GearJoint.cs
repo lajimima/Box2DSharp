@@ -1,8 +1,8 @@
 using System.Numerics;
-using Box2DSharp.Collision.Shapes;
-using Box2DSharp.Common;
-using Box2DSharp.Dynamics;
-using Box2DSharp.Dynamics.Joints;
+using FixedBox2D.Collision.Shapes;
+using FixedBox2D.Common;
+using FixedBox2D.Dynamics;
+using FixedBox2D.Dynamics.Joints;
 using Testbed.Abstractions;
 
 namespace Testbed.TestCases
@@ -16,9 +16,9 @@ namespace Testbed.TestCases
 
         private PrismaticJoint _joint3;
 
-        private Box2DSharp.Dynamics.Joints.GearJoint _joint4;
+        private FixedBox2D.Dynamics.Joints.GearJoint _joint4;
 
-        private Box2DSharp.Dynamics.Joints.GearJoint _joint5;
+        private FixedBox2D.Dynamics.Joints.GearJoint _joint5;
 
         public GearJoint()
         {
@@ -131,7 +131,7 @@ namespace Testbed.TestCases
                 jd4.Joint1 = _joint1;
                 jd4.Joint2 = _joint2;
                 jd4.Ratio = circle2.Radius / circle1.Radius;
-                _joint4 = (Box2DSharp.Dynamics.Joints.GearJoint)World.CreateJoint(jd4);
+                _joint4 = (FixedBox2D.Dynamics.Joints.GearJoint)World.CreateJoint(jd4);
 
                 var jd5 = new GearJointDef();
                 jd5.BodyA = body2;
@@ -139,7 +139,7 @@ namespace Testbed.TestCases
                 jd5.Joint1 = _joint2;
                 jd5.Joint2 = _joint3;
                 jd5.Ratio = -1.0f / circle2.Radius;
-                _joint5 = (Box2DSharp.Dynamics.Joints.GearJoint)World.CreateJoint(jd5);
+                _joint5 = (FixedBox2D.Dynamics.Joints.GearJoint)World.CreateJoint(jd5);
             }
         }
 

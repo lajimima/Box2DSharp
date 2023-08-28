@@ -1,9 +1,9 @@
 using System;
-using Box2DSharp.Collision.Shapes;
-using Box2DSharp.Common;
-using Box2DSharp.Dynamics;
+using FixedBox2D.Collision.Shapes;
+using FixedBox2D.Common;
+using FixedBox2D.Dynamics;
 using Testbed.Abstractions;
-using Color = Box2DSharp.Common.Color;
+using Color = FixedBox2D.Common.Color;
 using Vector2 = System.Numerics.Vector2;
 
 namespace Testbed.TestCases

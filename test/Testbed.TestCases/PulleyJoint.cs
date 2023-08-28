@@ -1,8 +1,8 @@
 using System.Numerics;
-using Box2DSharp.Collision.Shapes;
-using Box2DSharp.Common;
-using Box2DSharp.Dynamics;
-using Box2DSharp.Dynamics.Joints;
+using FixedBox2D.Collision.Shapes;
+using FixedBox2D.Common;
+using FixedBox2D.Dynamics;
+using FixedBox2D.Dynamics.Joints;
 using Testbed.Abstractions;
 
 namespace Testbed.TestCases
@@ -10,7 +10,7 @@ namespace Testbed.TestCases
     [TestCase("Joints", "Pulley")]
     public class PulleyJoint : TestBase
     {
-        private Box2DSharp.Dynamics.Joints.PulleyJoint _joint1;
+        private FixedBox2D.Dynamics.Joints.PulleyJoint _joint1;
 
         public PulleyJoint()
         {
@@ -64,7 +64,7 @@ namespace Testbed.TestCases
                     anchor2,
                     1.5f);
 
-                _joint1 = (Box2DSharp.Dynamics.Joints.PulleyJoint)World.CreateJoint(pulleyDef);
+                _joint1 = (FixedBox2D.Dynamics.Joints.PulleyJoint)World.CreateJoint(pulleyDef);
             }
         }
 
