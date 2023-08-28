@@ -536,7 +536,7 @@ namespace TrueSync {
         /// </summary>
         /// <returns></returns>
         public TSVector ToTSVector() {
-            return new TSVector(this.x, 0, this.y);
+            return new TSVector(this.x, FP.Zero, this.y);
         }
 
         /// <summary>
