@@ -13,22 +13,22 @@ namespace TrueSync
     public partial struct FP : IEquatable<FP>, IComparable<FP>
     {
 
-        public long _serializedValue;
+        internal long _serializedValue;
 
-        public const long MAX_VALUE = long.MaxValue;
-        public const long MIN_VALUE = long.MinValue;
-        public const int NUM_BITS = 64;
-        public const int FRACTIONAL_PLACES = 32;
-        public const long ONE = 1L << FRACTIONAL_PLACES;
-        public const long TEN = 10L << FRACTIONAL_PLACES;
-        public const long HALF = 1L << (FRACTIONAL_PLACES - 1);
-        public const long PI_TIMES_2 = 0x6487ED511;
-        public const long PI = 0x3243F6A88;
-        public const long PI_OVER_2 = 0x1921FB544;
-        public const int LUT_SIZE = (int)(PI_OVER_2 >> 15);
-        public const long LN2 = 0xB17217F7;
-        public const long LOG2MAX = 0x1F00000000;
-        public const long LOG2MIN = -0x2000000000;
+        internal const long MAX_VALUE = long.MaxValue;
+        internal const long MIN_VALUE = long.MinValue;
+        internal const int NUM_BITS = 64;
+        internal const int FRACTIONAL_PLACES = 32;
+        internal const long ONE = 1L << FRACTIONAL_PLACES;
+        internal const long TEN = 10L << FRACTIONAL_PLACES;
+        internal const long HALF = 1L << (FRACTIONAL_PLACES - 1);
+        internal const long PI_TIMES_2 = 0x6487ED511;
+        internal const long PI = 0x3243F6A88;
+        internal const long PI_OVER_2 = 0x1921FB544;
+        internal const int LUT_SIZE = (int)(PI_OVER_2 >> 15);
+        internal const long LN2 = 0xB17217F7;
+        internal const long LOG2MAX = 0x1F00000000;
+        internal const long LOG2MIN = -0x2000000000;
 
         // Precision of this type is 2^-32, that is 2,3283064365386962890625E-10
         public static readonly decimal Precision = (decimal)(new FP(1L));//0.00000000023283064365386962890625m;
@@ -42,8 +42,6 @@ namespace TrueSync
         public static readonly FP V180 = 180;
         public static readonly FP V270 = 270;
         public static readonly FP V360 = 360;
-
-        public static  FP OneLong { get { return ONE; } }
 
         public static readonly FP Zero = new FP();
         public static readonly FP PositiveInfinity = new FP(MAX_VALUE);
