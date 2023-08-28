@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFrameworks>net6.0</TargetFrameworks>
@@ -20,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Box2DSharp.csproj" />
+      <ProjectReference Include="..\..\FixedBox2D\FixedBox2D.csproj" />
     </ItemGroup>
 
 </Project>
