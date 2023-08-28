@@ -1,5 +1,5 @@
 using System;
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -11,7 +11,7 @@ namespace Testbed.TestCases
     [TestCase("Examples", "Breakable")]
     public class Breakable : TestBase
     {
-        private float _angularVelocity;
+        private FP _angularVelocity;
 
         private Body _body1;
 
@@ -27,7 +27,7 @@ namespace Testbed.TestCases
 
         private PolygonShape _shape2 = new PolygonShape();
 
-        private Vector2 _velocity;
+        private TSVector2 _velocity;
 
         public Breakable()
         {
@@ -37,23 +37,23 @@ namespace Testbed.TestCases
                 var ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-40.0f, FP.Zero), new TSVector2(40.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             // Breakable dynamic body
             {
                 var bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
-                bd.Position.Set(0.0f, 40.0f);
+                bd.Position.Set(FP.Zero, 40.0f);
                 bd.Angle = 0.25f * Settings.Pi;
                 _body1 = World.CreateBody(bd);
 
-                _shape1.SetAsBox(0.5f, 0.5f, new Vector2(-0.5f, 0.0f), 0.0f);
-                _piece1 = _body1.CreateFixture(_shape1, 1.0f);
+                _shape1.SetAsBox(0.5f, 0.5f, new TSVector2(-0.5f, FP.Zero), FP.Zero);
+                _piece1 = _body1.CreateFixture(_shape1, FP.One);
 
-                _shape2.SetAsBox(0.5f, 0.5f, new Vector2(0.5f, 0.0f), 0.0f);
-                _piece2 = _body1.CreateFixture(_shape2, 1.0f);
+                _shape2.SetAsBox(0.5f, 0.5f, new TSVector2(0.5f, FP.Zero), FP.Zero);
+                _piece2 = _body1.CreateFixture(_shape2, FP.One);
             }
 
             _break = false;
@@ -74,10 +74,10 @@ namespace Testbed.TestCases
             // Should the body break?
             var count = contact.Manifold.PointCount;
 
-            var maxImpulse = 0.0f;
+            var maxImpulse = FP.Zero;
             for (var i = 0; i < count; ++i)
             {
-                maxImpulse = Math.Max(maxImpulse, impulse.NormalImpulses[i]);
+                maxImpulse = FP.Max(maxImpulse, impulse.NormalImpulses[i]);
             }
 
             if (maxImpulse > 40.0f)
@@ -102,7 +102,7 @@ namespace Testbed.TestCases
             bd.Angle = body1.GetAngle();
 
             var body2 = World.CreateBody(bd);
-            _piece2 = body2.CreateFixture(_shape2, 1.0f);
+            _piece2 = body2.CreateFixture(_shape2, FP.One);
 
             // Compute consistent velocities for new bodies based on
             // cached velocity.

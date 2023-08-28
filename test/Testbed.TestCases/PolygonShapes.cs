@@ -6,7 +6,7 @@ using FixedBox2D.Dynamics;
 using Testbed.Abstractions;
 using Color = FixedBox2D.Common.Color;
 using Transform = FixedBox2D.Common.Transform;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 
 namespace Testbed.TestCases
 {
@@ -88,40 +88,40 @@ namespace Testbed.TestCases
                 var ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-40.0f, FP.Zero), new TSVector2(40.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             {
-                var vertices = new Vector2[3];
-                vertices[0].Set(-0.5f, 0.0f);
-                vertices[1].Set(0.5f, 0.0f);
-                vertices[2].Set(0.0f, 1.5f);
+                var vertices = new TSVector2[3];
+                vertices[0].Set(-0.5f, FP.Zero);
+                vertices[1].Set(0.5f, FP.Zero);
+                vertices[2].Set(FP.Zero, 1.5f);
                 _polygons[0].Set(vertices);
             }
 
             {
-                var vertices = new Vector2[3];
-                vertices[0].Set(-0.1f, 0.0f);
-                vertices[1].Set(0.1f, 0.0f);
-                vertices[2].Set(0.0f, 1.5f);
+                var vertices = new TSVector2[3];
+                vertices[0].Set(-FP.EN1, FP.Zero);
+                vertices[1].Set(FP.EN1, FP.Zero);
+                vertices[2].Set(FP.Zero, 1.5f);
                 _polygons[1].Set(vertices);
             }
 
             {
-                var w = 1.0f;
-                var b = w / (2.0f + (float)Math.Sqrt(2.0f));
-                var s = (float)Math.Sqrt(2.0f) * b;
+                var w = FP.One;
+                var b = w / (FP.Two + (FP)FP.Sqrt(FP.Two));
+                var s = (FP)FP.Sqrt(FP.Two) * b;
 
-                var vertices = new Vector2[8];
-                vertices[0].Set(0.5f * s, 0.0f);
+                var vertices = new TSVector2[8];
+                vertices[0].Set(0.5f * s, FP.Zero);
                 vertices[1].Set(0.5f * w, b);
                 vertices[2].Set(0.5f * w, b + s);
                 vertices[3].Set(0.5f * s, w);
                 vertices[4].Set(-0.5f * s, w);
                 vertices[5].Set(-0.5f * w, b + s);
                 vertices[6].Set(-0.5f * w, b);
-                vertices[7].Set(-0.5f * s, 0.0f);
+                vertices[7].Set(-0.5f * s, FP.Zero);
 
                 _polygons[2].Set(vertices);
             }
@@ -148,7 +148,7 @@ namespace Testbed.TestCases
             var bd = new BodyDef();
             bd.BodyType = BodyType.DynamicBody;
 
-            var x = RandomFloat(-2.0f, 2.0f);
+            var x = RandomFloat(-FP.Two, FP.Two);
             bd.Position.Set(x, 10.0f);
             bd.Angle = RandomFloat(-Settings.Pi, Settings.Pi);
 
@@ -163,7 +163,7 @@ namespace Testbed.TestCases
             {
                 var fd = new FixtureDef();
                 fd.Shape = _polygons[index];
-                fd.Density = 1.0f;
+                fd.Density = FP.One;
                 fd.Friction = 0.3f;
                 _bodies[_bodyIndex].CreateFixture(fd);
             }
@@ -171,7 +171,7 @@ namespace Testbed.TestCases
             {
                 var fd = new FixtureDef();
                 fd.Shape = _circle;
-                fd.Density = 1.0f;
+                fd.Density = FP.One;
                 fd.Friction = 0.3f;
 
                 _bodies[_bodyIndex].CreateFixture(fd);
@@ -252,8 +252,8 @@ namespace Testbed.TestCases
             DrawString("Press 'a' to (de)activate some bodies");
             DrawString("Press 'd' to destroy a body");
 
-            var callback = new PolyShapesCallback(Drawer) {Circle = {Radius = 2.0f}};
-            callback.Circle.Position.Set(0.0f, 1.1f);
+            var callback = new PolyShapesCallback(Drawer) {Circle = {Radius = FP.Two}};
+            callback.Circle.Position.Set(FP.Zero, 1.1f);
             callback.Circle.ComputeAABB(out var aabb, callback.Transform, 0);
             callback.Transform.SetIdentity();
 

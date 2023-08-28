@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -11,14 +11,14 @@ namespace Testbed.TestCases
     {
         public AddPair()
         {
-            World.Gravity = new Vector2(0.0f, 0.0f);
+            World.Gravity = new TSVector2(FP.Zero, FP.Zero);
             {
                 var shape = new CircleShape();
                 shape.Position.SetZero();
-                shape.Radius = 0.1f;
+                shape.Radius = FP.EN1;
 
                 var minX = -6.0f;
-                var maxX = 0.0f;
+                var maxX = FP.Zero;
                 var minY = 4.0f;
                 var maxY = 6.0f;
 
@@ -26,7 +26,7 @@ namespace Testbed.TestCases
                 {
                     var bd = new BodyDef();
                     bd.BodyType = BodyType.DynamicBody;
-                    bd.Position = new Vector2(RandomFloat(minX, maxX), RandomFloat(minY, maxY));
+                    bd.Position = new TSVector2(RandomFloat(minX, maxX), RandomFloat(minY, maxY));
                     var body = World.CreateBody(bd);
                     body.CreateFixture(shape, 0.01f);
                 }
@@ -40,8 +40,8 @@ namespace Testbed.TestCases
                 bd.Position.Set(-40.0f, 5.0f);
                 bd.Bullet = true;
                 var body = World.CreateBody(bd);
-                body.CreateFixture(shape, 1.0f);
-                body.SetLinearVelocity(new Vector2(10.0f, 0.0f));
+                body.CreateFixture(shape, FP.One);
+                body.SetLinearVelocity(new TSVector2(10.0f, FP.Zero));
             }
         }
     }

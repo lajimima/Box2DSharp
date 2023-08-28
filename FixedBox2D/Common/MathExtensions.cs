@@ -1,46 +1,46 @@
-using System.Numerics;
 using System.Runtime.CompilerServices;
+using TrueSync;
 
 namespace FixedBox2D.Common
 {
     public static class MathExtensions
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsValid(in this Vector2 vector2)
+        public static bool IsValid(in this TSVector2 vector2)
         {
-            return !float.IsInfinity(vector2.X) && !float.IsInfinity(vector2.Y);
+            return !FP.IsInfinity(vector2.X) && !FP.IsInfinity(vector2.Y);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsValid(this float x)
+        public static bool IsValid(this FP x)
         {
-            return !float.IsInfinity(x);
+            return !FP.IsInfinity(x);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SetZero(ref this Vector2 vector2)
+        public static void SetZero(ref this TSVector2 vector2)
         {
-            vector2.X = 0.0f;
-            vector2.Y = 0.0f;
+            vector2.X = FP.Zero;
+            vector2.Y = FP.Zero;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Set(ref this Vector2 vector2, float x, float y)
+        public static void Set(ref this TSVector2 vector2, FP x, FP y)
         {
             vector2.X = x;
             vector2.Y = y;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SetZero(ref this Vector3 vector3)
+        public static void SetZero(ref this TSVector vector3)
         {
-            vector3.X = 0.0f;
-            vector3.Y = 0.0f;
-            vector3.Z = 0.0f;
+            vector3.X = FP.Zero;
+            vector3.Y = FP.Zero;
+            vector3.Z = FP.Zero;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Set(ref this Vector3 vector3, float x, float y, float z)
+        public static void Set(ref this TSVector vector3, FP x, FP y, FP z)
         {
             vector3.X = x;
             vector3.Y = y;
@@ -49,15 +49,15 @@ namespace FixedBox2D.Common
 
         /// Convert this vector into a unit vector. Returns the length.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Normalize(ref this Vector2 vector2)
+        public static FP Normalize(TSVector2 vector2)
         {
-            var length = vector2.Length();
+            var length = vector2.magnitude;
             if (length < Settings.Epsilon)
             {
-                return 0.0f;
+                return FP.Zero;
             }
 
-            var invLength = 1.0f / length;
+            var invLength = FP.One / length;
             vector2.X *= invLength;
             vector2.Y *= invLength;
 
@@ -70,9 +70,9 @@ namespace FixedBox2D.Common
         /// <param name="vector2"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 Skew(ref this Vector2 vector2)
+        public static TSVector2 Skew(ref this TSVector2 vector2)
         {
-            return new Vector2(-vector2.Y, vector2.X);
+            return new TSVector2(-vector2.Y, vector2.X);
         }
     }
 }

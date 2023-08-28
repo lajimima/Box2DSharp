@@ -20,6 +20,9 @@ namespace TrueSync
         internal const int NUM_BITS = 64;
         internal const int FRACTIONAL_PLACES = 32;
         internal const long ONE = 1L << FRACTIONAL_PLACES;
+        internal const long TWO = 2L << FRACTIONAL_PLACES;
+        internal const long THREE = 3L << FRACTIONAL_PLACES;
+        internal const long FORE = 4L << FRACTIONAL_PLACES;
         internal const long TEN = 10L << FRACTIONAL_PLACES;
         internal const long HALF = 1L << (FRACTIONAL_PLACES - 1);
         internal const long PI_TIMES_2 = 0x6487ED511;
@@ -35,6 +38,9 @@ namespace TrueSync
         public static readonly FP MaxValue = new FP(MAX_VALUE - 1);
         public static readonly FP MinValue = new FP(MIN_VALUE + 2);
         public static readonly FP One = new FP(ONE);
+        public static readonly FP Two = new FP(TWO);
+        public static readonly FP Three = new FP(THREE);
+        public static readonly FP Four = new FP(FORE);
         public static readonly FP Ten = new FP(TEN);
         public static readonly FP Half = new FP(HALF);
 
@@ -686,6 +692,10 @@ namespace TrueSync
                                                      (int)rawIndex];
             return new FP(flipVertical ? -nearestValue : nearestValue);
         }
+        public static FP FastSinAngle(FP angle)
+        {
+            return FastSin(angle * Deg2Rad);
+        }
 
         //[MethodImplAttribute(MethodImplOptions.AggressiveInlining)]
         public static long ClampSinValue(long angle, out bool flipHorizontal, out bool flipVertical)
@@ -743,6 +753,10 @@ namespace TrueSync
             var xl = x._serializedValue;
             var rawAngle = xl + (xl > 0 ? -PI - PI_OVER_2 : PI_OVER_2);
             return FastSin(new FP(rawAngle));
+        }
+        public static FP FastCosAngle(FP angle)
+        {
+            return FastCos(angle * Deg2Rad);
         }
 
         /// <summary>

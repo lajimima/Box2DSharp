@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+﻿using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -12,15 +12,15 @@ namespace Testbed.TestCases
     {
         public DistanceJoint m_joint;
 
-        public float m_length;
+        public FP m_length;
 
-        public float m_minLength;
+        public FP m_minLength;
 
-        public float m_maxLength;
+        public FP m_maxLength;
 
-        public float m_hertz;
+        public FP m_hertz;
 
-        public float m_dampingRatio;
+        public FP m_dampingRatio;
 
         public DistanceJointTest()
         {
@@ -30,26 +30,26 @@ namespace Testbed.TestCases
                 ground = World.CreateBody(bd);
 
                 EdgeShape shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-40.0f, FP.Zero), new TSVector2(40.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
             }
             {
                 BodyDef bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
-                bd.AngularDamping = 0.1f;
+                bd.AngularDamping = FP.EN1;
 
-                bd.Position.Set(0.0f, 5.0f);
+                bd.Position.Set(FP.Zero, 5.0f);
                 Body body = World.CreateBody(bd);
 
                 PolygonShape shape = new PolygonShape();
                 shape.SetAsBox(0.5f, 0.5f);
                 body.CreateFixture(shape, 5.0f);
 
-                m_hertz = 1.0f;
+                m_hertz = FP.One;
                 m_dampingRatio = 0.7f;
 
                 DistanceJointDef jd = new DistanceJointDef();
-                jd.Initialize(ground, body, new Vector2(0.0f, 15.0f), bd.Position);
+                jd.Initialize(ground, body, new TSVector2(FP.Zero, 15.0f), bd.Position);
                 jd.CollideConnected = true;
                 m_length = jd.Length;
                 m_minLength = m_length;

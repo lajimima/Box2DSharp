@@ -1,7 +1,7 @@
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Dynamics;
 using Testbed.Abstractions;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 
 namespace Testbed.TestCases
 {
@@ -17,21 +17,21 @@ namespace Testbed.TestCases
                 var ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-40.0f, FP.Zero), new TSVector2(40.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
             }
             {
                 var bd = new BodyDef
                 {
                     BodyType = BodyType.DynamicBody,
-                    Position = new Vector2(0.0f, 2.5f)
+                    Position = new TSVector2(FP.Zero, 2.5f)
                 };
                 var body = World.CreateBody(bd);
 
                 var shape = new CircleShape {Radius = 0.5f};
                 body.CreateFixture(shape, 10.0f);
 
-                bd.Position = new Vector2(0.0f, 3.5f);
+                bd.Position = new TSVector2(FP.Zero, 3.5f);
                 body = World.CreateBody(bd);
                 body.CreateFixture(shape, 10.0f);
             }
@@ -50,7 +50,7 @@ namespace Testbed.TestCases
                 var bd = new BodyDef
                 {
                     BodyType = BodyType.DynamicBody,
-                    Position = new Vector2(0.0f, 9.0f)
+                    Position = new TSVector2(FP.Zero, 9.0f)
                 };
                 _heavy = World.CreateBody(bd);
 

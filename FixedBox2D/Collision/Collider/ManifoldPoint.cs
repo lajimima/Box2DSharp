@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 
 namespace FixedBox2D.Collision.Collider
 {
@@ -15,13 +15,13 @@ namespace FixedBox2D.Collision.Collider
     public struct ManifoldPoint
     {
         /// usage depends on manifold type
-        public Vector2 LocalPoint;
+        public TSVector2 LocalPoint;
 
         /// the non-penetration impulse
-        public float NormalImpulse;
+        public FP NormalImpulse;
 
         /// /// the friction impulse
-        public float TangentImpulse;
+        public FP TangentImpulse;
 
         /// uniquely identifies a contact point between two shapes
         public ContactId Id;

@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -19,14 +19,14 @@ namespace Testbed.TestCases
             // Create ground body.
             {
                 var bodyDef = new BodyDef();
-                bodyDef.Position.Set(0.0f, 20.0f);
+                bodyDef.Position.Set(FP.Zero, 20.0f);
                 ground = World.CreateBody(bodyDef);
             }
 
             var a = 0.5f;
-            var h = new Vector2(0.0f, a);
+            var h = new TSVector2(FP.Zero, a);
 
-            var root = AddNode(ground, Vector2.Zero, 0, 3.0f, a);
+            var root = AddNode(ground, TSVector2.Zero, 0, 3.0f, a);
 
             var jointDef = new RevoluteJointDef();
             jointDef.BodyA = ground;
@@ -36,10 +36,10 @@ namespace Testbed.TestCases
             World.CreateJoint(jointDef);
         }
 
-        private Body AddNode(Body parent, Vector2 localAnchor, int depth, float offset, float a)
+        private Body AddNode(Body parent, TSVector2 localAnchor, int depth, FP offset, FP a)
         {
             var density = 20.0f;
-            var h = new Vector2(0.0f, a);
+            var h = new TSVector2(FP.Zero, a);
 
             var p = parent.GetPosition() + localAnchor - h;
 
@@ -57,11 +57,11 @@ namespace Testbed.TestCases
                 return body;
             }
 
-            shape.SetAsBox(offset, 0.25f * a, new Vector2(0, -a), 0.0f);
+            shape.SetAsBox(offset, 0.25f * a, new TSVector2(0, -a), FP.Zero);
             body.CreateFixture(shape, density);
 
-            var a1 = new Vector2(offset, -a);
-            var a2 = new Vector2(-offset, -a);
+            var a1 = new TSVector2(offset, -a);
+            var a2 = new TSVector2(-offset, -a);
             var body1 = AddNode(body, a1, depth + 1, 0.5f * offset, a);
             var body2 = AddNode(body, a2, depth + 1, 0.5f * offset, a);
 

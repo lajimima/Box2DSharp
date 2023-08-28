@@ -1,5 +1,5 @@
-using System.Numerics;
 using FixedBox2D.Common;
+using TrueSync;
 
 namespace FixedBox2D.Collision
 {
@@ -14,6 +14,6 @@ namespace FixedBox2D.Collision
 
         public Transform TransformB;
 
-        public Vector2 TranslationB;
+        public TSVector2 TranslationB;
     }
 }

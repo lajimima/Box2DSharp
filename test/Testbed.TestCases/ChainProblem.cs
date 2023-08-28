@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+﻿using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -11,7 +11,7 @@ namespace Testbed.TestCases
     {
         public ChainProblem()
         {
-            Vector2 g = new Vector2(0.0f, -10.0f);
+            TSVector2 g = new TSVector2(FP.Zero, -10.0f);
             World.Gravity = g;
             var bodies = new Body[2];
             {
@@ -20,16 +20,16 @@ namespace Testbed.TestCases
                 bodies[0] = World.CreateBody(bd);
 
                 {
-                    var v1 = new Vector2(0.0f, 1.0f);
-                    var v2 = new Vector2(0.0f, 0.0f);
-                    var v3 = new Vector2(4.0f, 0.0f);
+                    var v1 = new TSVector2(FP.Zero, FP.One);
+                    var v2 = new TSVector2(FP.Zero, FP.Zero);
+                    var v3 = new TSVector2(4.0f, FP.Zero);
 
                     EdgeShape shape = new EdgeShape();
                     shape.SetTwoSided(v1, v2);
-                    bodies[0].CreateFixture(shape, 0.0f);
+                    bodies[0].CreateFixture(shape, FP.Zero);
 
                     shape.SetTwoSided(v2, v3);
-                    bodies[0].CreateFixture(shape, 0.0f);
+                    bodies[0].CreateFixture(shape, FP.Zero);
                 }
             }
             {
@@ -37,7 +37,7 @@ namespace Testbed.TestCases
                 bd.BodyType = BodyType.DynamicBody;
 
                 //bd.position.Set(6.033980250358582e-01f, 3.028350114822388e+00f);
-                bd.Position.Set(1.0f, 3.0f);
+                bd.Position.Set(FP.One, 3.0f);
                 bodies[1] = World.CreateBody(bd);
 
                 {
@@ -45,7 +45,7 @@ namespace Testbed.TestCases
                     fd.Friction = 0.2f;
                     fd.Density = 10.0f;
                     PolygonShape shape = new PolygonShape();
-                    var vs = new Vector2[8];
+                    var vs = new TSVector2[8];
                     vs[0].Set(0.5f, -3.0f);
                     vs[1].Set(0.5f, 3.0f);
                     vs[2].Set(-0.5f, 3.0f);

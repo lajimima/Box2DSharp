@@ -3,7 +3,7 @@ using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
 using FixedBox2D.Dynamics.Joints;
 using Testbed.Abstractions;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 
 namespace Testbed.TestCases
 {
@@ -14,7 +14,7 @@ namespace Testbed.TestCases
 
         private Body _platform;
 
-        private float _speed;
+        private FP _speed;
 
         public BodyTypes()
         {
@@ -24,7 +24,7 @@ namespace Testbed.TestCases
                 ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
+                shape.SetTwoSided(new TSVector2(-20.0f, FP.Zero), new TSVector2(20.0f, FP.Zero));
 
                 var fd = new FixtureDef();
                 fd.Shape = shape;
@@ -36,12 +36,12 @@ namespace Testbed.TestCases
             {
                 var bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
-                bd.Position.Set(0.0f, 3.0f);
+                bd.Position.Set(FP.Zero, 3.0f);
                 _attachment = World.CreateBody(bd);
 
                 var shape = new PolygonShape();
-                shape.SetAsBox(0.5f, 2.0f);
-                _attachment.CreateFixture(shape, 2.0f);
+                shape.SetAsBox(0.5f, FP.Two);
+                _attachment.CreateFixture(shape, FP.Two);
             }
 
             // Define platform
@@ -52,22 +52,22 @@ namespace Testbed.TestCases
                 _platform = World.CreateBody(bd);
 
                 var shape = new PolygonShape();
-                shape.SetAsBox(0.5f, 4.0f, new Vector2(4.0f, 0.0f), 0.5f * Settings.Pi);
+                shape.SetAsBox(0.5f, 4.0f, new TSVector2(4.0f, FP.Zero), 0.5f * Settings.Pi);
 
                 var fd = new FixtureDef();
                 fd.Shape = shape;
                 fd.Friction = 0.6f;
-                fd.Density = 2.0f;
+                fd.Density = FP.Two;
                 _platform.CreateFixture(fd);
 
                 var rjd = new RevoluteJointDef();
-                rjd.Initialize(_attachment, _platform, new Vector2(0.0f, 5.0f));
+                rjd.Initialize(_attachment, _platform, new TSVector2(FP.Zero, 5.0f));
                 rjd.MaxMotorTorque = 50.0f;
                 rjd.EnableMotor = true;
                 World.CreateJoint(rjd);
 
                 var pjd = new PrismaticJointDef();
-                pjd.Initialize(ground, _platform, new Vector2(0.0f, 5.0f), new Vector2(1.0f, 0.0f));
+                pjd.Initialize(ground, _platform, new TSVector2(FP.Zero, 5.0f), new TSVector2(FP.One, FP.Zero));
 
                 pjd.MaxMotorForce = 1000.0f;
                 pjd.EnableMotor = true;
@@ -84,7 +84,7 @@ namespace Testbed.TestCases
             {
                 var bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
-                bd.Position.Set(0.0f, 8.0f);
+                bd.Position.Set(FP.Zero, 8.0f);
                 var body = World.CreateBody(bd);
 
                 var shape = new PolygonShape();
@@ -93,7 +93,7 @@ namespace Testbed.TestCases
                 var fd = new FixtureDef();
                 fd.Shape = shape;
                 fd.Friction = 0.6f;
-                fd.Density = 2.0f;
+                fd.Density = FP.Two;
 
                 body.CreateFixture(fd);
             }
@@ -112,7 +112,7 @@ namespace Testbed.TestCases
                 var p = _platform.GetTransform().Position;
                 var v = _platform.LinearVelocity;
 
-                if (p.X < -10.0f && v.X < 0.0f || p.X > 10.0f && v.X > 0.0f)
+                if (p.X < -10.0f && v.X < FP.Zero || p.X > 10.0f && v.X > FP.Zero)
                 {
                     v.X = -v.X;
                     _platform.SetLinearVelocity(v);
@@ -136,8 +136,8 @@ namespace Testbed.TestCases
             if (keyInput.Key == KeyCodes.K)
             {
                 _platform.BodyType = BodyType.KinematicBody;
-                _platform.SetLinearVelocity(new Vector2(-_speed, 0.0f));
-                _platform.SetAngularVelocity(0.0f);
+                _platform.SetLinearVelocity(new TSVector2(-_speed, FP.Zero));
+                _platform.SetAngularVelocity(FP.Zero);
             }
         }
     }

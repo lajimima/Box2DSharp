@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+﻿using TrueSync;
 using FixedBox2D.Collision;
 using FixedBox2D.Common;
 using Testbed.Abstractions;
@@ -10,29 +10,29 @@ namespace Testbed.TestCases
     {
         private const int VertexCount = 8;
 
-        private readonly Vector2[] _vAs = new Vector2[Settings.MaxPolygonVertices];
+        private readonly TSVector2[] _vAs = new TSVector2[Settings.MaxPolygonVertices];
 
-        private readonly Vector2[] _vBs = new Vector2[Settings.MaxPolygonVertices];
+        private readonly TSVector2[] _vBs = new TSVector2[Settings.MaxPolygonVertices];
 
         private int _countA;
 
         private int _countB;
 
-        private float _radiusA;
+        private FP _radiusA;
 
-        private float _radiusB;
+        private FP _radiusB;
 
         private Transform _transformA;
 
         private Transform _transformB;
 
-        private Vector2 _translationB;
+        private TSVector2 _translationB;
 
         public ShapeCast()
         {
-            _vAs[0].Set(-0.5f, 1.0f);
-            _vAs[1].Set(0.5f, 1.0f);
-            _vAs[2].Set(0.0f, 0.0f);
+            _vAs[0].Set(-0.5f, FP.One);
+            _vAs[1].Set(0.5f, FP.One);
+            _vAs[2].Set(FP.Zero, FP.Zero);
             _countA = 3;
             _radiusA = Settings.PolygonRadius;
 
@@ -43,11 +43,11 @@ namespace Testbed.TestCases
             _countB = 4;
             _radiusB = Settings.PolygonRadius;
 
-            _transformA.Position.Set(0.0f, 0.25f);
+            _transformA.Position.Set(FP.Zero, 0.25f);
             _transformA.Rotation.SetIdentity();
-            _transformB.Position.Set(-4.0f, 0.0f);
+            _transformB.Position.Set(-4.0f, FP.Zero);
             _transformB.Rotation.SetIdentity();
-            _translationB.Set(8.0f, 0.0f);
+            _translationB.Set(8.0f, FP.Zero);
         }
 
         protected override void OnRender()
@@ -80,7 +80,7 @@ namespace Testbed.TestCases
             DrawString(
                 $"hit = {hit}, iters = {output.Iterations}, lambda = {output.Lambda}, distance = {distanceOutput.Distance}");
 
-            var vertices = new Vector2[Settings.MaxPolygonVertices];
+            var vertices = new TSVector2[Settings.MaxPolygonVertices];
 
             for (var i = 0; i < _countA; ++i)
             {

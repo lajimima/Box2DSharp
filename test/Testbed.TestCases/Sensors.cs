@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -14,7 +14,7 @@ namespace Testbed.TestCases
 
         private readonly Body[] _bodies = new Body[Count];
 
-        protected float _force;
+        protected FP _force;
 
         private bool[] _touching = new bool[Count];
 
@@ -28,14 +28,14 @@ namespace Testbed.TestCases
 
                 {
                     var shape = new EdgeShape();
-                    shape.SetTwoSided(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
-                    ground.CreateFixture(shape, 0.0f);
+                    shape.SetTwoSided(new TSVector2(-40.0f, FP.Zero), new TSVector2(40.0f, FP.Zero));
+                    ground.CreateFixture(shape, FP.Zero);
                 }
 
                 {
                     var shape = new CircleShape();
                     shape.Radius = 5.0f;
-                    shape.Position.Set(0.0f, 10.0f);
+                    shape.Position.Set(FP.Zero, 10.0f);
 
                     var fd = new FixtureDef();
                     fd.Shape = shape;
@@ -46,7 +46,7 @@ namespace Testbed.TestCases
 
             {
                 var shape = new CircleShape();
-                shape.Radius = 1.0f;
+                shape.Radius = FP.One;
 
                 for (var i = 0; i < Count; ++i)
                 {
@@ -56,7 +56,7 @@ namespace Testbed.TestCases
                     bd.UserData = i;
                     _touching[i] = false;
                     _bodies[i] = World.CreateBody(bd);
-                    _bodies[i].CreateFixture(shape, 1.0f);
+                    _bodies[i].CreateFixture(shape, FP.One);
                 }
             }
             _force = 100.0f;
@@ -88,7 +88,7 @@ namespace Testbed.TestCases
                     continue;
                 }
 
-                d = Vector2.Normalize(d);
+                d = TSVector2.Normalize(d);
                 var F = _force * d;
                 body.ApplyForce(F, position, false);
             }

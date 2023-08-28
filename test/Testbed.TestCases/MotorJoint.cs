@@ -5,7 +5,7 @@ using FixedBox2D.Dynamics;
 using FixedBox2D.Dynamics.Joints;
 using Testbed.Abstractions;
 using Color = FixedBox2D.Common.Color;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 
 namespace Testbed.TestCases
 {
@@ -14,7 +14,7 @@ namespace Testbed.TestCases
     {
         private bool _go;
 
-        private float _time;
+        private FP _time;
 
         private FixedBox2D.Dynamics.Joints.MotorJoint _joint;
 
@@ -26,7 +26,7 @@ namespace Testbed.TestCases
                 ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
+                shape.SetTwoSided(new TSVector2(-20.0f, FP.Zero), new TSVector2(20.0f, FP.Zero));
 
                 var fd = new FixtureDef();
                 fd.Shape = shape;
@@ -38,16 +38,16 @@ namespace Testbed.TestCases
             {
                 var bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
-                bd.Position.Set(0.0f, 8.0f);
+                bd.Position.Set(FP.Zero, 8.0f);
                 var body = World.CreateBody(bd);
 
                 var shape = new PolygonShape();
-                shape.SetAsBox(2.0f, 0.5f);
+                shape.SetAsBox(FP.Two, 0.5f);
 
                 var fd = new FixtureDef();
                 fd.Shape = shape;
                 fd.Friction = 0.6f;
-                fd.Density = 2.0f;
+                fd.Density = FP.Two;
                 body.CreateFixture(fd);
 
                 var mjd = new MotorJointDef();
@@ -58,7 +58,7 @@ namespace Testbed.TestCases
             }
 
             _go = false;
-            _time = 0.0f;
+            _time = FP.Zero;
         }
 
         /// <inheritdoc />
@@ -72,14 +72,14 @@ namespace Testbed.TestCases
 
         protected override void PreStep()
         {
-            if (_go && 1 / TestSettings.Hertz > 0.0f)
+            if (_go && 1 / TestSettings.Hertz > FP.Zero)
             {
                 _time += 1 / TestSettings.Hertz;
             }
 
-            _linearOffset = new Vector2
+            _linearOffset = new TSVector2
             {
-                X = 6.0f * (float)Math.Sin(2.0f * _time), Y = 8.0f + 4.0f * (float)Math.Sin(1.0f * _time)
+                X = 6.0f * FP.Sin(FP.Two * _time), Y = 8.0f + 4.0f * FP.Sin(FP.One * _time)
             };
 
             var angularOffset = 4.0f * _time;
@@ -88,7 +88,7 @@ namespace Testbed.TestCases
             _joint.SetAngularOffset(angularOffset);
         }
 
-        private Vector2 _linearOffset;
+        private TSVector2 _linearOffset;
 
         protected override void OnRender()
         {

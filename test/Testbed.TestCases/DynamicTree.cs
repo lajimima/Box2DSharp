@@ -7,7 +7,7 @@ using FixedBox2D.Dynamics.Internal;
 using Testbed.Abstractions;
 using Color = FixedBox2D.Common.Color;
 using Random = System.Random;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 
 namespace Testbed.TestCases
 {
@@ -22,7 +22,7 @@ namespace Testbed.TestCases
 
         private bool _automated;
 
-        private float _proxyExtent;
+        private FP _proxyExtent;
 
         private AABB _queryAABB;
 
@@ -34,7 +34,7 @@ namespace Testbed.TestCases
 
         private readonly FixedBox2D.Collision.DynamicTree _tree = new FixedBox2D.Collision.DynamicTree();
 
-        private float _worldExtent;
+        private FP _worldExtent;
 
         public DynamicTree()
         {
@@ -55,7 +55,7 @@ namespace Testbed.TestCases
             _rayCastInput.P1.Set(-5.0f, 5.0f + h);
             _rayCastInput.P2.Set(7.0f, -4.0f + h);
 
-            _rayCastInput.MaxFraction = 1.0f;
+            _rayCastInput.MaxFraction = FP.One;
 
             _automated = false;
         }
@@ -89,7 +89,7 @@ namespace Testbed.TestCases
             _rayActor = null;
             for (var i = 0; i < ActorCount; ++i)
             {
-                _actors[i].Fraction = 1.0f;
+                _actors[i].Fraction = FP.One;
                 _actors[i].Overlap = false;
             }
 
@@ -164,7 +164,7 @@ namespace Testbed.TestCases
 
         // public void DrawAABB(AABB aabb, Color color)
         // {
-        //     var vs = new Vector2 [4];
+        //     var vs = new TSVector2 [4];
         //     vs[0].Set(aabb.LowerBound.X, aabb.LowerBound.Y);
         //     vs[1].Set(aabb.UpperBound.X, aabb.LowerBound.Y);
         //     vs[2].Set(aabb.UpperBound.X, aabb.UpperBound.Y);
@@ -180,7 +180,7 @@ namespace Testbed.TestCases
             return true;
         }
 
-        public float RayCastCallback(in RayCastInput input, int proxyId)
+        public FP RayCastCallback(in RayCastInput input, int proxyId)
         {
             var actor = (Actor)_tree.GetUserData(proxyId);
             var hit = actor.AABB.RayCast(out var output, input);
@@ -198,32 +198,32 @@ namespace Testbed.TestCases
 
         private void GetRandomAABB(ref AABB aabb)
         {
-            var w = new Vector2(2.0f * _proxyExtent, 2.0f * _proxyExtent);
+            var w = new TSVector2(FP.Two * _proxyExtent, FP.Two * _proxyExtent);
 
             //aabb.LowerBound.X = -proxyExtent;
             //aabb.LowerBound.Y = -proxyExtent + worldExtent;
             aabb.LowerBound.X = RandomFloat(-_worldExtent, _worldExtent);
-            aabb.LowerBound.Y = RandomFloat(0.0f, 2.0f * _worldExtent);
+            aabb.LowerBound.Y = RandomFloat(FP.Zero, FP.Two * _worldExtent);
             aabb.UpperBound = aabb.LowerBound + w;
         }
 
         private void MoveAABB(ref AABB aabb)
         {
-            Vector2 d;
+            TSVector2 d;
             d.X = RandomFloat(-0.5f, 0.5f);
             d.Y = RandomFloat(-0.5f, 0.5f);
 
-            //d.X = 2.0f;
-            //d.Y = 0.0f;
+            //d.X = FP.Two;
+            //d.Y = FP.Zero;
             aabb.LowerBound += d;
             aabb.UpperBound += d;
 
             var c0 = 0.5f * (aabb.LowerBound + aabb.UpperBound);
-            var min = new Vector2();
-            min.Set(-_worldExtent, 0.0f);
-            var max = new Vector2();
-            max.Set(_worldExtent, 2.0f * _worldExtent);
-            var c = Vector2.Clamp(c0, min, max);
+            var min = new TSVector2();
+            min.Set(-_worldExtent, FP.Zero);
+            var max = new TSVector2();
+            max.Set(_worldExtent, FP.Two * _worldExtent);
+            var c = TSVector2.Clamp(c0, min, max);
 
             aabb.LowerBound += c - c0;
             aabb.UpperBound += c - c0;
@@ -345,7 +345,7 @@ namespace Testbed.TestCases
 
             if (bruteActor != null)
             {
-                Debug.Assert(Math.Abs(bruteOutput.Fraction - _rayCastOutput.Fraction) < Settings.Epsilon);
+                Debug.Assert(FP.Abs(bruteOutput.Fraction - _rayCastOutput.Fraction) < Settings.Epsilon);
             }
         }
 
@@ -353,7 +353,7 @@ namespace Testbed.TestCases
         {
             public AABB AABB;
 
-            public float Fraction;
+            public FP Fraction;
 
             public bool Overlap;
 

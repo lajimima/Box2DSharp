@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+﻿using TrueSync;
 using ImGuiNET;
 using Testbed.TestCases;
 
@@ -11,8 +11,8 @@ namespace Testbed.Tests
         protected override void OnRender()
         {
             base.OnRender();
-            ImGui.SetNextWindowPos(new Vector2(10.0f, 100.0f));
-            ImGui.SetNextWindowSize(new Vector2(200.0f, 100.0f));
+            ImGui.SetNextWindowPos(new TSVector2(10.0f, 100.0f));
+            ImGui.SetNextWindowSize(new TSVector2(200.0f, 100.0f));
             ImGui.Begin("Wrecking Ball Controls", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
 
             if (ImGui.Checkbox("Stabilize", ref _stabilize))

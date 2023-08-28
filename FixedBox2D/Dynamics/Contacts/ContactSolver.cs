@@ -1,7 +1,7 @@
 using System;
 using System.Buffers;
 using System.Diagnostics;
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Collider;
 using FixedBox2D.Common;
 
@@ -97,15 +97,15 @@ namespace FixedBox2D.Dynamics.Contacts
                     }
                     else
                     {
-                        vcp.NormalImpulse = 0.0f;
-                        vcp.TangentImpulse = 0.0f;
+                        vcp.NormalImpulse = FP.Zero;
+                        vcp.TangentImpulse = FP.Zero;
                     }
 
                     vcp.Ra = default;
                     vcp.Rb = default;
-                    vcp.NormalMass = 0.0f;
-                    vcp.TangentMass = 0.0f;
-                    vcp.VelocityBias = 0.0f;
+                    vcp.NormalMass = FP.Zero;
+                    vcp.TangentMass = FP.Zero;
+                    vcp.VelocityBias = FP.Zero;
 
                     pc.LocalPoints[j] = cp.LocalPoint;
                 }
@@ -139,6 +139,8 @@ namespace FixedBox2D.Dynamics.Contacts
             }
         }
 
+        // Ensure a reasonable condition number.
+        static FP maxConditionNumber = FP.One * 1000;
         public void InitializeVelocityConstraints()
         {
             Span<Position> ps = _positions;
@@ -203,26 +205,26 @@ namespace FixedBox2D.Dynamics.Contacts
 
                     var kNormal = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
 
-                    vcp.NormalMass = kNormal > 0.0f ? 1.0f / kNormal : 0.0f;
+                    vcp.NormalMass = kNormal > FP.Zero ? FP.One / kNormal : FP.Zero;
 
-                    var tangent = MathUtils.Cross(vc.Normal, 1.0f);
+                    var tangent = MathUtils.Cross(vc.Normal, FP.One);
 
                     var rtA = MathUtils.Cross(vcp.Ra, tangent);
                     var rtB = MathUtils.Cross(vcp.Rb, tangent);
 
                     var kTangent = mA + mB + iA * rtA * rtA + iB * rtB * rtB;
 
-                    vcp.TangentMass = kTangent > 0.0f ? 1.0f / kTangent : 0.0f;
+                    vcp.TangentMass = kTangent > FP.Zero ? FP.One / kTangent : FP.Zero;
 
                     // Setup a velocity bias for restitution.
-                    vcp.VelocityBias = 0.0f;
+                    vcp.VelocityBias = FP.Zero;
 
-                    // var vRel = Vector2.Dot(
+                    // var vRel = TSVector2.Dot(
                     //     vc.Normal,
                     //     vB + MathUtils.Cross(wB, vcp.Rb) - vA - MathUtils.Cross(wA, vcp.Ra)); // inline
-                    var vRel = Vector2.Dot(
+                    var vRel = TSVector2.Dot(
                         vc.Normal,
-                        new Vector2(vB.X - wB * vcp.Rb.Y - vA.X + wA * vcp.Ra.Y, vB.Y + wB * vcp.Rb.X - vA.Y - wA * vcp.Ra.X));
+                        new TSVector2(vB.X - wB * vcp.Rb.Y - vA.X + wA * vcp.Ra.Y, vB.Y + wB * vcp.Rb.X - vA.Y - wA * vcp.Ra.X));
                     if (vRel < -vc.Threshold)
                     {
                         vcp.VelocityBias = -vc.Restitution * vRel;
@@ -244,8 +246,6 @@ namespace FixedBox2D.Dynamics.Contacts
                     var k22 = mA + mB + iA * rn2A * rn2A + iB * rn2B * rn2B;
                     var k12 = mA + mB + iA * rn1A * rn2A + iB * rn1B * rn2B;
 
-                    // Ensure a reasonable condition number.
-                    const float maxConditionNumber = 1000.0f;
                     if (k11 * k11 < maxConditionNumber * (k11 * k22 - k12 * k12))
                     {
                         // K is safe to invert.
@@ -286,7 +286,7 @@ namespace FixedBox2D.Dynamics.Contacts
                 var wB = velocities[indexB].W;
 
                 var normal = vc.Normal;
-                var tangent = MathUtils.Cross(normal, 1.0f);
+                var tangent = MathUtils.Cross(normal, FP.One);
 
                 for (var j = 0; j < pointCount; ++j)
                 {
@@ -309,7 +309,7 @@ namespace FixedBox2D.Dynamics.Contacts
         {
             Span<ContactVelocityConstraint> velocityConstraints = VelocityConstraints;
             Span<Velocity> velocities = _velocities;
-            float tangentX, tangentY;
+            FP tangentX, tangentY;
             for (var i = 0; i < _contactCount; ++i)
             {
                 ref var vc = ref velocityConstraints[i];
@@ -333,7 +333,7 @@ namespace FixedBox2D.Dynamics.Contacts
                 var normalX = vc.Normal.X;
                 var normalY = vc.Normal.Y;
 
-                // var tangent = MathUtils.Cross(normal, 1.0f); // inline
+                // var tangent = MathUtils.Cross(normal, FP.One); // inline
                 tangentX = normalY;
                 tangentY = -normalX;
 
@@ -343,8 +343,8 @@ namespace FixedBox2D.Dynamics.Contacts
 
                 // Solve tangent constraints first because non-penetration is more important
                 // than friction.
-                float dvX, dvY;
-                float pX, pY;
+                FP dvX, dvY;
+                FP pX, pY;
 
                 for (var j = 0; j < pointCount; ++j)
                 {
@@ -386,7 +386,7 @@ namespace FixedBox2D.Dynamics.Contacts
                     wB += iB * (vcp.Rb.X * pY - vcp.Rb.Y * pX);
                 }
 
-                float P1X, P1Y, P2X, P2Y;
+                FP P1X, P1Y, P2X, P2Y;
 
                 // Solve normal constraints
                 if (pointCount == 1)
@@ -403,7 +403,7 @@ namespace FixedBox2D.Dynamics.Contacts
                     var lambda = -vcp.NormalMass * (vn - vcp.VelocityBias);
 
                     // MathUtils.b2Clamp the accumulated impulse
-                    var newImpulse = Math.Max(vcp.NormalImpulse + lambda, 0.0f);
+                    var newImpulse = FP.Max(vcp.NormalImpulse + lambda, FP.Zero);
                     lambda = newImpulse - vcp.NormalImpulse;
                     vcp.NormalImpulse = newImpulse;
 
@@ -458,16 +458,16 @@ namespace FixedBox2D.Dynamics.Contacts
 
                     //ref var cp1 = ref vc.Points.Value0;
                     //ref var cp2 = ref vc.Points.Value1;
-                    float cp1VelocityBias = vc.Points.Value0.VelocityBias;
-                    float cp2VelocityBias = vc.Points.Value1.VelocityBias;
-                    float cp1NormalMass = vc.Points.Value0.NormalMass;
-                    float cp2NormalMass = vc.Points.Value1.NormalMass;
-                    float cp1RaX = vc.Points.Value0.Ra.X, cp1RaY = vc.Points.Value0.Ra.Y, cp1RbX = vc.Points.Value0.Rb.X, cp1RbY = vc.Points.Value0.Rb.Y;
-                    float cp2RaX = vc.Points.Value1.Ra.X, cp2RaY = vc.Points.Value1.Ra.Y, cp2RbX = vc.Points.Value1.Rb.X, cp2RbY = vc.Points.Value1.Rb.Y;
+                    FP cp1VelocityBias = vc.Points.Value0.VelocityBias;
+                    FP cp2VelocityBias = vc.Points.Value1.VelocityBias;
+                    FP cp1NormalMass = vc.Points.Value0.NormalMass;
+                    FP cp2NormalMass = vc.Points.Value1.NormalMass;
+                    FP cp1RaX = vc.Points.Value0.Ra.X, cp1RaY = vc.Points.Value0.Ra.Y, cp1RbX = vc.Points.Value0.Rb.X, cp1RbY = vc.Points.Value0.Rb.Y;
+                    FP cp2RaX = vc.Points.Value1.Ra.X, cp2RaY = vc.Points.Value1.Ra.Y, cp2RbX = vc.Points.Value1.Rb.X, cp2RbY = vc.Points.Value1.Rb.Y;
                     ref var cp1NormalImpulse = ref vc.Points.Value0.NormalImpulse;
                     ref var cp2NormalImpulse = ref vc.Points.Value1.NormalImpulse;
-                    var a = new Vector2(cp1NormalImpulse, cp2NormalImpulse);
-                    Debug.Assert(a.X >= 0.0f && a.Y >= 0.0f);
+                    var a = new TSVector2(cp1NormalImpulse, cp2NormalImpulse);
+                    Debug.Assert(a.X >= FP.Zero && a.Y >= FP.Zero);
 
                     // Relative velocity at contact
                     var dv1X = vBX - wB * cp1RbY - vAX + wA * cp1RaY;
@@ -477,11 +477,11 @@ namespace FixedBox2D.Dynamics.Contacts
                     var dv2Y = vBY + wB * cp2RbX - vAY - wA * cp2RaX;
 
                     // Compute normal velocity
-                    var vn1 = dv1X * normalX + dv1Y * normalY; // Vector2.Dot(dv1, normal);
-                    var vn2 = dv2X * normalX + dv2Y * normalY; //Vector2.Dot(dv2, normal);
+                    var vn1 = dv1X * normalX + dv1Y * normalY; // TSVector2.Dot(dv1, normal);
+                    var vn2 = dv2X * normalX + dv2Y * normalY; //TSVector2.Dot(dv2, normal);
 
-                    //var b = new Vector2(vn1 - cp1.VelocityBias, vn2 - cp2.VelocityBias); // inline
-                    var b = new Vector2(vn1 - cp1VelocityBias - (vc.K.Ex.X * a.X + vc.K.Ey.X * a.Y), vn2 - cp2VelocityBias - (vc.K.Ex.Y * a.X + vc.K.Ey.Y * a.Y));
+                    //var b = new TSVector2(vn1 - cp1.VelocityBias, vn2 - cp2.VelocityBias); // inline
+                    var b = new TSVector2(vn1 - cp1VelocityBias - (vc.K.Ex.X * a.X + vc.K.Ey.X * a.Y), vn2 - cp2VelocityBias - (vc.K.Ex.Y * a.X + vc.K.Ey.Y * a.Y));
 
                     // Compute b'
                     // b -= MathUtils.Mul(vc.K, a); // inline
@@ -498,8 +498,8 @@ namespace FixedBox2D.Dynamics.Contacts
                         // x = - inv(A) * b'
                         //
                         // var x = -MathUtils.Mul(vc.NormalMass, b);
-                        var x = new Vector2(-(vc.NormalMass.Ex.X * b.X + vc.NormalMass.Ey.X * b.Y), -(vc.NormalMass.Ex.Y * b.X + vc.NormalMass.Ey.Y * b.Y));
-                        if (x.X >= 0.0f && x.Y >= 0.0f)
+                        var x = new TSVector2(-(vc.NormalMass.Ex.X * b.X + vc.NormalMass.Ey.X * b.Y), -(vc.NormalMass.Ex.Y * b.X + vc.NormalMass.Ey.Y * b.Y));
+                        if (x.X >= FP.Zero && x.Y >= FP.Zero)
                         {
                             // Get the incremental impulse
                             var dX = x.X - a.X;
@@ -528,13 +528,13 @@ namespace FixedBox2D.Dynamics.Contacts
 
 #if B2_DEBUG_SOLVER
 // Postconditions
-                            const float k_errorTol = 1e-3f;
+                            const FP k_errorTol = 1e-3f;
                             dv1 = vB + MathUtils.Cross(wB, cp1.rB) - vA - MathUtils.Cross(wA, cp1.rA);
                             dv2 = vB + MathUtils.Cross(wB, cp2.rB) - vA - MathUtils.Cross(wA, cp2.rA);
 
                             // Compute normal velocity
-                            vn1 = Vector2.Dot(dv1, normal);
-                            vn2 = Vector2.Dot(dv2, normal);
+                            vn1 = TSVector2.Dot(dv1, normal);
+                            vn2 = TSVector2.Dot(dv2, normal);
 
                             Debug.Assert(Math.Abs(vn1 - cp1.velocityBias) < k_errorTol);
                             Debug.Assert(Math.Abs(vn2 - cp2.velocityBias) < k_errorTol);
@@ -549,10 +549,10 @@ namespace FixedBox2D.Dynamics.Contacts
                         // vn2 = a21 * x1 + a22 * 0 + b2'
                         //
                         x.X = -cp1NormalMass * b.X;
-                        x.Y = 0.0f;
-                        vn1 = 0.0f;
+                        x.Y = FP.Zero;
+                        vn1 = FP.Zero;
                         vn2 = vc.K.Ex.Y * x.X + b.Y;
-                        if (x.X >= 0.0f && vn2 >= 0.0f)
+                        if (x.X >= FP.Zero && vn2 >= FP.Zero)
                         {
                             // Get the incremental impulse
                             var dX = x.X - a.X;
@@ -584,7 +584,7 @@ namespace FixedBox2D.Dynamics.Contacts
                             dv1 = vB + MathUtils.Cross(wB, cp1.rB) - vA - MathUtils.Cross(wA, cp1.rA);
 
                             // Compute normal velocity
-                            vn1 = Vector2.Dot(dv1, normal);
+                            vn1 = TSVector2.Dot(dv1, normal);
 
                             Debug.Assert(Math.Abs(vn1 - cp1.velocityBias) < k_errorTol);
 #endif
@@ -597,12 +597,12 @@ namespace FixedBox2D.Dynamics.Contacts
                         // vn1 = a11 * 0 + a12 * x2 + b1' 
                         //   0 = a21 * 0 + a22 * x2 + b2'
                         //
-                        x.X = 0.0f;
+                        x.X = FP.Zero;
                         x.Y = -cp2NormalMass * b.Y;
                         vn1 = vc.K.Ey.X * x.Y + b.X;
-                        vn2 = 0.0f;
+                        vn2 = FP.Zero;
 
-                        if (x.Y >= 0.0f && vn1 >= 0.0f)
+                        if (x.Y >= FP.Zero && vn1 >= FP.Zero)
                         {
                             // Resubstitute for the incremental impulse
                             var dX = x.X - a.X;
@@ -634,7 +634,7 @@ namespace FixedBox2D.Dynamics.Contacts
                             dv2 = vB + MathUtils.Cross(wB, cp2.rB) - vA - MathUtils.Cross(wA, cp2.rA);
 
                             // Compute normal velocity
-                            vn2 = Vector2.Dot(dv2, normal);
+                            vn2 = TSVector2.Dot(dv2, normal);
 
                             Debug.Assert(Math.Abs(vn2 - cp2.velocityBias) < k_errorTol);
 #endif
@@ -646,12 +646,12 @@ namespace FixedBox2D.Dynamics.Contacts
                         // 
                         // vn1 = b1
                         // vn2 = b2;
-                        x.X = 0.0f;
-                        x.Y = 0.0f;
+                        x.X = FP.Zero;
+                        x.Y = FP.Zero;
                         vn1 = b.X;
                         vn2 = b.Y;
 
-                        if (vn1 >= 0.0f && vn2 >= 0.0f)
+                        if (vn1 >= FP.Zero && vn2 >= FP.Zero)
                         {
                             // Resubstitute for the incremental impulse
                             var dX = x.X - a.X;
@@ -720,7 +720,7 @@ namespace FixedBox2D.Dynamics.Contacts
 
         public bool SolvePositionConstraints()
         {
-            var minSeparation = 0.0f;
+            var minSeparation = FP.Zero;
             Span<ContactPositionConstraint> positionConstraints = PositionConstraints;
             Span<Position> positions = _positions;
             for (var i = 0; i < _contactCount; ++i)
@@ -764,13 +764,13 @@ namespace FixedBox2D.Dynamics.Contacts
                     var rB = point - cB;
 
                     // Track max constraint error.
-                    minSeparation = Math.Min(minSeparation, separation);
+                    minSeparation = FP.Min(minSeparation, separation);
 
                     // Prevent large corrections and allow slop.
                     var C = MathUtils.Clamp(
                         Settings.Baumgarte * (separation + Settings.LinearSlop),
                         -Settings.MaxLinearCorrection,
-                        0.0f);
+                        FP.Zero);
 
                     // Compute the effective mass.
                     var rnA = MathUtils.Cross(rA, normal);
@@ -778,7 +778,7 @@ namespace FixedBox2D.Dynamics.Contacts
                     var K = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
 
                     // Compute normal impulse
-                    var impulse = K > 0.0f ? -C / K : 0.0f;
+                    var impulse = K > FP.Zero ? -C / K : FP.Zero;
 
                     var P = impulse * normal;
 
@@ -803,7 +803,7 @@ namespace FixedBox2D.Dynamics.Contacts
 
         public bool SolveTOIPositionConstraints(int toiIndexA, int toiIndexB)
         {
-            var minSeparation = 0.0f;
+            var minSeparation = FP.Zero;
             Span<ContactPositionConstraint> positionConstraints = PositionConstraints;
             Span<Position> positions = _positions;
             for (var i = 0; i < _contactCount; ++i)
@@ -816,16 +816,16 @@ namespace FixedBox2D.Dynamics.Contacts
                 var localCenterB = pc.LocalCenterB;
                 var pointCount = pc.PointCount;
 
-                var mA = 0.0f;
-                var iA = 0.0f;
+                var mA = FP.Zero;
+                var iA = FP.Zero;
                 if (indexA == toiIndexA || indexA == toiIndexB)
                 {
                     mA = pc.InvMassA;
                     iA = pc.InvIa;
                 }
 
-                var mB = 0.0f;
-                var iB = 0.0f;
+                var mB = FP.Zero;
+                var iB = FP.Zero;
                 if (indexB == toiIndexA || indexB == toiIndexB)
                 {
                     mB = pc.InvMassB;
@@ -859,13 +859,13 @@ namespace FixedBox2D.Dynamics.Contacts
                     var rB = point - cB;
 
                     // Track max constraint error.
-                    minSeparation = Math.Min(minSeparation, separation);
+                    minSeparation = FP.Min(minSeparation, separation);
 
                     // Prevent large corrections and allow slop.
                     var C = MathUtils.Clamp(
                         Settings.ToiBaumgarte * (separation + Settings.LinearSlop),
                         -Settings.MaxLinearCorrection,
-                        0.0f);
+                        FP.Zero);
 
                     // Compute the effective mass.
                     var rnA = MathUtils.Cross(rA, normal);
@@ -873,7 +873,7 @@ namespace FixedBox2D.Dynamics.Contacts
                     var K = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
 
                     // Compute normal impulse
-                    var impulse = K > 0.0f ? -C / K : 0.0f;
+                    var impulse = K > FP.Zero ? -C / K : FP.Zero;
 
                     var P = impulse * normal;
 

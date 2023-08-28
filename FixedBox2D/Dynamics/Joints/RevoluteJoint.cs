@@ -1,6 +1,6 @@
 using System;
 using System.Diagnostics;
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Common;
 
 namespace FixedBox2D.Dynamics.Joints
@@ -13,59 +13,59 @@ namespace FixedBox2D.Dynamics.Joints
     /// is provided so that infinite forces are not generated.
     public class RevoluteJoint : Joint
     {
-        internal readonly float ReferenceAngle;
+        internal readonly FP ReferenceAngle;
 
         private bool _enableLimit;
 
         private bool _enableMotor;
 
-        private Vector2 _impulse;
+        private TSVector2 _impulse;
 
         // Solver temp
         private int _indexA;
 
         private int _indexB;
 
-        private float _invIa;
+        private FP _invIa;
 
-        private float _invIb;
+        private FP _invIb;
 
         private Matrix2x2 _K;
 
-        private float _angle;
+        private FP _angle;
 
-        private float _axialMass;
+        private FP _axialMass;
 
-        private float _invMassA;
+        private FP _invMassA;
 
-        private float _invMassB;
+        private FP _invMassB;
 
-        private Vector2 _localCenterA;
+        private TSVector2 _localCenterA;
 
-        private Vector2 _localCenterB;
+        private TSVector2 _localCenterB;
 
-        private float _lowerAngle;
+        private FP _lowerAngle;
 
-        private float _maxMotorTorque;
+        private FP _maxMotorTorque;
 
-        private float _motorImpulse;
+        private FP _motorImpulse;
 
-        private float _lowerImpulse;
+        private FP _lowerImpulse;
 
-        private float _upperImpulse;
+        private FP _upperImpulse;
 
-        private float _motorSpeed;
+        private FP _motorSpeed;
 
-        private Vector2 _rA;
+        private TSVector2 _rA;
 
-        private Vector2 _rB;
+        private TSVector2 _rB;
 
-        private float _upperAngle;
+        private FP _upperAngle;
 
         // Solver shared
-        internal Vector2 LocalAnchorA;
+        internal TSVector2 LocalAnchorA;
 
-        internal Vector2 LocalAnchorB;
+        internal TSVector2 LocalAnchorB;
 
         internal RevoluteJoint(RevoluteJointDef def)
             : base(def)
@@ -75,10 +75,10 @@ namespace FixedBox2D.Dynamics.Joints
             ReferenceAngle = def.ReferenceAngle;
 
             _impulse.SetZero();
-            _motorImpulse = 0.0f;
-            _axialMass = 0.0f;
-            _lowerImpulse = 0.0f;
-            _upperImpulse = 0.0f;
+            _motorImpulse = FP.Zero;
+            _axialMass = FP.Zero;
+            _lowerImpulse = FP.Zero;
+            _upperImpulse = FP.Zero;
 
             _lowerAngle = def.LowerAngle;
             _upperAngle = def.UpperAngle;
@@ -86,29 +86,29 @@ namespace FixedBox2D.Dynamics.Joints
             _motorSpeed = def.MotorSpeed;
             _enableLimit = def.EnableLimit;
             _enableMotor = def.EnableMotor;
-            _angle = 0.0f;
+            _angle = FP.Zero;
         }
 
         /// The local anchor point relative to bodyA's origin.
-        public Vector2 GetLocalAnchorA()
+        public TSVector2 GetLocalAnchorA()
         {
             return LocalAnchorA;
         }
 
         /// The local anchor point relative to bodyB's origin.
-        public Vector2 GetLocalAnchorB()
+        public TSVector2 GetLocalAnchorB()
         {
             return LocalAnchorB;
         }
 
         /// Get the reference angle.
-        public float GetReferenceAngle()
+        public FP GetReferenceAngle()
         {
             return ReferenceAngle;
         }
 
         /// Get the current joint angle in radians.
-        public float GetJointAngle()
+        public FP GetJointAngle()
         {
             var bA = BodyA;
             var bB = BodyB;
@@ -116,7 +116,7 @@ namespace FixedBox2D.Dynamics.Joints
         }
 
         /// Get the current joint angle speed in radians per second.
-        public float GetJointSpeed()
+        public FP GetJointSpeed()
         {
             var bA = BodyA;
             var bB = BodyB;
@@ -137,34 +137,34 @@ namespace FixedBox2D.Dynamics.Joints
                 BodyA.IsAwake = true;
                 BodyB.IsAwake = true;
                 _enableLimit = flag;
-                _lowerImpulse = 0.0f;
-                _upperImpulse = 0.0f;
+                _lowerImpulse = FP.Zero;
+                _upperImpulse = FP.Zero;
             }
         }
 
         /// Get the lower joint limit in radians.
-        public float GetLowerLimit()
+        public FP GetLowerLimit()
         {
             return _lowerAngle;
         }
 
         /// Get the upper joint limit in radians.
-        public float GetUpperLimit()
+        public FP GetUpperLimit()
         {
             return _upperAngle;
         }
 
         /// Set the joint limits in radians.
-        public void SetLimits(float lower, float upper)
+        public void SetLimits(FP lower, FP upper)
         {
             Debug.Assert(lower <= upper);
 
-            if (Math.Abs(lower - _lowerAngle) > Settings.Epsilon || Math.Abs(upper - _upperAngle) > Settings.Epsilon)
+            if (FP.Abs(lower - _lowerAngle) > Settings.Epsilon || FP.Abs(upper - _upperAngle) > Settings.Epsilon)
             {
                 BodyA.IsAwake = true;
                 BodyB.IsAwake = true;
-                _lowerImpulse = 0.0f;
-                _upperImpulse = 0.0f;
+                _lowerImpulse = FP.Zero;
+                _upperImpulse = FP.Zero;
                 _lowerAngle = lower;
                 _upperAngle = upper;
             }
@@ -188,7 +188,7 @@ namespace FixedBox2D.Dynamics.Joints
         }
 
         /// Set the motor speed in radians per second.
-        public void SetMotorSpeed(float speed)
+        public void SetMotorSpeed(FP speed)
         {
             if (speed != _motorSpeed)
             {
@@ -199,13 +199,13 @@ namespace FixedBox2D.Dynamics.Joints
         }
 
         /// Get the motor speed in radians per second.
-        public float GetMotorSpeed()
+        public FP GetMotorSpeed()
         {
             return _motorSpeed;
         }
 
         /// Set the maximum motor torque, usually in N-m.
-        public void SetMaxMotorTorque(float torque)
+        public void SetMaxMotorTorque(FP torque)
         {
             if (torque != _maxMotorTorque)
             {
@@ -215,7 +215,7 @@ namespace FixedBox2D.Dynamics.Joints
             }
         }
 
-        public float GetMaxMotorTorque()
+        public FP GetMaxMotorTorque()
         {
             return _maxMotorTorque;
         }
@@ -224,32 +224,32 @@ namespace FixedBox2D.Dynamics.Joints
         /// Unit is N.
         /// Get the current motor torque given the inverse time step.
         /// Unit is N*m.
-        public float GetMotorTorque(float inv_dt)
+        public FP GetMotorTorque(FP inv_dt)
         {
             return inv_dt * _motorImpulse;
         }
 
         /// <inheritdoc />
-        public override Vector2 GetAnchorA()
+        public override TSVector2 GetAnchorA()
         {
             return BodyA.GetWorldPoint(LocalAnchorA);
         }
 
         /// <inheritdoc />
-        public override Vector2 GetAnchorB()
+        public override TSVector2 GetAnchorB()
         {
             return BodyB.GetWorldPoint(LocalAnchorB);
         }
 
         /// <inheritdoc />
-        public override Vector2 GetReactionForce(float inv_dt)
+        public override TSVector2 GetReactionForce(FP inv_dt)
         {
-            var P = new Vector2(_impulse.X, _impulse.Y);
+            var P = new TSVector2(_impulse.X, _impulse.Y);
             return inv_dt * P;
         }
 
         /// <inheritdoc />
-        public override float GetReactionTorque(float inv_dt)
+        public override FP GetReactionTorque(FP inv_dt)
         {
             return inv_dt * (_motorImpulse + _lowerImpulse - _upperImpulse);
         }
@@ -310,8 +310,8 @@ namespace FixedBox2D.Dynamics.Joints
             // K = [ mA+r1y^2*iA+mB+r2y^2*iB,  -r1y*iA*r1x-r2y*iB*r2x]
             //     [  -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB]
 
-            float mA = _invMassA, mB = _invMassB;
-            float iA = _invIa, iB = _invIb;
+            FP mA = _invMassA, mB = _invMassB;
+            FP iA = _invIa, iB = _invIb;
 
             _K.Ex.X = mA + mB + _rA.Y * _rA.Y * iA + _rB.Y * _rB.Y * iB;
             _K.Ey.X = -_rA.Y * _rA.X * iA - _rB.Y * _rB.X * iB;
@@ -320,9 +320,9 @@ namespace FixedBox2D.Dynamics.Joints
 
             _axialMass = iA + iB;
             bool fixedRotation;
-            if (_axialMass > 0.0f)
+            if (_axialMass > FP.Zero)
             {
-                _axialMass = 1.0f / _axialMass;
+                _axialMass = FP.One / _axialMass;
                 fixedRotation = false;
             }
             else
@@ -333,13 +333,13 @@ namespace FixedBox2D.Dynamics.Joints
             _angle = aB - aA - ReferenceAngle;
             if (_enableLimit == false || fixedRotation)
             {
-                _lowerImpulse = 0.0f;
-                _upperImpulse = 0.0f;
+                _lowerImpulse = FP.Zero;
+                _upperImpulse = FP.Zero;
             }
 
             if (_enableMotor == false || fixedRotation)
             {
-                _motorImpulse = 0.0f;
+                _motorImpulse = FP.Zero;
             }
 
             if (data.Step.WarmStarting)
@@ -351,7 +351,7 @@ namespace FixedBox2D.Dynamics.Joints
                 _upperImpulse *= data.Step.DtRatio;
 
                 var axialImpulse = _motorImpulse + _lowerImpulse - _upperImpulse;
-                var P = new Vector2(_impulse.X, _impulse.Y);
+                var P = new TSVector2(_impulse.X, _impulse.Y);
 
                 vA -= mA * P;
                 wA -= iA * (MathUtils.Cross(_rA, P) + axialImpulse);
@@ -362,9 +362,9 @@ namespace FixedBox2D.Dynamics.Joints
             else
             {
                 _impulse.SetZero();
-                _motorImpulse = 0.0f;
-                _lowerImpulse = 0.0f;
-                _upperImpulse = 0.0f;
+                _motorImpulse = FP.Zero;
+                _lowerImpulse = FP.Zero;
+                _upperImpulse = FP.Zero;
             }
 
             data.Velocities[_indexA].V = vA;
@@ -381,10 +381,10 @@ namespace FixedBox2D.Dynamics.Joints
             var vB = data.Velocities[_indexB].V;
             var wB = data.Velocities[_indexB].W;
 
-            float mA = _invMassA, mB = _invMassB;
-            float iA = _invIa, iB = _invIb;
+            FP mA = _invMassA, mB = _invMassB;
+            FP iA = _invIa, iB = _invIb;
 
-            var fixedRotation = (iA + iB).Equals(0.0f);
+            var fixedRotation = (iA + iB).Equals(FP.Zero);
 
             // Solve motor constraint.
             if (_enableMotor && fixedRotation == false)
@@ -404,11 +404,11 @@ namespace FixedBox2D.Dynamics.Joints
             {
                 // Lower limit
                 {
-                    float C = _angle - _lowerAngle;
-                    float Cdot = wB - wA;
-                    float impulse = -_axialMass * (Cdot + Math.Max(C, 0.0f) * data.Step.InvDt);
-                    float oldImpulse = _lowerImpulse;
-                    _lowerImpulse = Math.Max(_lowerImpulse + impulse, 0.0f);
+                    FP C = _angle - _lowerAngle;
+                    FP Cdot = wB - wA;
+                    FP impulse = -_axialMass * (Cdot + FP.Max(C, FP.Zero) * data.Step.InvDt);
+                    FP oldImpulse = _lowerImpulse;
+                    _lowerImpulse = FP.Max(_lowerImpulse + impulse, FP.Zero);
                     impulse = _lowerImpulse - oldImpulse;
 
                     wA -= iA * impulse;
@@ -419,11 +419,11 @@ namespace FixedBox2D.Dynamics.Joints
                 // Note: signs are flipped to keep C positive when the constraint is satisfied.
                 // This also keeps the impulse positive when the limit is active.
                 {
-                    float C = _upperAngle - _angle;
-                    float Cdot = wA - wB;
-                    float impulse = -_axialMass * (Cdot + Math.Max(C, 0.0f) * data.Step.InvDt);
-                    float oldImpulse = _upperImpulse;
-                    _upperImpulse = Math.Max(_upperImpulse + impulse, 0.0f);
+                    FP C = _upperAngle - _angle;
+                    FP Cdot = wA - wB;
+                    FP impulse = -_axialMass * (Cdot + FP.Max(C, FP.Zero) * data.Step.InvDt);
+                    FP oldImpulse = _upperImpulse;
+                    _upperImpulse = FP.Max(_upperImpulse + impulse, FP.Zero);
                     impulse = _upperImpulse - oldImpulse;
 
                     wA += iA * impulse;
@@ -463,18 +463,18 @@ namespace FixedBox2D.Dynamics.Joints
             var qA = new Rotation(aA);
             var qB = new Rotation(aB);
 
-            var angularError = 0.0f;
-            var positionError = 0.0f;
+            var angularError = FP.Zero;
+            var positionError = FP.Zero;
 
-            var fixedRotation = (_invIa + _invIb).Equals(0.0f);
+            var fixedRotation = (_invIa + _invIb).Equals(FP.Zero);
 
             // Solve angular limit constraint
             if (_enableLimit && fixedRotation == false)
             {
-                float angle = aB - aA - ReferenceAngle;
-                float C = 0.0f;
+                FP angle = aB - aA - ReferenceAngle;
+                FP C = FP.Zero;
 
-                if (Math.Abs(_upperAngle - _lowerAngle) < 2.0f * Settings.AngularSlop)
+                if (FP.Abs(_upperAngle - _lowerAngle) < FP.Two * Settings.AngularSlop)
                 {
                     // Prevent large angular corrections
                     C = MathUtils.Clamp(angle - _lowerAngle, -Settings.MaxAngularCorrection, Settings.MaxAngularCorrection);
@@ -482,18 +482,18 @@ namespace FixedBox2D.Dynamics.Joints
                 else if (angle <= _lowerAngle)
                 {
                     // Prevent large angular corrections and allow some slop.
-                    C = MathUtils.Clamp(angle - _lowerAngle + Settings.AngularSlop, -Settings.MaxAngularCorrection, 0.0f);
+                    C = MathUtils.Clamp(angle - _lowerAngle + Settings.AngularSlop, -Settings.MaxAngularCorrection, FP.Zero);
                 }
                 else if (angle >= _upperAngle)
                 {
                     // Prevent large angular corrections and allow some slop.
-                    C = MathUtils.Clamp(angle - _upperAngle - Settings.AngularSlop, 0.0f, Settings.MaxAngularCorrection);
+                    C = MathUtils.Clamp(angle - _upperAngle - Settings.AngularSlop, FP.Zero, Settings.MaxAngularCorrection);
                 }
 
-                float limitImpulse = -_axialMass * C;
+                FP limitImpulse = -_axialMass * C;
                 aA -= _invIa * limitImpulse;
                 aB += _invIb * limitImpulse;
-                angularError = Math.Abs(C);
+                angularError = FP.Abs(C);
             }
 
             // Solve point-to-point constraint.
@@ -504,10 +504,10 @@ namespace FixedBox2D.Dynamics.Joints
                 var rB = MathUtils.Mul(qB, LocalAnchorB - _localCenterB);
 
                 var C = cB + rB - cA - rA;
-                positionError = C.Length();
+                positionError = C.magnitude;
 
-                float mA = _invMassA, mB = _invMassB;
-                float iA = _invIa, iB = _invIb;
+                FP mA = _invMassA, mB = _invMassB;
+                FP iA = _invIa, iB = _invIb;
 
                 var K = new Matrix2x2();
                 K.Ex.X = mA + mB + iA * rA.Y * rA.Y + iB * rB.Y * rB.Y;
@@ -553,22 +553,22 @@ namespace FixedBox2D.Dynamics.Joints
             var aB = BodyB.GetAngle();
             var angle = aB - aA - ReferenceAngle;
 
-            var L = 0.5f;
+            var L = FP.Half;
 
-            var r = L * new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+            var r = L * new TSVector2(FP.FastCosAngle(angle), FP.FastSinAngle(angle));
             drawer.DrawSegment(pB, pB + r, c1);
             drawer.DrawCircle(pB, L, c1);
 
             if (_enableLimit)
             {
-                var rlo = L * new Vector2((float)Math.Cos(_lowerAngle), (float)Math.Cos(_lowerAngle));
-                var rhi = L * new Vector2((float)Math.Cos(_upperAngle), (float)Math.Cos(_upperAngle));
+                var rlo = L * new TSVector2(FP.FastCosAngle(_lowerAngle), FP.FastCosAngle(_lowerAngle));
+                var rhi = L * new TSVector2(FP.FastCosAngle(_upperAngle), FP.FastCosAngle(_upperAngle));
 
                 drawer.DrawSegment(pB, pB + rlo, c2);
                 drawer.DrawSegment(pB, pB + rhi, c3);
             }
 
-            var color = Color.FromArgb(0.5f, 0.8f, 0.8f);
+            var color = Color.FromArgb(FP.Half, 0.8f, 0.8f);
             drawer.DrawSegment(xfA.Position, pA, color);
             drawer.DrawSegment(pA, pB, color);
             drawer.DrawSegment(xfB.Position, pB, color);

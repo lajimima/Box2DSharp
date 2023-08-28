@@ -3,7 +3,7 @@ using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
 using FixedBox2D.Dynamics.Joints;
 using Testbed.Abstractions;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 
 namespace Testbed.TestCases
 {
@@ -26,25 +26,25 @@ namespace Testbed.TestCases
                 var bd = new BodyDef();
                 ground = World.CreateBody(bd);
 
-                var vs = new Vector2[5];
+                var vs = new TSVector2[5];
                 vs[0].Set(-8.0f, 6.0f);
                 vs[1].Set(-8.0f, 20.0f);
                 vs[2].Set(8.0f, 20.0f);
                 vs[3].Set(8.0f, 6.0f);
-                vs[4].Set(0.0f, -2.0f);
+                vs[4].Set(FP.Zero, -FP.Two);
 
                 var loop = new ChainShape();
                 loop.CreateLoop(vs);
                 var fd = new FixtureDef();
                 fd.Shape = loop;
-                fd.Density = 0.0f;
+                fd.Density = FP.Zero;
                 ground.CreateFixture(fd);
             }
 
             // Flippers
             {
-                var p1 = new Vector2(-2.0f, 0.0f);
-                var p2 = new Vector2(2.0f, 0.0f);
+                var p1 = new TSVector2(-FP.Two, FP.Zero);
+                var p2 = new TSVector2(FP.Two, FP.Zero);
 
                 var bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
@@ -56,11 +56,11 @@ namespace Testbed.TestCases
                 var rightFlipper = World.CreateBody(bd);
 
                 var box = new PolygonShape();
-                box.SetAsBox(1.75f, 0.1f);
+                box.SetAsBox(1.75f, FP.EN1);
 
                 var fd = new FixtureDef();
                 fd.Shape = box;
-                fd.Density = 1.0f;
+                fd.Density = FP.One;
 
                 leftFlipper.CreateFixture(fd);
                 rightFlipper.CreateFixture(fd);
@@ -72,14 +72,14 @@ namespace Testbed.TestCases
                 jd.MaxMotorTorque = 1000.0f;
                 jd.EnableLimit = true;
 
-                jd.MotorSpeed = 0.0f;
+                jd.MotorSpeed = FP.Zero;
                 jd.LocalAnchorA = p1;
                 jd.BodyB = leftFlipper;
                 jd.LowerAngle = -30.0f * Settings.Pi / 180.0f;
                 jd.UpperAngle = 5.0f * Settings.Pi / 180.0f;
                 _leftJoint = (RevoluteJoint)World.CreateJoint(jd);
 
-                jd.MotorSpeed = 0.0f;
+                jd.MotorSpeed = FP.Zero;
                 jd.LocalAnchorA = p2;
                 jd.BodyB = rightFlipper;
                 jd.LowerAngle = -5.0f * Settings.Pi / 180.0f;
@@ -90,7 +90,7 @@ namespace Testbed.TestCases
             // Circle character
             {
                 var bd = new BodyDef();
-                bd.Position.Set(1.0f, 15.0f);
+                bd.Position.Set(FP.One, 15.0f);
                 bd.BodyType = BodyType.DynamicBody;
                 bd.Bullet = true;
 
@@ -101,7 +101,7 @@ namespace Testbed.TestCases
 
                 var fd = new FixtureDef();
                 fd.Shape = shape;
-                fd.Density = 1.0f;
+                fd.Density = FP.One;
                 _ball.CreateFixture(fd);
             }
 

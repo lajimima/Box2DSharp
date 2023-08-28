@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -16,8 +16,8 @@ namespace Testbed.TestCases
         {
             var y = 16.0f;
             var L = 12.0f;
-            var a = 1.0f;
-            var b = 2.0f;
+            var a = FP.One;
+            var b = FP.Two;
 
             Body ground;
             {
@@ -25,13 +25,13 @@ namespace Testbed.TestCases
                 ground = World.CreateBody(bd);
 
                 var circle = new CircleShape();
-                circle.Radius = 2.0f;
+                circle.Radius = FP.Two;
 
                 circle.Position.Set(-10.0f, y + b + L);
-                ground.CreateFixture(circle, 0.0f);
+                ground.CreateFixture(circle, FP.Zero);
 
                 circle.Position.Set(10.0f, y + b + L);
-                ground.CreateFixture(circle, 0.0f);
+                ground.CreateFixture(circle, FP.Zero);
             }
 
             {
@@ -51,10 +51,10 @@ namespace Testbed.TestCases
                 body2.CreateFixture(shape, 5.0f);
 
                 var pulleyDef = new PulleyJointDef();
-                var anchor1 = new Vector2(-10.0f, y + b);
-                var anchor2 = new Vector2(10.0f, y + b);
-                var groundAnchor1 = new Vector2(-10.0f, y + b + L);
-                var groundAnchor2 = new Vector2(10.0f, y + b + L);
+                var anchor1 = new TSVector2(-10.0f, y + b);
+                var anchor2 = new TSVector2(10.0f, y + b);
+                var groundAnchor1 = new TSVector2(-10.0f, y + b + L);
+                var groundAnchor2 = new TSVector2(10.0f, y + b + L);
                 pulleyDef.Initialize(
                     body1,
                     body2,

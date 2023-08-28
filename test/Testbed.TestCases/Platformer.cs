@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Collider;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
@@ -15,9 +15,9 @@ namespace Testbed.TestCases
 
         private Fixture _platform;
 
-        private float _radius;
+        private FP _radius;
 
-        private float _top;
+        private FP _top;
 
         public Platformer()
         {
@@ -27,19 +27,19 @@ namespace Testbed.TestCases
                 var ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-20.0f, FP.Zero), new TSVector2(20.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             // Platform
             {
                 var bd = new BodyDef();
-                bd.Position.Set(0.0f, 10.0f);
+                bd.Position.Set(FP.Zero, 10.0f);
                 var body = World.CreateBody(bd);
 
                 var shape = new PolygonShape();
                 shape.SetAsBox(3.0f, 0.5f);
-                _platform = body.CreateFixture(shape, 0.0f);
+                _platform = body.CreateFixture(shape, FP.Zero);
 
                 _top = 10.0f + 0.5f;
             }
@@ -48,7 +48,7 @@ namespace Testbed.TestCases
             {
                 var bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
-                bd.Position.Set(0.0f, 12.0f);
+                bd.Position.Set(FP.Zero, 12.0f);
                 var body = World.CreateBody(bd);
 
                 _radius = 0.5f;
@@ -56,7 +56,7 @@ namespace Testbed.TestCases
                 shape.Radius = _radius;
                 _character = body.CreateFixture(shape, 20.0f);
 
-                body.SetLinearVelocity(new Vector2(0.0f, -50.0f));
+                body.SetLinearVelocity(new TSVector2(FP.Zero, -50.0f));
             }
         }
 

@@ -638,32 +638,32 @@ namespace TrueSync
         public TSVector MultiplyPoint(TSVector v)
         {
             TSVector result;
-            result.x = this.M11 * v.x + this.M12 * v.y + this.M13 * v.z + this.M14;
-            result.y = this.M21 * v.x + this.M22 * v.y + this.M23 * v.z + this.M24;
-            result.z = this.M31 * v.x + this.M32 * v.y + this.M33 * v.z + this.M34;
-            FP num = this.M41 * v.x + this.M42 * v.y + this.M43 * v.z + this.M44;
+            result.X = this.M11 * v.X + this.M12 * v.Y + this.M13 * v.Z + this.M14;
+            result.Y = this.M21 * v.X + this.M22 * v.Y + this.M23 * v.Z + this.M24;
+            result.Z = this.M31 * v.X + this.M32 * v.Y + this.M33 * v.Z + this.M34;
+            FP num = this.M41 * v.X + this.M42 * v.Y + this.M43 * v.Z + this.M44;
             //num = FP.One / num;
-            result.x /= num;
-            result.y /= num;
-            result.z /= num;
+            result.X /= num;
+            result.Y /= num;
+            result.Z /= num;
             return result;
         }
 
         public TSVector MultiplyPoint3x4(TSVector v)
         {
             TSVector result;
-            result.x = this.M11 * v.x + this.M12 * v.y + this.M13 * v.z + this.M14;
-            result.y = this.M21 * v.x + this.M22 * v.y + this.M23 * v.z + this.M24;
-            result.z = this.M31 * v.x + this.M32 * v.y + this.M33 * v.z + this.M34;
+            result.X = this.M11 * v.X + this.M12 * v.Y + this.M13 * v.Z + this.M14;
+            result.Y = this.M21 * v.X + this.M22 * v.Y + this.M23 * v.Z + this.M24;
+            result.Z = this.M31 * v.X + this.M32 * v.Y + this.M33 * v.Z + this.M34;
             return result;
         }
 
         public TSVector MultiplyPoint3x4(ref TSVector v)
         {
             TSVector result;
-            result.x = this.M11 * v.x + this.M12 * v.y + this.M13 * v.z + this.M14;
-            result.y = this.M21 * v.x + this.M22 * v.y + this.M23 * v.z + this.M24;
-            result.z = this.M31 * v.x + this.M32 * v.y + this.M33 * v.z + this.M34;
+            result.X = this.M11 * v.X + this.M12 * v.Y + this.M13 * v.Z + this.M14;
+            result.Y = this.M21 * v.X + this.M22 * v.Y + this.M23 * v.Z + this.M24;
+            result.Z = this.M31 * v.X + this.M32 * v.Y + this.M33 * v.Z + this.M34;
             return result;
         }
 
@@ -671,34 +671,34 @@ namespace TrueSync
         public TSVector MultiplyVector(TSVector v)
         {
             TSVector result;
-            result.x = this.M11 * v.x + this.M12 * v.y + this.M13 * v.z;
-            result.y = this.M21 * v.x + this.M22 * v.y + this.M23 * v.z;
-            result.z = this.M31 * v.x + this.M32 * v.y + this.M33 * v.z;
+            result.X = this.M11 * v.X + this.M12 * v.Y + this.M13 * v.Z;
+            result.Y = this.M21 * v.X + this.M22 * v.Y + this.M23 * v.Z;
+            result.Z = this.M31 * v.X + this.M32 * v.Y + this.M33 * v.Z;
             return result;
         }
         public TSVector MultiplyVector(ref TSVector v)
         {
             TSVector result;
-            result.x = this.M11 * v.x + this.M12 * v.y + this.M13 * v.z;
-            result.y = this.M21 * v.x + this.M22 * v.y + this.M23 * v.z;
-            result.z = this.M31 * v.x + this.M32 * v.y + this.M33 * v.z;
+            result.X = this.M11 * v.X + this.M12 * v.Y + this.M13 * v.Z;
+            result.Y = this.M21 * v.X + this.M22 * v.Y + this.M23 * v.Z;
+            result.Z = this.M31 * v.X + this.M32 * v.Y + this.M33 * v.Z;
             return result;
         }
         public static TSMatrix4x4 Scale(TSVector v)
         {
             return new TSMatrix4x4
             {
-                M11 = v.x,
+                M11 = v.X,
                 M12 = FP.Zero,
                 M13 = FP.Zero,
                 M14 = FP.Zero,
                 M21 = FP.Zero,
-                M22 = v.y,
+                M22 = v.Y,
                 M23 = FP.Zero,
                 M24 = FP.Zero,
                 M31 = FP.Zero,
                 M32 = FP.Zero,
-                M33 = v.z,
+                M33 = v.Z,
                 M34 = FP.Zero,
                 M41 = FP.Zero,
                 M42 = FP.Zero,
@@ -863,28 +863,28 @@ namespace TrueSync
             FP wx = Q.x * Q.w;
 
             FP t = yy + zz;
-            result.M11 = (FP.One - t - t) * S.x;
+            result.M11 = (FP.One - t - t) * S.X;
             t = xy - wz;
-            result.M12 = (t + t) * S.y;
+            result.M12 = (t + t) * S.Y;
             t = xz + wy;
-            result.M13 = (t + t) * S.z;
-            result.M14 = P.x;
+            result.M13 = (t + t) * S.Z;
+            result.M14 = P.X;
 
             t = xy + wz;
-            result.M21 = (t + t) * S.x;
+            result.M21 = (t + t) * S.X;
             t = zz + xx;
-            result.M22 = (FP.One - t - t) * S.y;
+            result.M22 = (FP.One - t - t) * S.Y;
             t = yz - wx;
-            result.M23 = (t + t) * S.z;
-            result.M24 = P.y;
+            result.M23 = (t + t) * S.Z;
+            result.M24 = P.Y;
 
             t = xz - wy;
-            result.M31 = (t + t) * S.x;
+            result.M31 = (t + t) * S.X;
             t = yz + wx;
-            result.M32 = (t + t) * S.y;
+            result.M32 = (t + t) * S.Y;
             t = yy + xx;
-            result.M33 = (FP.One - t - t) * S.z;
-            result.M34 = P.z;
+            result.M33 = (FP.One - t - t) * S.Z;
+            result.M34 = P.Z;
 
             result.M41 = FP.Zero;
             result.M42 = FP.Zero;
@@ -921,20 +921,20 @@ namespace TrueSync
             FP yz = Q.y * Q.z;
             FP wx = Q.x * Q.w;
 
-            result.M11 = (FP.One - 2 * (yy + zz))*S.x;
-            result.M12 = (2 * (xy - wz))*S.y;
-            result.M13 =( 2 * (xz + wy))*S.z;
-            result.M14 = P.x;
+            result.M11 = (FP.One - 2 * (yy + zz))*S.X;
+            result.M12 = (2 * (xy - wz))*S.Y;
+            result.M13 =( 2 * (xz + wy))*S.Z;
+            result.M14 = P.X;
 
-            result.M21 = (2 * (xy + wz))*S.x;
-            result.M22 = (FP.One - 2 * (zz + xx))*S.y;
-            result.M23 = (2 * (yz - wx))*S.z;
-            result.M24 = P.y;
+            result.M21 = (2 * (xy + wz))*S.X;
+            result.M22 = (FP.One - 2 * (zz + xx))*S.Y;
+            result.M23 = (2 * (yz - wx))*S.Z;
+            result.M24 = P.Y;
 
-            result.M31 =( 2 * (xz - wy))*S.x;
-            result.M32 = (2 * (yz + wx))*S.y;
-            result.M33 =( FP.One - 2 * (yy + xx))*S.z;
-            result.M34 = P.z;
+            result.M31 =( 2 * (xz - wy))*S.X;
+            result.M32 = (2 * (yz + wx))*S.Y;
+            result.M33 =( FP.One - 2 * (yy + xx))*S.Z;
+            result.M34 = P.Z;
 
             result.M41 = FP.Zero;
             result.M42 = FP.Zero;
@@ -958,20 +958,20 @@ namespace TrueSync
             FP yz = Q.y * Q.z;
             FP wx = Q.x * Q.w;
 
-            result.M11 = (FP.One - 2 * (yy + zz)) * S.x;
-            result.M12 = (2 * (xy - wz)) * S.y;
-            result.M13 = (2 * (xz + wy)) * S.z;
-            result.M14 = P.x;
+            result.M11 = (FP.One - 2 * (yy + zz)) * S.X;
+            result.M12 = (2 * (xy - wz)) * S.Y;
+            result.M13 = (2 * (xz + wy)) * S.Z;
+            result.M14 = P.X;
 
-            result.M21 = (2 * (xy + wz)) * S.x;
-            result.M22 = (FP.One - 2 * (zz + xx)) * S.y;
-            result.M23 = (2 * (yz - wx)) * S.z;
-            result.M24 = P.y;
+            result.M21 = (2 * (xy + wz)) * S.X;
+            result.M22 = (FP.One - 2 * (zz + xx)) * S.Y;
+            result.M23 = (2 * (yz - wx)) * S.Z;
+            result.M24 = P.Y;
 
-            result.M31 = (2 * (xz - wy)) * S.x;
-            result.M32 = (2 * (yz + wx)) * S.y;
-            result.M33 = (FP.One - 2 * (yy + xx)) * S.z;
-            result.M34 = P.z;
+            result.M31 = (2 * (xz - wy)) * S.X;
+            result.M32 = (2 * (yz + wx)) * S.Y;
+            result.M33 = (FP.One - 2 * (yy + xx)) * S.Z;
+            result.M34 = P.Z;
 
             result.M41 = FP.Zero;
             result.M42 = FP.Zero;
@@ -1001,19 +1001,19 @@ namespace TrueSync
             FP yz = Q.y * Q.z;
             FP wx = Q.x * Q.w;
 
-            result.M11 = (FP.One - 2 * (yy + zz)) * S.x;
-            result.M12 = (2 * (xy - wz)) * S.y;
-            result.M13 = (2 * (xz + wy)) * S.z;
+            result.M11 = (FP.One - 2 * (yy + zz)) * S.X;
+            result.M12 = (2 * (xy - wz)) * S.Y;
+            result.M13 = (2 * (xz + wy)) * S.Z;
             result.M14 = FP.Zero;
 
-            result.M21 = (2 * (xy + wz)) * S.x;
-            result.M22 = (FP.One - 2 * (zz + xx)) * S.y;
-            result.M23 = (2 * (yz - wx)) * S.z;
+            result.M21 = (2 * (xy + wz)) * S.X;
+            result.M22 = (FP.One - 2 * (zz + xx)) * S.Y;
+            result.M23 = (2 * (yz - wx)) * S.Z;
             result.M24 = FP.Zero;
 
-            result.M31 = (2 * (xz - wy)) * S.x;
-            result.M32 = (2 * (yz + wx)) * S.y;
-            result.M33 = (FP.One - 2 * (yy + xx)) * S.z;
+            result.M31 = (2 * (xz - wy)) * S.X;
+            result.M32 = (2 * (yz + wx)) * S.Y;
+            result.M33 = (FP.One - 2 * (yy + xx)) * S.Z;
             result.M34 = FP.Zero;
 
             result.M41 = FP.Zero;
@@ -1040,19 +1040,19 @@ namespace TrueSync
             FP yz = Q.y * Q.z;
             FP wx = Q.x * Q.w;
 
-            result.M11 = (FP.One - 2 * (yy + zz)) * S.x;
-            result.M12 = (2 * (xy - wz)) * S.y;
-            result.M13 = (2 * (xz + wy)) * S.z;
+            result.M11 = (FP.One - 2 * (yy + zz)) * S.X;
+            result.M12 = (2 * (xy - wz)) * S.Y;
+            result.M13 = (2 * (xz + wy)) * S.Z;
             result.M14 = FP.Zero;
 
-            result.M21 = (2 * (xy + wz)) * S.x;
-            result.M22 = (FP.One - 2 * (zz + xx)) * S.y;
-            result.M23 = (2 * (yz - wx)) * S.z;
+            result.M21 = (2 * (xy + wz)) * S.X;
+            result.M22 = (FP.One - 2 * (zz + xx)) * S.Y;
+            result.M23 = (2 * (yz - wx)) * S.Z;
             result.M24 = FP.Zero;
 
-            result.M31 = (2 * (xz - wy)) * S.x;
-            result.M32 = (2 * (yz + wx)) * S.y;
-            result.M33 = (FP.One - 2 * (yy + xx)) * S.z;
+            result.M31 = (2 * (xz - wy)) * S.X;
+            result.M32 = (2 * (yz + wx)) * S.Y;
+            result.M33 = (FP.One - 2 * (yy + xx)) * S.Z;
             result.M34 = FP.Zero;
 
             result.M41 = FP.Zero;
@@ -1074,17 +1074,17 @@ namespace TrueSync
             result.M11 = FP.One;
             result.M12 = FP.Zero;
             result.M13 = FP.Zero;
-            result.M14 = position.x;
+            result.M14 = position.X;
 
             result.M21 = FP.Zero;
             result.M22 = FP.One;
             result.M23 = FP.Zero;
-            result.M24 = position.y;
+            result.M24 = position.Y;
 
             result.M31 = FP.Zero;
             result.M32 = FP.Zero;
             result.M33 = FP.One;
-            result.M34 = position.z;
+            result.M34 = position.Z;
 
             result.M41 = FP.Zero;
             result.M42 = FP.Zero;
@@ -1099,17 +1099,17 @@ namespace TrueSync
             result.M11 = FP.One;
             result.M12 = FP.Zero;
             result.M13 = FP.Zero;
-            result.M14 = position.x;
+            result.M14 = position.X;
 
             result.M21 = FP.Zero;
             result.M22 = FP.One;
             result.M23 = FP.Zero;
-            result.M24 = position.y;
+            result.M24 = position.Y;
 
             result.M31 = FP.Zero;
             result.M32 = FP.Zero;
             result.M33 = FP.One;
-            result.M34 = position.z;
+            result.M34 = position.Z;
 
             result.M41 = FP.Zero;
             result.M42 = FP.Zero;
@@ -1204,19 +1204,19 @@ namespace TrueSync
         {
             TSMatrix4x4 result;
 
-            result.M11 = scales.x;
+            result.M11 = scales.X;
             result.M12 = FP.Zero;
             result.M13 = FP.Zero;
             result.M14 = FP.Zero;
 
             result.M21 = FP.Zero;
-            result.M22 = scales.y;
+            result.M22 = scales.Y;
             result.M23 = FP.Zero;
             result.M24 = FP.Zero;
 
             result.M31 = FP.Zero;
             result.M32 = FP.Zero;
-            result.M33 = scales.z;
+            result.M33 = scales.Z;
             result.M34 = FP.Zero;
 
             result.M41 = FP.Zero;
@@ -1229,19 +1229,19 @@ namespace TrueSync
 
         public static void CreateScale(ref TSVector scales, ref TSMatrix4x4 result)
         {
-            result.M11 = scales.x;
+            result.M11 = scales.X;
             result.M12 = FP.Zero;
             result.M13 = FP.Zero;
             result.M14 = FP.Zero;
 
             result.M21 = FP.Zero;
-            result.M22 = scales.y;
+            result.M22 = scales.Y;
             result.M23 = FP.Zero;
             result.M24 = FP.Zero;
 
             result.M31 = FP.Zero;
             result.M32 = FP.Zero;
-            result.M33 = scales.z;
+            result.M33 = scales.Z;
             result.M34 = FP.Zero;
 
             result.M41 = FP.Zero;
@@ -1330,7 +1330,7 @@ namespace TrueSync
         /// <param name="result">When the method completes, contains the created translation matrix.</param>
         public static void Translation(ref TSVector value, out TSMatrix4x4 result)
         {
-            Translation(value.x, value.y, value.z, out result);
+            Translation(value.X, value.Y, value.Z, out result);
         }
 
         /// <summary>

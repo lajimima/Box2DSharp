@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -14,7 +14,7 @@ namespace UnitTest
         [Fact(DisplayName = "joint reactions")]
         public void JointReactions()
         {
-            var gravity = new Vector2(0, -10.0f);
+            var gravity = new TSVector2(0, -10.0f);
             World world = new World(gravity);
 
             BodyDef bodyDef = new BodyDef();
@@ -31,7 +31,7 @@ namespace UnitTest
             fixtureDef.Shape = circle;
 
             bodyDef.BodyType = BodyType.DynamicBody;
-            bodyDef.Position.Set(-2.0f, 3.0f);
+            bodyDef.Position.Set(-FP.Two, 3.0f);
 
             var bodyA = world.CreateBody(bodyDef);
             var bodyB = world.CreateBody(bodyDef);
@@ -45,12 +45,12 @@ namespace UnitTest
             bodyC.CreateFixture(fixtureDef);
 
             DistanceJointDef distanceJointDef = new DistanceJointDef();
-            distanceJointDef.Initialize(ground, bodyA, bodyDef.Position + new Vector2(0.0f, 4.0f), bodyDef.Position);
+            distanceJointDef.Initialize(ground, bodyA, bodyDef.Position + new TSVector2(0.0f, 4.0f), bodyDef.Position);
             distanceJointDef.MinLength = distanceJointDef.Length;
             distanceJointDef.MaxLength = distanceJointDef.Length;
 
             PrismaticJointDef prismaticJointDef = new PrismaticJointDef();
-            prismaticJointDef.Initialize(ground, bodyB, bodyDef.Position, new Vector2(1.0f, 0.0f));
+            prismaticJointDef.Initialize(ground, bodyB, bodyDef.Position, new TSVector2(1.0f, 0.0f));
 
             RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
             revoluteJointDef.Initialize(ground, bodyC, bodyDef.Position);
@@ -59,14 +59,14 @@ namespace UnitTest
             var prismaticJoint = (PrismaticJoint)world.CreateJoint(prismaticJointDef);
             var revoluteJoint = (RevoluteJoint)world.CreateJoint(revoluteJointDef);
 
-            const float timeStep = 1 / 60f;
-            const float invTimeStep = 60.0f;
+            const FP timeStep = 1 / 60f;
+            const FP invTimeStep = 60.0f;
             const int velocityIterations = 6;
             const int positionIterations = 2;
 
             world.Step(timeStep, velocityIterations, positionIterations);
 
-            const float tol = 1e-5f;
+            const FP tol = 1e-5f;
             {
                 var F = distanceJoint.GetReactionForce(invTimeStep);
                 var T = distanceJoint.GetReactionTorque(invTimeStep);

@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Common;
 
 namespace FixedBox2D.Dynamics.Joints
@@ -7,27 +7,27 @@ namespace FixedBox2D.Dynamics.Joints
     public class MotorJointDef : JointDef
     {
         /// The bodyB angle minus bodyA angle in radians.
-        public float AngularOffset;
+        public FP AngularOffset;
 
         /// Position correction factor in the range [0,1].
-        public float CorrectionFactor;
+        public FP CorrectionFactor;
 
         /// Position of bodyB minus the position of bodyA, in bodyA's frame, in meters.
-        public Vector2 LinearOffset;
+        public TSVector2 LinearOffset;
 
         /// The maximum motor force in N.
-        public float MaxForce;
+        public FP MaxForce;
 
         /// The maximum motor torque in N-m.
-        public float MaxTorque;
+        public FP MaxTorque;
 
         public MotorJointDef()
         {
             JointType = JointType.MotorJoint;
             LinearOffset.SetZero();
-            AngularOffset = 0.0f;
-            MaxForce = 1.0f;
-            MaxTorque = 1.0f;
+            AngularOffset = FP.Zero;
+            MaxForce = FP.One;
+            MaxTorque = FP.One;
             CorrectionFactor = 0.3f;
         }
 

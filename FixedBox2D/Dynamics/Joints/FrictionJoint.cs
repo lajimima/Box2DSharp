@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Common;
 
 namespace FixedBox2D.Dynamics.Joints
@@ -8,43 +8,43 @@ namespace FixedBox2D.Dynamics.Joints
     /// It provides 2D translational friction and angular friction.
     public class FrictionJoint : Joint
     {
-        private float _angularImpulse;
+        private FP _angularImpulse;
 
-        private float _angularMass;
+        private FP _angularMass;
 
         // Solver temp
         private int _indexA;
 
         private int _indexB;
 
-        private float _invIa;
+        private FP _invIa;
 
-        private float _invIb;
+        private FP _invIb;
 
-        private float _invMassA;
+        private FP _invMassA;
 
-        private float _invMassB;
+        private FP _invMassB;
 
         // Solver shared
-        private Vector2 _linearImpulse;
+        private TSVector2 _linearImpulse;
 
         private Matrix2x2 _linearMass;
 
-        private Vector2 _localAnchorA;
+        private TSVector2 _localAnchorA;
 
-        private Vector2 _localAnchorB;
+        private TSVector2 _localAnchorB;
 
-        private Vector2 _localCenterA;
+        private TSVector2 _localCenterA;
 
-        private Vector2 _localCenterB;
+        private TSVector2 _localCenterB;
 
-        private float _maxForce;
+        private FP _maxForce;
 
-        private float _maxTorque;
+        private FP _maxTorque;
 
-        private Vector2 _rA;
+        private TSVector2 _rA;
 
-        private Vector2 _rB;
+        private TSVector2 _rB;
 
         internal FrictionJoint(FrictionJointDef def) : base(def)
         {
@@ -52,7 +52,7 @@ namespace FixedBox2D.Dynamics.Joints
             _localAnchorB = def.LocalAnchorB;
 
             _linearImpulse.SetZero();
-            _angularImpulse = 0.0f;
+            _angularImpulse = FP.Zero;
 
             _maxForce = def.MaxForce;
             _maxTorque = def.MaxTorque;
@@ -60,58 +60,58 @@ namespace FixedBox2D.Dynamics.Joints
 
         /// Get/Set the maximum friction force in N.
 
-        public float MaxForce
+        public FP MaxForce
         {
             get => _maxForce;
             set
             {
-                Debug.Assert(value.IsValid() && value >= 0.0f);
+                Debug.Assert(value.IsValid() && value >= FP.Zero);
                 _maxForce = value;
             }
         }
 
-        public float MaxTorque
+        public FP MaxTorque
         {
             get => _maxTorque;
             set
             {
-                Debug.Assert(value.IsValid() && value >= 0.0f);
+                Debug.Assert(value.IsValid() && value >= FP.Zero);
                 _maxTorque = value;
             }
         }
 
         /// The local anchor point relative to bodyA's origin.
-        public Vector2 GetLocalAnchorA()
+        public TSVector2 GetLocalAnchorA()
         {
             return _localAnchorA;
         }
 
         /// The local anchor point relative to bodyB's origin.
-        public Vector2 GetLocalAnchorB()
+        public TSVector2 GetLocalAnchorB()
         {
             return _localAnchorB;
         }
 
         /// <inheritdoc />
-        public override Vector2 GetAnchorA()
+        public override TSVector2 GetAnchorA()
         {
             return BodyA.GetWorldPoint(_localAnchorA);
         }
 
         /// <inheritdoc />
-        public override Vector2 GetAnchorB()
+        public override TSVector2 GetAnchorB()
         {
             return BodyB.GetWorldPoint(_localAnchorB);
         }
 
         /// <inheritdoc />
-        public override Vector2 GetReactionForce(float inv_dt)
+        public override TSVector2 GetReactionForce(FP inv_dt)
         {
             return inv_dt * _linearImpulse;
         }
 
         /// <inheritdoc />
-        public override float GetReactionTorque(float inv_dt)
+        public override FP GetReactionTorque(FP inv_dt)
         {
             return inv_dt * _angularImpulse;
         }
@@ -156,8 +156,8 @@ namespace FixedBox2D.Dynamics.Joints
             //     [  -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB,           r1x*iA+r2x*iB]
             //     [          -r1y*iA-r2y*iB,           r1x*iA+r2x*iB,                   iA+iB]
 
-            float mA = _invMassA, mB = _invMassB;
-            float iA = _invIa, iB = _invIb;
+            FP mA = _invMassA, mB = _invMassB;
+            FP iA = _invIa, iB = _invIb;
 
             var K = new Matrix2x2();
             K.Ex.X = mA + mB + iA * _rA.Y * _rA.Y + iB * _rB.Y * _rB.Y;
@@ -168,9 +168,9 @@ namespace FixedBox2D.Dynamics.Joints
             _linearMass = K.GetInverse();
 
             _angularMass = iA + iB;
-            if (_angularMass > 0.0f)
+            if (_angularMass > FP.Zero)
             {
-                _angularMass = 1.0f / _angularMass;
+                _angularMass = FP.One / _angularMass;
             }
 
             if (data.Step.WarmStarting)
@@ -179,7 +179,7 @@ namespace FixedBox2D.Dynamics.Joints
                 _linearImpulse *= data.Step.DtRatio;
                 _angularImpulse *= data.Step.DtRatio;
 
-                var P = new Vector2(_linearImpulse.X, _linearImpulse.Y);
+                var P = new TSVector2(_linearImpulse.X, _linearImpulse.Y);
                 vA -= mA * P;
                 wA -= iA * (MathUtils.Cross(_rA, P) + _angularImpulse);
                 vB += mB * P;
@@ -188,7 +188,7 @@ namespace FixedBox2D.Dynamics.Joints
             else
             {
                 _linearImpulse.SetZero();
-                _angularImpulse = 0.0f;
+                _angularImpulse = FP.Zero;
             }
 
             data.Velocities[_indexA].V = vA;
@@ -205,8 +205,8 @@ namespace FixedBox2D.Dynamics.Joints
             var vB = data.Velocities[_indexB].V;
             var wB = data.Velocities[_indexB].W;
 
-            float mA = _invMassA, mB = _invMassB;
-            float iA = _invIa, iB = _invIb;
+            FP mA = _invMassA, mB = _invMassB;
+            FP iA = _invIa, iB = _invIb;
 
             var h = data.Step.Dt;
 

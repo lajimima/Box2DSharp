@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Common;
 
 namespace FixedBox2D.Dynamics.Joints
@@ -22,44 +22,44 @@ namespace FixedBox2D.Dynamics.Joints
         public bool EnableMotor;
 
         /// The local anchor point relative to bodyA's origin.
-        public Vector2 LocalAnchorA;
+        public TSVector2 LocalAnchorA;
 
         /// The local anchor point relative to bodyB's origin.
-        public Vector2 LocalAnchorB;
+        public TSVector2 LocalAnchorB;
 
         /// The lower angle for the joint limit (radians).
-        public float LowerAngle;
+        public FP LowerAngle;
 
         /// The maximum motor torque used to achieve the desired motor speed.
         /// Usually in N-m.
-        public float MaxMotorTorque;
+        public FP MaxMotorTorque;
 
         /// The desired motor speed. Usually in radians per second.
-        public float MotorSpeed;
+        public FP MotorSpeed;
 
         /// The bodyB angle minus bodyA angle in the reference state (radians).
-        public float ReferenceAngle;
+        public FP ReferenceAngle;
 
         /// The upper angle for the joint limit (radians).
-        public float UpperAngle;
+        public FP UpperAngle;
 
         public RevoluteJointDef()
         {
             JointType = JointType.RevoluteJoint;
-            LocalAnchorA.Set(0.0f, 0.0f);
-            LocalAnchorB.Set(0.0f, 0.0f);
-            ReferenceAngle = 0.0f;
-            LowerAngle = 0.0f;
-            UpperAngle = 0.0f;
-            MaxMotorTorque = 0.0f;
-            MotorSpeed = 0.0f;
+            LocalAnchorA.Set(FP.Zero, FP.Zero);
+            LocalAnchorB.Set(FP.Zero, FP.Zero);
+            ReferenceAngle = FP.Zero;
+            LowerAngle = FP.Zero;
+            UpperAngle = FP.Zero;
+            MaxMotorTorque = FP.Zero;
+            MotorSpeed = FP.Zero;
             EnableLimit = false;
             EnableMotor = false;
         }
 
         /// Initialize the bodies, anchors, and reference angle using a world
         /// anchor point.
-        public void Initialize(Body bA, Body bB, Vector2 anchor)
+        public void Initialize(Body bA, Body bB, TSVector2 anchor)
         {
             BodyA = bA;
             BodyB = bB;

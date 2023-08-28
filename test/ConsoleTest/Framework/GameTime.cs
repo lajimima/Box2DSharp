@@ -82,7 +82,7 @@ namespace NETCoreTest.Framework
         /// Gets the number of frame per second (FPS) for the current running game.
         /// </summary>
         /// <value>The frame per second.</value>
-        public float FramePerSecond { get; private set; }
+        public FP FramePerSecond { get; private set; }
 
         /// <summary>
         /// Gets the time per frame.
@@ -110,7 +110,7 @@ namespace NETCoreTest.Framework
                 if (_accumulatedFrameCountPerSecond > 0 && accumulatedElapsedGameTimeInSecond > 1.0)
                 {
                     TimePerFrame = TimeSpan.FromTicks(_accumulatedElapsedTime.Ticks / _accumulatedFrameCountPerSecond);
-                    FramePerSecond = (float) (_accumulatedFrameCountPerSecond / accumulatedElapsedGameTimeInSecond);
+                    FramePerSecond = (FP) (_accumulatedFrameCountPerSecond / accumulatedElapsedGameTimeInSecond);
                     _accumulatedFrameCountPerSecond = 0;
                     _accumulatedElapsedTime = TimeSpan.Zero;
                     FramePerSecondUpdated = true;

@@ -1,21 +1,21 @@
-using System.Numerics;
+using TrueSync;
 
 namespace FixedBox2D.Dynamics.Contacts
 {
     public struct VelocityConstraintPoint
     {
-        public float NormalImpulse;
+        public FP NormalImpulse;
 
-        public float NormalMass;
+        public FP NormalMass;
 
-        public Vector2 Ra;
+        public TSVector2 Ra;
 
-        public Vector2 Rb;
+        public TSVector2 Rb;
 
-        public float TangentImpulse;
+        public FP TangentImpulse;
 
-        public float TangentMass;
+        public FP TangentMass;
 
-        public float VelocityBias;
+        public FP VelocityBias;
     }
 }

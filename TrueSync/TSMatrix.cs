@@ -89,9 +89,9 @@ namespace TrueSync
             {
                 TSVector result = new TSVector();
 
-                result.x = TSMath.Atan2(M32, M33) * FP.Rad2Deg;
-                result.y = TSMath.Atan2(-M31, TSMath.Sqrt(M32 * M32 + M33 * M33)) * FP.Rad2Deg;
-                result.z = TSMath.Atan2(M21, M11) * FP.Rad2Deg;
+                result.X = TSMath.Atan2(M32, M33) * FP.Rad2Deg;
+                result.Y = TSMath.Atan2(-M31, TSMath.Sqrt(M32 * M32 + M33 * M33)) * FP.Rad2Deg;
+                result.Z = TSMath.Atan2(M21, M11) * FP.Rad2Deg;
 
                 return result * -1;
             }
@@ -482,22 +482,22 @@ namespace TrueSync
             TSMatrix result;
             TSVector zaxis = forward; zaxis.Normalize();
             TSVector xaxis;
-            xaxis.x = zaxis.z;
-            xaxis.y = FP.Zero;
-            xaxis.z = -zaxis.x;
+            xaxis.X = zaxis.Z;
+            xaxis.Y = FP.Zero;
+            xaxis.Z = -zaxis.X;
             xaxis.Normalize();
             //TSVector xaxis = TSVector.Cross(upwards, zaxis); xaxis.Normalize();
             TSVector yaxis = TSVector.Cross(zaxis, xaxis);
 
-            result.M11 = xaxis.x;
-            result.M21 = yaxis.x;
-            result.M31 = zaxis.x;
-            result.M12 = xaxis.y;
-            result.M22 = yaxis.y;
-            result.M32 = zaxis.y;
-            result.M13 = xaxis.z;
-            result.M23 = yaxis.z;
-            result.M33 = zaxis.z;
+            result.M11 = xaxis.X;
+            result.M21 = yaxis.X;
+            result.M31 = zaxis.X;
+            result.M12 = xaxis.Y;
+            result.M22 = yaxis.Y;
+            result.M32 = zaxis.Y;
+            result.M13 = xaxis.Z;
+            result.M23 = yaxis.Z;
+            result.M33 = zaxis.Z;
             return result;
         }
 
@@ -507,15 +507,15 @@ namespace TrueSync
             TSVector xaxis = TSVector.Cross(upwards, zaxis); xaxis.Normalize();
             TSVector yaxis = TSVector.Cross(zaxis, xaxis);
 
-            result.M11 = xaxis.x;
-            result.M21 = yaxis.x;
-            result.M31 = zaxis.x;
-            result.M12 = xaxis.y;
-            result.M22 = yaxis.y;
-            result.M32 = zaxis.y;
-            result.M13 = xaxis.z;
-            result.M23 = yaxis.z;
-            result.M33 = zaxis.z;
+            result.M11 = xaxis.X;
+            result.M21 = yaxis.X;
+            result.M31 = zaxis.X;
+            result.M12 = xaxis.Y;
+            result.M22 = yaxis.Y;
+            result.M32 = zaxis.Y;
+            result.M13 = xaxis.Z;
+            result.M23 = yaxis.Z;
+            result.M33 = zaxis.Z;
         }
 
         public static TSMatrix CreateFromQuaternion(TSQuaternion quaternion)
@@ -698,9 +698,9 @@ namespace TrueSync
 #region public static void CreateFromAxisAngle(ref JVector axis, FP angle, out JMatrix result)
         public static void CreateFromAxisAngle(ref TSVector axis, FP angle, out TSMatrix result)
         {
-            FP x = axis.x;
-            FP y = axis.y;
-            FP z = axis.z;
+            FP x = axis.X;
+            FP y = axis.Y;
+            FP z = axis.Z;
             FP num2 = FP.Sin(angle);
             FP num = FP.Cos(angle);
             FP num11 = x * x;

@@ -2,7 +2,7 @@ using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
 using Testbed.Abstractions;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 
 namespace Testbed.TestCases
 {
@@ -24,18 +24,18 @@ namespace Testbed.TestCases
                 var ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-40.0f, FP.Zero), new TSVector2(40.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             {
                 var bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
-                bd.Position.Set(0.0f, 10.0f);
+                bd.Position.Set(FP.Zero, 10.0f);
                 _body = World.CreateBody(bd);
 
                 var shape = new PolygonShape();
-                shape.SetAsBox(4.0f, 4.0f, new Vector2(0.0f, 0.0f), 0.0f);
+                shape.SetAsBox(4.0f, 4.0f, new TSVector2(FP.Zero, FP.Zero), FP.Zero);
                 _fixture1 = _body.CreateFixture(shape, 10.0f);
             }
             _fixture2 = null;

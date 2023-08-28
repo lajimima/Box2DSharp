@@ -3,7 +3,7 @@ using System.Diagnostics;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Dynamics;
 using Testbed.Abstractions;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 
 namespace Testbed.TestCases
 {
@@ -38,21 +38,21 @@ namespace Testbed.TestCases
 
                 var N = 200;
                 var M = 10;
-                var position = new Vector2();
-                position.Y = 0.0f;
+                var position = new TSVector2();
+                position.Y = FP.Zero;
                 for (var j = 0; j < M; ++j)
                 {
                     position.X = -N * a;
                     for (var i = 0; i < N; ++i)
                     {
                         var shape = new PolygonShape();
-                        shape.SetAsBox(a, a, position, 0.0f);
-                        ground.CreateFixture(shape, 0.0f);
+                        shape.SetAsBox(a, a, position, FP.Zero);
+                        ground.CreateFixture(shape, FP.Zero);
                         ++fixtureCount;
-                        position.X += 2.0f * a;
+                        position.X += FP.Two * a;
                     }
 
-                    position.Y -= 2.0f * a;
+                    position.Y -= FP.Two * a;
                 }
             }
 
@@ -61,10 +61,10 @@ namespace Testbed.TestCases
                 var shape = new PolygonShape();
                 shape.SetAsBox(a, a);
 
-                var x = new Vector2(-7.0f, 0.75f);
-                var y = new Vector2();
-                var deltaX = new Vector2(0.5625f, 1.25f);
-                var deltaY = new Vector2(1.125f, 0.0f);
+                var x = new TSVector2(-7.0f, 0.75f);
+                var y = new TSVector2();
+                var deltaX = new TSVector2(0.5625f, 1.25f);
+                var deltaY = new TSVector2(1.125f, FP.Zero);
 
                 for (int i = 0; i < Count; ++i)
                 {
@@ -115,15 +115,15 @@ namespace Testbed.TestCases
 
         protected override void OnRender()
         {
-            var cm = World.ContactManager;
-            var height = cm.BroadPhase.GetTreeHeight();
-            var leafCount = cm.BroadPhase.GetProxyCount();
-            var minimumNodeCount = 2 * leafCount - 1;
-            var minimumHeight = (int)Math.Ceiling(Math.Log(minimumNodeCount) / Math.Log(2.0f));
-            DynamicTreeHeight = height;
-            MinHeight = minimumHeight;
-            DrawString($"create time = {CreateTime} ms, fixture count = {FixtureCount}");
-            DrawString($"dynamic tree height = {DynamicTreeHeight}, min = {MinHeight}");
+            //var cm = World.ContactManager;
+            //var height = cm.BroadPhase.GetTreeHeight();
+            //var leafCount = cm.BroadPhase.GetProxyCount();
+            //var minimumNodeCount = 2 * leafCount - 1;
+            //var minimumHeight = (int)FP.Ceiling(Math.Log(minimumNodeCount) / Math.Log(FP.Two));
+            //DynamicTreeHeight = height;
+            //MinHeight = minimumHeight;
+            //DrawString($"create time = {CreateTime} ms, fixture count = {FixtureCount}");
+            //DrawString($"dynamic tree height = {DynamicTreeHeight}, min = {MinHeight}");
         }
     }
 }

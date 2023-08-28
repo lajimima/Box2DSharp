@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -9,9 +9,9 @@ namespace Testbed.TestCases
     [TestCase("Geometry", "Edge Test")]
     public class EdgeTest : TestBase
     {
-        public readonly Vector2 Offset1;
+        public readonly TSVector2 Offset1;
 
-        public readonly Vector2 Offset2;
+        public readonly TSVector2 Offset2;
 
         public Body Body1;
 
@@ -21,22 +21,22 @@ namespace Testbed.TestCases
 
         public EdgeTest()
         {
-            var vertices = new Vector2[]
+            var vertices = new TSVector2[]
             {
-                new Vector2(10.0f, -4.0f),
-                new Vector2(10.0f, 0.0f),
-                new Vector2(6.0f, 0.0f),
-                new Vector2(4.0f, 2.0f),
-                new Vector2(2.0f, 0.0f),
-                new Vector2(-2.0f, 0.0f),
-                new Vector2(-6.0f, 0.0f),
-                new Vector2(-8.0f, -3.0f),
-                new Vector2(-10.0f, 0.0f),
-                new Vector2(-10.0f, -4.0f)
+                new TSVector2(10.0f, -4.0f),
+                new TSVector2(10.0f, FP.Zero),
+                new TSVector2(6.0f, FP.Zero),
+                new TSVector2(4.0f, FP.Two),
+                new TSVector2(FP.Two, FP.Zero),
+                new TSVector2(-FP.Two, FP.Zero),
+                new TSVector2(-6.0f, FP.Zero),
+                new TSVector2(-8.0f, -3.0f),
+                new TSVector2(-10.0f, FP.Zero),
+                new TSVector2(-10.0f, -4.0f)
             };
 
-            Offset1.Set(0.0f, 8.0f);
-            Offset2.Set(0.0f, 16.0f);
+            Offset1.Set(FP.Zero, 8.0f);
+            Offset2.Set(FP.Zero, 16.0f);
 
             {
                 var v1 = vertices[0] + Offset1;
@@ -56,34 +56,34 @@ namespace Testbed.TestCases
                 var shape = new EdgeShape();
 
                 shape.SetOneSided(v10, v1, v2, v3);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
 
                 shape.SetOneSided(v1, v2, v3, v4);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
 
                 shape.SetOneSided(v2, v3, v4, v5);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
 
                 shape.SetOneSided(v3, v4, v5, v6);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
 
                 shape.SetOneSided(v4, v5, v6, v7);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
 
                 shape.SetOneSided(v5, v6, v7, v8);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
 
                 shape.SetOneSided(v6, v7, v8, v9);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
 
                 shape.SetOneSided(v7, v8, v9, v10);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
 
                 shape.SetOneSided(v8, v9, v10, v1);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
 
                 shape.SetOneSided(v9, v10, v1, v2);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             {
@@ -104,34 +104,34 @@ namespace Testbed.TestCases
                 EdgeShape shape = new EdgeShape();
 
                 shape.SetTwoSided(v1, v2);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
 
                 shape.SetTwoSided(v2, v3);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
 
                 shape.SetTwoSided(v3, v4);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
 
                 shape.SetTwoSided(v4, v5);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
 
                 shape.SetTwoSided(v5, v6);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
 
                 shape.SetTwoSided(v6, v7);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
 
                 shape.SetTwoSided(v7, v8);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
 
                 shape.SetTwoSided(v8, v9);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
 
                 shape.SetTwoSided(v9, v10);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
 
                 shape.SetTwoSided(v10, v1);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             Body1 = null;
@@ -157,27 +157,27 @@ namespace Testbed.TestCases
             {
                 BodyDef bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
-                bd.Position = new Vector2(8.0f, 2.6f) + Offset1;
+                bd.Position = new TSVector2(8.0f, 2.6f) + Offset1;
                 bd.AllowSleep = false;
                 Body1 = World.CreateBody(bd);
 
                 PolygonShape shape = new PolygonShape();
-                shape.SetAsBox(0.5f, 1.0f);
+                shape.SetAsBox(0.5f, FP.One);
 
-                Body1.CreateFixture(shape, 1.0f);
+                Body1.CreateFixture(shape, FP.One);
             }
 
             {
                 BodyDef bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
-                bd.Position = new Vector2(8.0f, 2.6f) + Offset2;
+                bd.Position = new TSVector2(8.0f, 2.6f) + Offset2;
                 bd.AllowSleep = false;
                 Body2 = World.CreateBody(bd);
 
                 PolygonShape shape = new PolygonShape();
-                shape.SetAsBox(0.5f, 1.0f);
+                shape.SetAsBox(0.5f, FP.One);
 
-                Body2.CreateFixture(shape, 1.0f);
+                Body2.CreateFixture(shape, FP.One);
             }
         }
 
@@ -198,27 +198,27 @@ namespace Testbed.TestCases
             {
                 BodyDef bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
-                bd.Position = new Vector2(-0.5f, 0.6f) + Offset1;
+                bd.Position = new TSVector2(-0.5f, 0.6f) + Offset1;
                 bd.AllowSleep = false;
                 Body1 = World.CreateBody(bd);
 
                 CircleShape shape = new CircleShape();
                 shape.Radius = 0.5f;
 
-                Body1.CreateFixture(shape, 1.0f);
+                Body1.CreateFixture(shape, FP.One);
             }
 
             {
                 BodyDef bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
-                bd.Position = new Vector2(-0.5f, 0.6f) + Offset2;
+                bd.Position = new TSVector2(-0.5f, 0.6f) + Offset2;
                 bd.AllowSleep = false;
                 Body2 = World.CreateBody(bd);
 
                 CircleShape shape = new CircleShape();
                 shape.Radius = 0.5f;
 
-                Body2.CreateFixture(shape, 1.0f);
+                Body2.CreateFixture(shape, FP.One);
             }
         }
 
@@ -227,14 +227,14 @@ namespace Testbed.TestCases
         {
             if (keyInput.Key == KeyCodes.A)
             {
-                Body1.ApplyForceToCenter(new Vector2(-10.0f, 0.0f), true);
-                Body2.ApplyForceToCenter(new Vector2(-10.0f, 0.0f), true);
+                Body1.ApplyForceToCenter(new TSVector2(-10.0f, FP.Zero), true);
+                Body2.ApplyForceToCenter(new TSVector2(-10.0f, FP.Zero), true);
             }
 
             if (keyInput.Key == KeyCodes.D)
             {
-                Body1.ApplyForceToCenter(new Vector2(10.0f, 0.0f), true);
-                Body2.ApplyForceToCenter(new Vector2(10.0f, 0.0f), true);
+                Body1.ApplyForceToCenter(new TSVector2(10.0f, FP.Zero), true);
+                Body2.ApplyForceToCenter(new TSVector2(10.0f, FP.Zero), true);
             }
         }
     }

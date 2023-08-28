@@ -4,7 +4,7 @@ using FixedBox2D.Common;
 using ImGuiNET;
 using OpenTK.Mathematics;
 using Testbed.Abstractions;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 using Vector4 = System.Numerics.Vector4;
 
 namespace Testbed.Render
@@ -51,7 +51,7 @@ namespace Testbed.Render
 
         private readonly Vector4 _textColor = new Vector4(0.9f, 0.6f, 0.6f, 1);
 
-        public void DrawString(float x, float y, string strings)
+        public void DrawString(FP x, FP y, string strings)
         {
             if (ShowUI == false)
             {
@@ -59,7 +59,7 @@ namespace Testbed.Render
             }
 
             ImGui.Begin("Overlay", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoScrollbar);
-            ImGui.SetCursorPos(new Vector2(x, y));
+            ImGui.SetCursorPos(new TSVector2(x, y));
             ImGui.TextColored(_textColor, strings);
             ImGui.End();
         }
@@ -72,12 +72,12 @@ namespace Testbed.Render
             }
 
             ImGui.Begin("Overlay", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoScrollbar);
-            ImGui.SetCursorPos(new Vector2(x, y));
+            ImGui.SetCursorPos(new TSVector2(x, y));
             ImGui.TextColored(_textColor, strings);
             ImGui.End();
         }
 
-        public void DrawString(Vector2 worldPosition, string strings)
+        public void DrawString(TSVector2 worldPosition, string strings)
         {
             var ps = Global.Camera.ConvertWorldToScreen(worldPosition);
             ImGui.Begin("Overlay", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoScrollbar);
@@ -87,7 +87,7 @@ namespace Testbed.Render
         }
 
         /// <inheritdoc />
-        public void DrawPolygon(Span<Vector2> vertices, int vertexCount, in Color color)
+        public void DrawPolygon(Span<TSVector2> vertices, int vertexCount, in Color color)
         {
             var p1 = vertices[vertexCount - 1];
             for (var i = 0; i < vertexCount; ++i)
@@ -100,7 +100,7 @@ namespace Testbed.Render
         }
 
         /// <inheritdoc />
-        public void DrawSolidPolygon(Span<Vector2> vertices, int vertexCount, in Color color)
+        public void DrawSolidPolygon(Span<TSVector2> vertices, int vertexCount, in Color color)
         {
             var color4 = color.ToColor4();
             var fillColor = new Color4(color4.R * 0.5f, color4.G * 0.5f, color4.B * 0.5f, color4.A * 0.5f);
@@ -123,19 +123,19 @@ namespace Testbed.Render
         }
 
         /// <inheritdoc />
-        public void DrawCircle(in Vector2 center, float radius, in Color color)
+        public void DrawCircle(in TSVector2 center, FP radius, in Color color)
         {
             var color4 = color.ToColor4();
-            const float Segments = 16.0f;
-            const float Increment = 2.0f * Settings.Pi / Segments;
-            var sinInc = (float)Math.Sin(Increment);
-            var cosInc = (float)Math.Cos(Increment);
-            var r1 = new Vector2(1.0f, 0.0f);
+            const FP Segments = 16.0f;
+            const FP Increment = FP.Two * Settings.Pi / Segments;
+            var sinInc = (FP)Math.Sin(Increment);
+            var cosInc = (FP)Math.Cos(Increment);
+            var r1 = new TSVector2(1.0f, 0.0f);
             var v1 = center + radius * r1;
             for (var i = 0; i < Segments; ++i)
             {
                 // Perform rotation to avoid additional trigonometry.
-                var r2 = new Vector2
+                var r2 = new TSVector2
                 {
                     X = cosInc * r1.X - sinInc * r1.Y,
                     Y = sinInc * r1.X + cosInc * r1.Y
@@ -149,21 +149,21 @@ namespace Testbed.Render
         }
 
         /// <inheritdoc />
-        public void DrawSolidCircle(in Vector2 center, float radius, in Vector2 axis, in Color color)
+        public void DrawSolidCircle(in TSVector2 center, FP radius, in TSVector2 axis, in Color color)
         {
             var color4 = color.ToColor4();
-            const float Segments = 16.0f;
-            const float Increment = 2.0f * Settings.Pi / Segments;
-            var sinInc = (float)Math.Sin(Increment);
-            var cosInc = (float)Math.Cos(Increment);
+            const FP Segments = 16.0f;
+            const FP Increment = FP.Two * Settings.Pi / Segments;
+            var sinInc = (FP)Math.Sin(Increment);
+            var cosInc = (FP)Math.Cos(Increment);
             var v0 = center;
-            var r1 = new Vector2(cosInc, sinInc);
+            var r1 = new TSVector2(cosInc, sinInc);
             var v1 = center + radius * r1;
             var fillColor = new Color4(color4.R * 0.5f, color4.G * 0.5f, color4.B * 0.5f, color4.A * 0.5f);
             for (var i = 0; i < Segments; ++i)
             {
                 // Perform rotation to avoid additional trigonometry.
-                var r2 = new Vector2
+                var r2 = new TSVector2
                 {
                     X = cosInc * r1.X - sinInc * r1.Y,
                     Y = sinInc * r1.X + cosInc * r1.Y
@@ -180,7 +180,7 @@ namespace Testbed.Render
             v1 = center + radius * r1;
             for (var i = 0; i < Segments; ++i)
             {
-                var r2 = new Vector2
+                var r2 = new TSVector2
                 {
                     X = cosInc * r1.X - sinInc * r1.Y,
                     Y = sinInc * r1.X + cosInc * r1.Y
@@ -199,7 +199,7 @@ namespace Testbed.Render
         }
 
         /// <inheritdoc />
-        public void DrawSegment(in Vector2 p1, in Vector2 p2, in Color color)
+        public void DrawSegment(in TSVector2 p1, in TSVector2 p2, in Color color)
         {
             var color4 = color.ToColor4();
             _lines.Vertex(p1, color4);
@@ -209,7 +209,7 @@ namespace Testbed.Render
         /// <inheritdoc />
         public void DrawTransform(in Transform xf)
         {
-            const float AxisScale = 0.4f;
+            const FP AxisScale = 0.4f;
 
             var p1 = xf.Position;
             _lines.Vertex(p1, Color4.Red);
@@ -222,7 +222,7 @@ namespace Testbed.Render
         }
 
         /// <inheritdoc />
-        public void DrawPoint(in Vector2 p, float size, in Color color)
+        public void DrawPoint(in TSVector2 p, FP size, in Color color)
         {
             _points.Vertex(p, color.ToColor4(), size);
         }
@@ -231,9 +231,9 @@ namespace Testbed.Render
         {
             var color4 = c.ToColor4();
             var p1 = aabb.LowerBound;
-            var p2 = new Vector2(aabb.UpperBound.X, aabb.LowerBound.Y);
+            var p2 = new TSVector2(aabb.UpperBound.X, aabb.LowerBound.Y);
             var p3 = aabb.UpperBound;
-            var p4 = new Vector2(aabb.LowerBound.X, aabb.UpperBound.Y);
+            var p4 = new TSVector2(aabb.LowerBound.X, aabb.UpperBound.Y);
 
             _lines.Vertex(p1, color4);
             _lines.Vertex(p2, color4);

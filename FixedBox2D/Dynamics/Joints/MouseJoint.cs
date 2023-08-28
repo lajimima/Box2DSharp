@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Common;
 
 namespace FixedBox2D.Dynamics.Joints
@@ -13,37 +13,37 @@ namespace FixedBox2D.Dynamics.Joints
     /// use the mouse joint, look at the testbed.
     public class MouseJoint : Joint
     {
-        private readonly Vector2 _localAnchorB;
+        private readonly TSVector2 _localAnchorB;
 
-        private float _beta;
+        private FP _beta;
 
-        private Vector2 _C;
+        private TSVector2 _C;
 
-        public float Damping;
+        public FP Damping;
 
-        public float Stiffness;
+        public FP Stiffness;
 
-        private float _gamma;
+        private FP _gamma;
 
         // Solver shared
-        private Vector2 _impulse;
+        private TSVector2 _impulse;
 
         // Solver temp
         private int _indexB;
 
-        private float _invIb;
+        private FP _invIb;
 
-        private float _invMassB;
+        private FP _invMassB;
 
-        private Vector2 _localCenterB;
+        private TSVector2 _localCenterB;
 
         private Matrix2x2 _mass;
 
-        public float MaxForce;
+        public FP MaxForce;
 
-        private Vector2 _rB;
+        private TSVector2 _rB;
 
-        public Vector2 Target;
+        public TSVector2 Target;
 
         internal MouseJoint(MouseJointDef def)
             : base(def)
@@ -56,13 +56,13 @@ namespace FixedBox2D.Dynamics.Joints
             Damping = def.Damping;
 
             _impulse.SetZero();
-            _beta = 0.0f;
-            _gamma = 0.0f;
+            _beta = FP.Zero;
+            _gamma = FP.Zero;
         }
 
         /// Implements b2Joint.
         /// Use this to update the target point.
-        public void SetTarget(in Vector2 target)
+        public void SetTarget(in TSVector2 target)
         {
             if (target != Target)
             {
@@ -72,33 +72,33 @@ namespace FixedBox2D.Dynamics.Joints
         }
 
         /// <inheritdoc />
-        public override void ShiftOrigin(in Vector2 newOrigin)
+        public override void ShiftOrigin(in TSVector2 newOrigin)
         {
             Target -= newOrigin;
         }
 
         /// <inheritdoc />
-        public override Vector2 GetAnchorA()
+        public override TSVector2 GetAnchorA()
         {
             return Target;
         }
 
         /// <inheritdoc />
-        public override Vector2 GetAnchorB()
+        public override TSVector2 GetAnchorB()
         {
             return BodyB.GetWorldPoint(_localAnchorB);
         }
 
         /// <inheritdoc />
-        public override Vector2 GetReactionForce(float inv_dt)
+        public override TSVector2 GetReactionForce(FP inv_dt)
         {
             return inv_dt * _impulse;
         }
 
         /// <inheritdoc />
-        public override float GetReactionTorque(float inv_dt)
+        public override FP GetReactionTorque(FP inv_dt)
         {
-            return inv_dt * 0.0f;
+            return inv_dt * FP.Zero;
         }
 
         /// The mouse joint does not support dumping.
@@ -131,9 +131,9 @@ namespace FixedBox2D.Dynamics.Joints
             var h = data.Step.Dt;
 
             _gamma = h * (d + h * k);
-            if (!_gamma.Equals(0.0f))
+            if (!_gamma.Equals(FP.Zero))
             {
-                _gamma = 1.0f / _gamma;
+                _gamma = FP.One / _gamma;
             }
 
             _beta = h * k * _gamma;
@@ -188,7 +188,7 @@ namespace FixedBox2D.Dynamics.Joints
             var maxImpulse = data.Step.Dt * MaxForce;
             if (_impulse.LengthSquared() > maxImpulse * maxImpulse)
             {
-                _impulse *= maxImpulse / _impulse.Length();
+                _impulse *= maxImpulse / _impulse.magnitude;
             }
 
             impulse = _impulse - oldImpulse;

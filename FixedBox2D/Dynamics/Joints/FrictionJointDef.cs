@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Common;
 
 namespace FixedBox2D.Dynamics.Joints
@@ -7,24 +7,24 @@ namespace FixedBox2D.Dynamics.Joints
     public class FrictionJointDef : JointDef
     {
         /// The local anchor point relative to bodyA's origin.
-        public Vector2 LocalAnchorA;
+        public TSVector2 LocalAnchorA;
 
         /// The local anchor point relative to bodyB's origin.
-        public Vector2 LocalAnchorB;
+        public TSVector2 LocalAnchorB;
 
         /// The maximum friction force in N.
-        public float MaxForce;
+        public FP MaxForce;
 
         /// The maximum friction torque in N-m.
-        public float MaxTorque;
+        public FP MaxTorque;
 
         public FrictionJointDef()
         {
             JointType = JointType.FrictionJoint;
             LocalAnchorA.SetZero();
             LocalAnchorB.SetZero();
-            MaxForce = 0.0f;
-            MaxTorque = 0.0f;
+            MaxForce = FP.Zero;
+            MaxTorque = FP.Zero;
         }
 
         // Point-to-point constraint
@@ -40,7 +40,7 @@ namespace FixedBox2D.Dynamics.Joints
         // K = invI1 + invI2
         /// Initialize the bodies, anchors, axis, and reference angle using the world
         /// anchor and world axis.
-        public void Initialize(Body bA, Body bB, in Vector2 anchor)
+        public void Initialize(Body bA, Body bB, in TSVector2 anchor)
         {
             BodyA = bA;
             BodyB = bB;

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Numerics;
+using TrueSync;
 using System.Xml.XPath;
 using FixedBox2D.Common;
 
@@ -157,16 +157,16 @@ namespace FixedBox2D.Dynamics.Joints
         public JointType JointType { get; }
 
         /// Get the anchor point on bodyA in world coordinates.
-        public abstract Vector2 GetAnchorA();
+        public abstract TSVector2 GetAnchorA();
 
         /// Get the anchor point on bodyB in world coordinates.
-        public abstract Vector2 GetAnchorB();
+        public abstract TSVector2 GetAnchorB();
 
         /// Get the reaction force on bodyB at the joint anchor in Newtons.
-        public abstract Vector2 GetReactionForce(float inv_dt);
+        public abstract TSVector2 GetReactionForce(FP inv_dt);
 
         /// Get the reaction torque on bodyB in N*m.
-        public abstract float GetReactionTorque(float inv_dt);
+        public abstract FP GetReactionTorque(FP inv_dt);
 
         /// Dump this joint to the log file.
         public virtual void Dump()
@@ -175,7 +175,7 @@ namespace FixedBox2D.Dynamics.Joints
         }
 
         /// Shift the origin for any points stored in world coordinates.
-        public virtual void ShiftOrigin(in Vector2 newOrigin)
+        public virtual void ShiftOrigin(in TSVector2 newOrigin)
         { }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace FixedBox2D.Dynamics.Joints
             var p1 = GetAnchorA();
             var p2 = GetAnchorB();
 
-            var color = Color.FromArgb(0.5f, 0.8f, 0.8f);
+            var color = Color.FromArgb(FP.Half, 0.8f, 0.8f);
 
             switch (JointType)
             {
@@ -212,7 +212,7 @@ namespace FixedBox2D.Dynamics.Joints
 
             case JointType.MouseJoint:
             {
-                var c = Color.FromArgb(0.0f, 1.0f, 0.0f);
+                var c = Color.FromArgb(FP.Zero, FP.One, FP.Zero);
                 drawer.DrawPoint(p1, 4.0f, c);
                 drawer.DrawPoint(p2, 4.0f, c);
 
@@ -269,21 +269,21 @@ namespace FixedBox2D.Dynamics.Joints
     {
         /// Utility to compute linear stiffness values from frequency and damping ratio
         public static void LinearStiffness(
-            out float stiffness,
-            out float damping,
-            float frequencyHertz,
-            float dampingRatio,
+            out FP stiffness,
+            out FP damping,
+            FP frequencyHertz,
+            FP dampingRatio,
             Body bodyA,
             Body bodyB)
         {
             var massA = bodyA.Mass;
             var massB = bodyB.Mass;
-            float mass;
-            if (massA > 0.0f && massB > 0.0f)
+            FP mass;
+            if (massA > FP.Zero && massB > FP.Zero)
             {
                 mass = massA * massB / (massA + massB);
             }
-            else if (massA > 0.0f)
+            else if (massA > FP.Zero)
             {
                 mass = massA;
             }
@@ -292,28 +292,28 @@ namespace FixedBox2D.Dynamics.Joints
                 mass = massB;
             }
 
-            var omega = 2.0f * Settings.Pi * frequencyHertz;
+            var omega = FP.Two * Settings.Pi * frequencyHertz;
             stiffness = mass * omega * omega;
-            damping = 2.0f * mass * dampingRatio * omega;
+            damping = FP.Two * mass * dampingRatio * omega;
         }
 
         /// Utility to compute rotational stiffness values frequency and damping ratio
         public static void AngularStiffness(
-            out float stiffness,
-            out float damping,
-            float frequencyHertz,
-            float dampingRatio,
+            out FP stiffness,
+            out FP damping,
+            FP frequencyHertz,
+            FP dampingRatio,
             Body bodyA,
             Body bodyB)
         {
             var IA = bodyA.Inertia;
             var IB = bodyB.Inertia;
-            float I;
-            if (IA > 0.0f && IB > 0.0f)
+            FP I;
+            if (IA > FP.Zero && IB > FP.Zero)
             {
                 I = IA * IB / (IA + IB);
             }
-            else if (IA > 0.0f)
+            else if (IA > FP.Zero)
             {
                 I = IA;
             }
@@ -322,9 +322,9 @@ namespace FixedBox2D.Dynamics.Joints
                 I = IB;
             }
 
-            var omega = 2.0f * Settings.Pi * frequencyHertz;
+            var omega = FP.Two * Settings.Pi * frequencyHertz;
             stiffness = I * omega * omega;
-            damping = 2.0f * I * dampingRatio * omega;
+            damping = FP.Two * I * dampingRatio * omega;
         }
     }
 }

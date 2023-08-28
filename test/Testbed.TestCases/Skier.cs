@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -12,7 +12,7 @@ namespace Testbed.TestCases
     {
         public Body SkierBody;
 
-        public float PlatformWidth;
+        public FP PlatformWidth;
 
         public bool FixedCamera;
 
@@ -23,7 +23,7 @@ namespace Testbed.TestCases
                 BodyDef bd = new BodyDef();
                 ground = World.CreateBody(bd);
 
-                const float PlatformWidth = 8.0f;
+                FP PlatformWidth = 8.0f;
 
                 /*
                 First angle is from the horizontal and should be negative for a downward slope.
@@ -32,30 +32,30 @@ namespace Testbed.TestCases
                 If A1 = -10, then A2 <= ~1.5 will result in the collision glitch.
                 If A1 = -30, then A2 <= ~10.0 will result in the glitch.
                 */
-                const float Angle1Degrees = -30.0f;
-                const float Angle2Degrees = 10.0f;
+                FP Angle1Degrees = -30.0f;
+                FP Angle2Degrees = 10.0f;
 
                 /*
                 The larger the value of SlopeLength, the less likely the glitch will show up.
                 */
-                const float SlopeLength = 2.0f;
+                FP SlopeLength = FP.Two;
 
-                const float SurfaceFriction = 0.2f;
+                FP SurfaceFriction = 0.2f;
 
                 // Convert to radians
-                const float Slope1Incline = -Angle1Degrees * Settings.Pi / 180.0f;
-                const float Slope2Incline = Slope1Incline - Angle2Degrees * Settings.Pi / 180.0f;
+                FP Slope1Incline = -Angle1Degrees * Settings.Pi / 180.0f;
+                FP Slope2Incline = Slope1Incline - Angle2Degrees * Settings.Pi / 180.0f;
 
                 //
 
                 this.PlatformWidth = PlatformWidth;
 
                 // Horizontal platform
-                var v1 = new Vector2(-PlatformWidth, 0.0f);
-                var v2 = new Vector2(0.0f, 0.0f);
-                var v3 = new Vector2((float)(SlopeLength * Math.Cos(Slope1Incline)), (float)(-SlopeLength * Math.Sin(Slope1Incline)));
-                var v4 = new Vector2((float)(v3.X + SlopeLength * Math.Cos(Slope2Incline)), (float)(v3.Y - SlopeLength * Math.Sin(Slope2Incline)));
-                var v5 = new Vector2(v4.X, v4.Y - 1.0f);
+                var v1 = new TSVector2(-PlatformWidth, FP.Zero);
+                var v2 = new TSVector2(FP.Zero, FP.Zero);
+                var v3 = new TSVector2((FP)(SlopeLength * FP.FastCosAngle(Slope1Incline)), (FP)(-SlopeLength * FP.FastSinAngle(Slope1Incline)));
+                var v4 = new TSVector2((FP)(v3.X + SlopeLength * FP.FastCosAngle(Slope2Incline)), (FP)(v3.Y - SlopeLength * FP.FastSinAngle(Slope2Incline)));
+                var v5 = new TSVector2(v4.X, v4.Y - FP.One);
 
                 var vertices = new[] {v5, v4, v3, v2, v1};
 
@@ -63,35 +63,35 @@ namespace Testbed.TestCases
                 shape.CreateLoop(vertices, 5);
                 FixtureDef fd = new FixtureDef();
                 fd.Shape = shape;
-                fd.Density = 0.0f;
+                fd.Density = FP.Zero;
                 fd.Friction = SurfaceFriction;
 
                 ground.CreateFixture(fd);
             }
 
             {
-                // const float BodyWidth = 1.0f;
-                const float BodyHeight = 2.5f;
-                const float SkiLength = 3.0f;
+                // const FP BodyWidth = FP.One;
+                FP BodyHeight = 2.5f;
+                FP SkiLength = 3.0f;
 
                 /*
                 Larger values for this seem to alleviate the issue to some extent.
                 */
-                const float SkiThickness = 0.3f;
+                FP SkiThickness = 0.3f;
 
-                const float SkiFriction = 0.0f;
-                const float SkiRestitution = 0.15f;
+                FP SkiFriction = FP.Zero;
+                FP SkiRestitution = 0.15f;
 
                 BodyDef bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
 
-                float initial_y = BodyHeight / 2 + SkiThickness;
+                FP initial_y = BodyHeight / 2 + SkiThickness;
                 bd.Position.Set(-PlatformWidth / 2, initial_y);
 
                 var skier = World.CreateBody(bd);
 
                 PolygonShape ski = new PolygonShape();
-                var verts = new Vector2[4];
+                var verts = new TSVector2[4];
                 verts[0].Set(-SkiLength / 2 - SkiThickness, -BodyHeight / 2);
                 verts[1].Set(-SkiLength / 2, -BodyHeight / 2 - SkiThickness);
                 verts[2].Set(SkiLength / 2, -BodyHeight / 2 - SkiThickness);
@@ -99,7 +99,7 @@ namespace Testbed.TestCases
                 ski.Set(verts, 4);
 
                 FixtureDef fd = new FixtureDef();
-                fd.Density = 1.0f;
+                fd.Density = FP.One;
 
                 fd.Friction = SkiFriction;
                 fd.Restitution = SkiRestitution;
@@ -107,12 +107,12 @@ namespace Testbed.TestCases
                 fd.Shape = ski;
                 skier.CreateFixture(fd);
 
-                skier.SetLinearVelocity(new Vector2(0.5f, 0.0f));
+                skier.SetLinearVelocity(new TSVector2(0.5f, FP.Zero));
 
                 SkierBody = skier;
             }
 
-            Global.Camera.Center = new Vector2(PlatformWidth / 2.0f, 0.0f);
+            Global.Camera.Center = new TSVector2(PlatformWidth / FP.Two, FP.Zero);
             Global.Camera.Zoom = 0.4f;
             FixedCamera = true;
         }
@@ -126,7 +126,7 @@ namespace Testbed.TestCases
                 FixedCamera = !FixedCamera;
                 if (FixedCamera)
                 {
-                    Global.Camera.Center = new Vector2(PlatformWidth / 2.0f, 0.0f);
+                    Global.Camera.Center = new TSVector2(PlatformWidth / FP.Two, FP.Zero);
                 }
 
                 break;

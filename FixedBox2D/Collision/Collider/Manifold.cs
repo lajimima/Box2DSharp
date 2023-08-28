@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Common;
 
 namespace FixedBox2D.Collision.Collider
@@ -27,10 +27,10 @@ namespace FixedBox2D.Collision.Collider
         public FixedArray2<ManifoldPoint> Points;
 
         /// not use for Type::e_points
-        public Vector2 LocalNormal;
+        public TSVector2 LocalNormal;
 
         /// usage depends on manifold type
-        public Vector2 LocalPoint;
+        public TSVector2 LocalPoint;
 
         public ManifoldType Type;
 

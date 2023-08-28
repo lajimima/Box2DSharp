@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Dynamics;
 using FixedBox2D.Dynamics.Joints;
@@ -13,7 +13,7 @@ namespace Testbed.TestCases
         {
             Body ground;
             {
-                var bd = new BodyDef {Position = new Vector2(0.0f, 17.0f)};
+                var bd = new BodyDef {Position = new TSVector2(FP.Zero, 17.0f)};
                 ground = World.CreateBody(bd);
             }
 
@@ -23,14 +23,14 @@ namespace Testbed.TestCases
                 // Define crank.
                 {
                     var shape = new PolygonShape();
-                    shape.SetAsBox(4.0f, 1.0f);
+                    shape.SetAsBox(4.0f, FP.One);
 
-                    var bd = new BodyDef {BodyType = BodyType.DynamicBody, Position = new Vector2(-8.0f, 20.0f)};
+                    var bd = new BodyDef {BodyType = BodyType.DynamicBody, Position = new TSVector2(-8.0f, 20.0f)};
                     var body = World.CreateBody(bd);
-                    body.CreateFixture(shape, 2.0f);
+                    body.CreateFixture(shape, FP.Two);
 
                     var rjd = new RevoluteJointDef();
-                    rjd.Initialize(prevBody, body, new Vector2(-12.0f, 20.0f));
+                    rjd.Initialize(prevBody, body, new TSVector2(-12.0f, 20.0f));
                     World.CreateJoint(rjd);
 
                     prevBody = body;
@@ -39,14 +39,14 @@ namespace Testbed.TestCases
                 // Define connecting rod
                 {
                     var shape = new PolygonShape();
-                    shape.SetAsBox(8.0f, 1.0f);
+                    shape.SetAsBox(8.0f, FP.One);
 
-                    var bd = new BodyDef {BodyType = BodyType.DynamicBody, Position = new Vector2(4.0f, 20.0f)};
+                    var bd = new BodyDef {BodyType = BodyType.DynamicBody, Position = new TSVector2(4.0f, 20.0f)};
                     var body = World.CreateBody(bd);
-                    body.CreateFixture(shape, 2.0f);
+                    body.CreateFixture(shape, FP.Two);
 
                     var rjd = new RevoluteJointDef();
-                    rjd.Initialize(prevBody, body, new Vector2(-4.0f, 20.0f));
+                    rjd.Initialize(prevBody, body, new TSVector2(-4.0f, 20.0f));
                     World.CreateJoint(rjd);
 
                     prevBody = body;
@@ -60,17 +60,17 @@ namespace Testbed.TestCases
                     var bd = new BodyDef
                     {
                         BodyType = BodyType.DynamicBody, FixedRotation = true,
-                        Position = new Vector2(12.0f, 20.0f)
+                        Position = new TSVector2(12.0f, 20.0f)
                     };
                     var body = World.CreateBody(bd);
-                    body.CreateFixture(shape, 2.0f);
+                    body.CreateFixture(shape, FP.Two);
 
                     var rjd = new RevoluteJointDef();
-                    rjd.Initialize(prevBody, body, new Vector2(12.0f, 20.0f));
+                    rjd.Initialize(prevBody, body, new TSVector2(12.0f, 20.0f));
                     World.CreateJoint(rjd);
 
                     var pjd = new PrismaticJointDef();
-                    pjd.Initialize(ground, body, new Vector2(12.0f, 17.0f), new Vector2(1.0f, 0.0f));
+                    pjd.Initialize(ground, body, new TSVector2(12.0f, 17.0f), new TSVector2(FP.One, FP.Zero));
                     World.CreateJoint(pjd);
                 }
             }

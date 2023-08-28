@@ -2,7 +2,7 @@ using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
 using Testbed.Abstractions;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 
 namespace Testbed.TestCases
 {
@@ -14,14 +14,14 @@ namespace Testbed.TestCases
         public HelloWorld()
         {
             var groundBodyDef = new BodyDef {BodyType = BodyType.StaticBody};
-            groundBodyDef.Position.Set(0.0f, -10.0f);
+            groundBodyDef.Position.Set(FP.Zero, -10.0f);
 
             var groundBody = World.CreateBody(groundBodyDef);
 
             var groundBox = new PolygonShape();
             groundBox.SetAsBox(1000.0f, 10.0f);
 
-            groundBody.CreateFixture(groundBox, 0.0f);
+            groundBody.CreateFixture(groundBox, FP.Zero);
 
             // Define the dynamic body. We set its position and call the body factory.
             var bodyDef = new BodyDef {BodyType = BodyType.DynamicBody};
@@ -29,13 +29,13 @@ namespace Testbed.TestCases
             bodyDef.Position.Set(0, 4f);
 
             var dynamicBox = new PolygonShape();
-            dynamicBox.SetAsBox(1f, 1f, Vector2.Zero, 45f);
+            dynamicBox.SetAsBox(1f, 1f, TSVector2.Zero, 45f);
 
             // Define the dynamic body fixture.
             var fixtureDef = new FixtureDef
             {
                 Shape = dynamicBox,
-                Density = 1.0f,
+                Density = FP.One,
                 Friction = 0.3f
             };
 
@@ -51,7 +51,7 @@ namespace Testbed.TestCases
 
             for (int i = 0; i < 100; i++)
             {
-                bodyDef.Position = new Vector2(Random.Next(-50, 50), Random.Next(0, 500));
+                bodyDef.Position = new TSVector2(Random.Next(-50, 50), Random.Next(0, 500));
                 bodyDef.Angle = Random.Next(0, 360);
                 World.CreateBody(bodyDef).CreateFixture(fixtureDef);
             }

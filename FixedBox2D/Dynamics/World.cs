@@ -2,7 +2,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Numerics;
+using TrueSync;
 using System.Threading;
 using FixedBox2D.Collision;
 using FixedBox2D.Collision.Collider;
@@ -21,7 +21,7 @@ namespace FixedBox2D.Dynamics
         /// support a variable time step.
         /// 时间步倍率
         /// </summary>
-        private float _invDt0;
+        private FP _invDt0;
 
         /// <summary>
         /// 时间步完成
@@ -54,7 +54,7 @@ namespace FixedBox2D.Dynamics
         /// <summary>
         /// 重力常数
         /// </summary>
-        public Vector2 Gravity { get; set; }
+        public TSVector2 Gravity { get; set; }
 
         /// <summary>
         /// 清除受力
@@ -151,13 +151,13 @@ namespace FixedBox2D.Dynamics
 
         /// Get the quality metric of the dynamic tree. The smaller the better.
         /// The minimum is 1.
-        public float TreeQuality => ContactManager.BroadPhase.GetTreeQuality();
+        public FP TreeQuality => ContactManager.BroadPhase.GetTreeQuality();
 
         public World()
-            : this(new Vector2(0, -10))
+            : this(new TSVector2(0, -10))
         { }
 
-        public World(in Vector2 gravity)
+        public World(in TSVector2 gravity)
         {
             Gravity = gravity;
 
@@ -168,7 +168,7 @@ namespace FixedBox2D.Dynamics
 
             AllowSleep = true;
             IsAutoClearForces = true;
-            _invDt0 = 0.0f;
+            _invDt0 = FP.Zero;
             Profile = default;
         }
 
@@ -421,7 +421,7 @@ namespace FixedBox2D.Dynamics
         /// <param name="timeStep">the amount of time to simulate, this should not vary.</param>
         /// <param name="velocityIterations">for the velocity constraint solver.</param>
         /// <param name="positionIterations">for the position constraint solver.</param>
-        public void Step(float timeStep, int velocityIterations, int positionIterations)
+        public void Step(FP timeStep, int velocityIterations, int positionIterations)
         {
             // profile 计时
             _stepTimer.Restart();
@@ -448,13 +448,13 @@ namespace FixedBox2D.Dynamics
             };
 
             // 计算时间间隔倒数
-            if (timeStep > 0.0f)
+            if (timeStep > FP.Zero)
             {
-                step.InvDt = 1.0f / timeStep;
+                step.InvDt = FP.One / timeStep;
             }
             else
             {
-                step.InvDt = 0.0f;
+                step.InvDt = FP.Zero;
             }
 
             step.DtRatio = _invDt0 * timeStep;
@@ -472,7 +472,7 @@ namespace FixedBox2D.Dynamics
 
             // Integrate velocities, solve velocity constraints, and integrate positions.
             // 对速度进行积分，求解速度约束，整合位置
-            if (_stepComplete && step.Dt > 0.0f)
+            if (_stepComplete && step.Dt > FP.Zero)
             {
                 _timer.Restart();
                 Solve(step);
@@ -482,7 +482,7 @@ namespace FixedBox2D.Dynamics
 
             // Handle TOI events.
             // 处理碰撞时间
-            if (ContinuousPhysics && step.Dt > 0.0f)
+            if (ContinuousPhysics && step.Dt > FP.Zero)
             {
                 _timer.Restart();
                 SolveTOI(step);
@@ -490,7 +490,7 @@ namespace FixedBox2D.Dynamics
                 Profile.SolveTOI = _timer.ElapsedMilliseconds;
             }
 
-            if (step.Dt > 0.0f)
+            if (step.Dt > FP.Zero)
             {
                 _invDt0 = step.InvDt;
             }
@@ -522,7 +522,7 @@ namespace FixedBox2D.Dynamics
                 var body = node.Value;
                 node = node.Next;
                 body.Force.SetZero();
-                body.Torque = 0.0f;
+                body.Torque = FP.Zero;
             }
         }
 
@@ -583,7 +583,7 @@ namespace FixedBox2D.Dynamics
                 Callback = default;
             }
 
-            public float RayCastCallback(in RayCastInput input, int proxyId)
+            public FP RayCastCallback(in RayCastInput input, int proxyId)
             {
                 var userData = ContactManager.BroadPhase.GetUserData(proxyId);
                 var proxy = (FixtureProxy)userData;
@@ -598,7 +598,7 @@ namespace FixedBox2D.Dynamics
                 }
 
                 var fraction = output.Fraction;
-                var point = (1.0f - fraction) * input.P1 + fraction * input.P2;
+                var point = (FP.One - fraction) * input.P1 + fraction * input.P2;
                 return Callback.RayCastCallback(fixture, point, output.Normal, fraction);
             }
         }
@@ -611,11 +611,11 @@ namespace FixedBox2D.Dynamics
         /// @param callback a user implemented callback class.
         /// @param point1 the ray starting point
         /// @param point2 the ray ending point
-        public void RayCast(in IRayCastCallback callback, in Vector2 point1, in Vector2 point2)
+        public void RayCast(in IRayCastCallback callback, in TSVector2 point1, in TSVector2 point2)
         {
             var input = new RayCastInput
             {
-                MaxFraction = 1.0f, P1 = point1,
+                MaxFraction = FP.One, P1 = point1,
                 P2 = point2
             };
             _rayCastCallback.Set(ContactManager, in callback);
@@ -626,7 +626,7 @@ namespace FixedBox2D.Dynamics
         /// Shift the world origin. Useful for large worlds.
         /// The body shift formula is: position -= newOrigin
         /// @param newOrigin the new origin with respect to the old origin
-        public void ShiftOrigin(in Vector2 newOrigin)
+        public void ShiftOrigin(in TSVector2 newOrigin)
         {
             Debug.Assert(!IsLocked);
             if (IsLocked)
@@ -667,9 +667,9 @@ namespace FixedBox2D.Dynamics
         /// <param name="step"></param>
         private void Solve(in TimeStep step)
         {
-            Profile.SolveInit = 0.0f;
-            Profile.SolveVelocity = 0.0f;
-            Profile.SolvePosition = 0.0f;
+            Profile.SolveInit = FP.Zero;
+            Profile.SolveVelocity = FP.Zero;
+            Profile.SolvePosition = FP.Zero;
 
             // Size the island for the worst case.
             // 最坏情况岛屿容量,即全世界在同一个岛屿
@@ -916,7 +916,7 @@ namespace FixedBox2D.Dynamics
                     var b = bodyNode.Value;
                     bodyNode = bodyNode.Next;
                     b.UnsetFlag(BodyFlags.Island);
-                    b.Sweep.Alpha0 = 0.0f;
+                    b.Sweep.Alpha0 = FP.Zero;
                 }
 
                 for (var node = ContactManager.ContactList.First; node != null; node = node.Next)
@@ -926,7 +926,7 @@ namespace FixedBox2D.Dynamics
                     // Invalidate TOI
                     c.Flags &= ~(Contact.ContactFlag.ToiFlag | Contact.ContactFlag.IslandFlag);
                     c.ToiCount = 0;
-                    c.Toi = 1.0f;
+                    c.Toi = FP.One;
                 }
             }
 
@@ -935,7 +935,7 @@ namespace FixedBox2D.Dynamics
             {
                 // Find the first TOI.
                 Contact minContact = null;
-                var minAlpha = 1.0f;
+                var minAlpha = FP.One;
 
                 var contactNode = ContactManager.ContactList.First;
                 while (contactNode != null)
@@ -955,7 +955,7 @@ namespace FixedBox2D.Dynamics
                         continue;
                     }
 
-                    var alpha = 1.0f;
+                    var alpha = FP.One;
                     if (c.Flags.IsSet(Contact.ContactFlag.ToiFlag))
                     {
                         // This contact has a valid cached TOI.
@@ -1013,7 +1013,7 @@ namespace FixedBox2D.Dynamics
                             bB.Sweep.Advance(alpha0);
                         }
 
-                        Debug.Assert(alpha0 < 1.0f);
+                        Debug.Assert(alpha0 < FP.One);
 
                         var indexA = c.ChildIndexA;
                         var indexB = c.ChildIndexB;
@@ -1024,13 +1024,13 @@ namespace FixedBox2D.Dynamics
                         input.ProxyB.Set(fB.Shape, indexB);
                         input.SweepA = bA.Sweep;
                         input.SweepB = bB.Sweep;
-                        input.Tmax = 1.0f;
+                        input.Tmax = FP.One;
 
                         TimeOfImpact.ComputeTimeOfImpact(out var output, input, ToiProfile, GJkProfile);
 
                         // Beta is the fraction of the remaining portion of the .
                         var beta = output.Time;
-                        alpha = output.State == ToiOutput.ToiState.Touching ? Math.Min(alpha0 + (1.0f - alpha0) * beta, 1.0f) : 1.0f;
+                        alpha = output.State == ToiOutput.ToiState.Touching ? FP.Min(alpha0 + (FP.One - alpha0) * beta, FP.One) : FP.One;
 
                         c.Toi = alpha;
                         c.Flags |= Contact.ContactFlag.ToiFlag;
@@ -1044,7 +1044,7 @@ namespace FixedBox2D.Dynamics
                     }
                 }
 
-                if (minContact == default || 1.0f - 10.0f * Settings.Epsilon < minAlpha)
+                if (minContact == default || FP.One - 10.0f * Settings.Epsilon < minAlpha)
                 {
                     // No more TOI events. Done!
                     _stepComplete = true;
@@ -1281,11 +1281,11 @@ namespace FixedBox2D.Dynamics
                     }
                 }
 
-                var dt = (1.0f - minAlpha) * step.Dt;
+                var dt = (FP.One - minAlpha) * step.Dt;
                 var subStep = new TimeStep
                 {
-                    Dt = dt, InvDt = 1.0f / dt,
-                    DtRatio = 1.0f, PositionIterations = 20,
+                    Dt = dt, InvDt = FP.One / dt,
+                    DtRatio = FP.One, PositionIterations = 20,
                     VelocityIterations = step.VelocityIterations, WarmStarting = false
                 };
 
@@ -1424,7 +1424,7 @@ namespace FixedBox2D.Dynamics
                         if (b.BodyType == BodyType.DynamicBody && b.Mass.Equals(0))
                         {
                             // Bad body
-                            DrawShape(f, xf, Color.FromArgb(1.0f, 0.0f, 0.0f));
+                            DrawShape(f, xf, Color.FromArgb(FP.One, FP.Zero, FP.Zero));
                         }
                         else if (isEnabled == false)
                         {
@@ -1482,7 +1482,7 @@ namespace FixedBox2D.Dynamics
                 var bp = ContactManager.BroadPhase;
 
                 var node = BodyList.First;
-                Span<Vector2> vs = stackalloc Vector2[4];
+                Span<TSVector2> vs = stackalloc TSVector2[4];
                 while (node != null)
                 {
                     var b = node.Value;
@@ -1497,10 +1497,10 @@ namespace FixedBox2D.Dynamics
                         foreach (var proxy in f.Proxies)
                         {
                             var aabb = bp.GetFatAABB(proxy.ProxyId);
-                            vs[0] = new Vector2(aabb.LowerBound.X, aabb.LowerBound.Y);
-                            vs[1] = new Vector2(aabb.UpperBound.X, aabb.LowerBound.Y);
-                            vs[2] = new Vector2(aabb.UpperBound.X, aabb.UpperBound.Y);
-                            vs[3] = new Vector2(aabb.LowerBound.X, aabb.UpperBound.Y);
+                            vs[0] = new TSVector2(aabb.LowerBound.X, aabb.LowerBound.Y);
+                            vs[1] = new TSVector2(aabb.UpperBound.X, aabb.LowerBound.Y);
+                            vs[2] = new TSVector2(aabb.UpperBound.X, aabb.UpperBound.Y);
+                            vs[3] = new TSVector2(aabb.LowerBound.X, aabb.UpperBound.Y);
                             Drawer.DrawPolygon(vs, 4, color);
                         }
                     }
@@ -1535,7 +1535,7 @@ namespace FixedBox2D.Dynamics
             {
                 var center = MathUtils.Mul(xf, circle.Position);
                 var radius = circle.Radius;
-                var axis = MathUtils.Mul(xf.Rotation, new Vector2(1.0f, 0.0f));
+                var axis = MathUtils.Mul(xf.Rotation, new TSVector2(FP.One, FP.Zero));
 
                 Drawer.DrawSolidCircle(center, radius, axis, color);
             }
@@ -1574,7 +1574,7 @@ namespace FixedBox2D.Dynamics
             {
                 var vertexCount = poly.Count;
                 Debug.Assert(vertexCount <= Settings.MaxPolygonVertices);
-                Span<Vector2> vertices = stackalloc Vector2[vertexCount];
+                Span<TSVector2> vertices = stackalloc TSVector2[vertexCount];
 
                 for (var i = 0; i < vertexCount; ++i)
                 {

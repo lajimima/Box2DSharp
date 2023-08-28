@@ -1,7 +1,7 @@
 using System;
 using System.Buffers;
 using System.Diagnostics;
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Collider;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
@@ -33,34 +33,34 @@ namespace FixedBox2D.Collision
             // 在边缘形状的外框处理圆形
             var Q = MathUtils.MulT(xfA, MathUtils.Mul(xfB, circleB.Position));
 
-            Vector2 A = edgeA.Vertex1, B = edgeA.Vertex2;
+            TSVector2 A = edgeA.Vertex1, B = edgeA.Vertex2;
             var e = B - A;
 
             // Normal points to the right for a CCW winding
-            var n = new Vector2(e.Y, -e.X);
-            var offset = Vector2.Dot(n, Q - A);
+            var n = new TSVector2(e.Y, -e.X);
+            var offset = TSVector2.Dot(n, Q - A);
 
             var oneSided = edgeA.OneSided;
-            if (oneSided && offset < 0.0f)
+            if (oneSided && offset < FP.Zero)
             {
                 return;
             }
 
             // Barycentric coordinates
             // 质心坐标
-            var u = Vector2.Dot(e, B - Q);
-            var v = Vector2.Dot(e, Q - A);
+            var u = TSVector2.Dot(e, B - Q);
+            var v = TSVector2.Dot(e, Q - A);
 
             var radius = edgeA.Radius + circleB.Radius;
 
             var cf = new ContactFeature {IndexB = 0, TypeB = (byte)ContactFeature.FeatureType.Vertex};
 
             // Region A
-            if (v <= 0.0f)
+            if (v <= FP.Zero)
             {
                 var P = A;
                 var d = Q - P;
-                var dd = Vector2.Dot(d, d);
+                var dd = TSVector2.Dot(d, d);
                 if (dd > radius * radius)
                 {
                     return;
@@ -72,10 +72,10 @@ namespace FixedBox2D.Collision
                     var A1 = edgeA.Vertex0;
                     var B1 = A;
                     var e1 = B1 - A1;
-                    var u1 = Vector2.Dot(e1, B1 - Q);
+                    var u1 = TSVector2.Dot(e1, B1 - Q);
 
                     // Is the circle in Region AB of the previous edge?
-                    if (u1 > 0.0f)
+                    if (u1 > FP.Zero)
                     {
                         return;
                     }
@@ -95,11 +95,11 @@ namespace FixedBox2D.Collision
             }
 
             // Region B
-            if (u <= 0.0f)
+            if (u <= FP.Zero)
             {
                 var P = B;
                 var d = Q - P;
-                var dd = Vector2.Dot(d, d);
+                var dd = TSVector2.Dot(d, d);
                 if (dd > radius * radius)
                 {
                     return;
@@ -111,10 +111,10 @@ namespace FixedBox2D.Collision
                     var B2 = edgeA.Vertex3;
                     var A2 = B;
                     var e2 = B2 - A2;
-                    var v2 = Vector2.Dot(e2, Q - A2);
+                    var v2 = TSVector2.Dot(e2, Q - A2);
 
                     // Is the circle in Region AB of the next edge?
-                    if (v2 > 0.0f)
+                    if (v2 > FP.Zero)
                     {
                         return;
                     }
@@ -135,17 +135,17 @@ namespace FixedBox2D.Collision
 
             {
                 // Region AB
-                var den = Vector2.Dot(e, e);
-                Debug.Assert(den > 0.0f);
-                var P = 1.0f / den * (u * A + v * B);
+                var den = TSVector2.Dot(e, e);
+                Debug.Assert(den > FP.Zero);
+                var P = FP.One / den * (u * A + v * B);
                 var d = Q - P;
-                var dd = Vector2.Dot(d, d);
+                var dd = TSVector2.Dot(d, d);
                 if (dd > radius * radius)
                 {
                     return;
                 }
 
-                if (offset < 0.0f)
+                if (offset < FP.Zero)
                 {
                     n.Set(-n.X, -n.Y);
                 }
@@ -177,13 +177,13 @@ namespace FixedBox2D.Collision
                 EdgeB
             }
 
-            public Vector2 Normal;
+            public TSVector2 Normal;
 
             public EPAxisType Type;
 
             public int Index;
 
-            public float Separation;
+            public FP Separation;
         }
 
         // This holds polygon B expressed in frame A.
@@ -192,12 +192,12 @@ namespace FixedBox2D.Collision
             /// <summary>
             /// Size Settings.MaxPolygonVertices
             /// </summary>
-            public FixedArray8<Vector2> Vertices;
+            public FixedArray8<TSVector2> Vertices;
 
             /// <summary>
             /// Size Settings.MaxPolygonVertices
             /// </summary>
-            public FixedArray8<Vector2> Normals;
+            public FixedArray8<TSVector2> Normals;
 
             public int Count;
         }
@@ -207,20 +207,20 @@ namespace FixedBox2D.Collision
         {
             public int I1, I2;
 
-            public Vector2 Normal;
+            public TSVector2 Normal;
 
-            public Vector2 SideNormal1;
+            public TSVector2 SideNormal1;
 
-            public Vector2 SideNormal2;
+            public TSVector2 SideNormal2;
 
-            public float SideOffset1;
+            public FP SideOffset1;
 
-            public float SideOffset2;
+            public FP SideOffset2;
 
-            public Vector2 V1, V2;
+            public TSVector2 V1, V2;
         }
 
-        static EPAxis ComputeEdgeSeparation(in TempPolygon polygonB, in Vector2 v1, Vector2 normal1)
+        static EPAxis ComputeEdgeSeparation(in TempPolygon polygonB, in TSVector2 v1, TSVector2 normal1)
         {
             EPAxis axis = new EPAxis
             {
@@ -235,12 +235,12 @@ namespace FixedBox2D.Collision
             // Find axis with least overlap (min-max problem)
             for (int j = 0; j < 2; ++j)
             {
-                float sj = Settings.MaxFloat;
+                FP sj = Settings.MaxFloat;
 
                 // Find deepest polygon vertex along axis j
                 for (int i = 0; i < polygonB.Count; ++i)
                 {
-                    float si = Vector2.Dot(axes[j], polygonB.Vertices[i] - v1);
+                    FP si = TSVector2.Dot(axes[j], polygonB.Vertices[i] - v1);
                     if (si < sj)
                     {
                         sj = si;
@@ -258,7 +258,7 @@ namespace FixedBox2D.Collision
             return axis;
         }
 
-        static EPAxis ComputePolygonSeparation(in TempPolygon polygonB, in Vector2 v1, in Vector2 v2)
+        static EPAxis ComputePolygonSeparation(in TempPolygon polygonB, in TSVector2 v1, in TSVector2 v2)
         {
             var axis = new EPAxis
             {
@@ -272,9 +272,9 @@ namespace FixedBox2D.Collision
             {
                 var n = -polygonB.Normals[i];
 
-                var s1 = Vector2.Dot(n, polygonB.Vertices[i] - v1);
-                var s2 = Vector2.Dot(n, polygonB.Vertices[i] - v2);
-                var s = Math.Min(s1, s2);
+                var s1 = TSVector2.Dot(n, polygonB.Vertices[i] - v1);
+                var s2 = TSVector2.Dot(n, polygonB.Vertices[i] - v2);
+                var s = FP.Min(s1, s2);
 
                 if (s > axis.Separation)
                 {
@@ -288,6 +288,10 @@ namespace FixedBox2D.Collision
             return axis;
         }
 
+        // Use hysteresis for jitter reduction.
+        static FP k_relativeTol = FP.One - FP.EN2 * 2;
+        static FP k_absoluteTol = FP.EN3;
+
         public static void CollideEdgeAndPolygon(
             ref Manifold manifold,
             EdgeShape edgeA,
@@ -299,20 +303,20 @@ namespace FixedBox2D.Collision
 
             Transform xf = MathUtils.MulT(xfA, xfB);
 
-            Vector2 centroidB = MathUtils.Mul(xf, polygonB.Centroid);
+            TSVector2 centroidB = MathUtils.Mul(xf, polygonB.Centroid);
 
-            Vector2 v1 = edgeA.Vertex1;
-            Vector2 v2 = edgeA.Vertex2;
+            TSVector2 v1 = edgeA.Vertex1;
+            TSVector2 v2 = edgeA.Vertex2;
 
-            Vector2 edge1 = v2 - v1;
+            TSVector2 edge1 = v2 - v1;
             edge1.Normalize();
 
             // Normal points to the right for a CCW winding
-            Vector2 normal1 = new Vector2(edge1.Y, -edge1.X);
-            float offset1 = Vector2.Dot(normal1, centroidB - v1);
+            TSVector2 normal1 = new TSVector2(edge1.Y, -edge1.X);
+            FP offset1 = TSVector2.Dot(normal1, centroidB - v1);
 
             bool oneSided = edgeA.OneSided;
-            if (oneSided && offset1 < 0.0f)
+            if (oneSided && offset1 < FP.Zero)
             {
                 return;
             }
@@ -326,7 +330,7 @@ namespace FixedBox2D.Collision
                 tempPolygonB.Normals[i] = MathUtils.Mul(xf.Rotation, polygonB.Normals[i]);
             }
 
-            float radius = polygonB.Radius + edgeA.Radius;
+            FP radius = polygonB.Radius + edgeA.Radius;
 
             EPAxis edgeAxis = ComputeEdgeSeparation(tempPolygonB, v1, normal1);
             if (edgeAxis.Separation > radius)
@@ -339,10 +343,6 @@ namespace FixedBox2D.Collision
             {
                 return;
             }
-
-            // Use hysteresis for jitter reduction.
-            const float k_relativeTol = 0.98f;
-            const float k_absoluteTol = 0.001f;
 
             var primaryAxis = new EPAxis();
             if (primaryAxis.Separation - radius > k_relativeTol * (edgeAxis.Separation - radius) + k_absoluteTol)
@@ -359,25 +359,24 @@ namespace FixedBox2D.Collision
                 // Smooth collision
                 // See https://box2d.org/posts/2020/06/ghost-collisions/
 
-                Vector2 edge0 = v1 - edgeA.Vertex0;
+                TSVector2 edge0 = v1 - edgeA.Vertex0;
                 edge0.Normalize();
-                Vector2 normal0 = new Vector2(edge0.Y, -edge0.X);
-                bool convex1 = MathUtils.Cross(edge0, edge1) >= 0.0f;
+                TSVector2 normal0 = new TSVector2(edge0.Y, -edge0.X);
+                bool convex1 = MathUtils.Cross(edge0, edge1) >= FP.Zero;
 
-                Vector2 edge2 = edgeA.Vertex3 - v2;
+                TSVector2 edge2 = edgeA.Vertex3 - v2;
                 edge2.Normalize();
-                Vector2 normal2 = new Vector2(edge2.Y, -edge2.X);
-                bool convex2 = MathUtils.Cross(edge1, edge2) >= 0.0f;
+                TSVector2 normal2 = new TSVector2(edge2.Y, -edge2.X);
+                bool convex2 = MathUtils.Cross(edge1, edge2) >= FP.Zero;
 
-                const float sinTol = 0.1f;
-                bool side1 = Vector2.Dot(primaryAxis.Normal, edge1) <= 0.0f;
+                bool side1 = TSVector2.Dot(primaryAxis.Normal, edge1) <= FP.Zero;
 
                 // Check Gauss Map
                 if (side1)
                 {
                     if (convex1)
                     {
-                        if (MathUtils.Cross(primaryAxis.Normal, normal0) > sinTol)
+                        if (MathUtils.Cross(primaryAxis.Normal, normal0) > FP.EN1)
                         {
                             // Skip region
                             return;
@@ -395,7 +394,7 @@ namespace FixedBox2D.Collision
                 {
                     if (convex2)
                     {
-                        if (MathUtils.Cross(normal2, primaryAxis.Normal) > sinTol)
+                        if (MathUtils.Cross(normal2, primaryAxis.Normal) > FP.EN1)
                         {
                             // Skip region
                             return;
@@ -419,10 +418,10 @@ namespace FixedBox2D.Collision
 
                 // Search for the polygon normal that is most anti-parallel to the edge normal.
                 int bestIndex = 0;
-                float bestValue = Vector2.Dot(primaryAxis.Normal, tempPolygonB.Normals[0]);
+                FP bestValue = TSVector2.Dot(primaryAxis.Normal, tempPolygonB.Normals[0]);
                 for (int i = 1; i < tempPolygonB.Count; ++i)
                 {
-                    float value = Vector2.Dot(primaryAxis.Normal, tempPolygonB.Normals[i]);
+                    FP value = TSVector2.Dot(primaryAxis.Normal, tempPolygonB.Normals[i]);
                     if (value < bestValue)
                     {
                         bestValue = value;
@@ -480,8 +479,8 @@ namespace FixedBox2D.Collision
                 refFace.SideNormal2 = -refFace.SideNormal1;
             }
 
-            refFace.SideOffset1 = Vector2.Dot(refFace.SideNormal1, refFace.V1);
-            refFace.SideOffset2 = Vector2.Dot(refFace.SideNormal2, refFace.V2);
+            refFace.SideOffset1 = TSVector2.Dot(refFace.SideNormal1, refFace.V1);
+            refFace.SideOffset2 = TSVector2.Dot(refFace.SideNormal2, refFace.V2);
 
             // Clip incident edge against reference face side planes
             Span<ClipVertex> clipPoints1 = stackalloc ClipVertex[2];
@@ -519,7 +518,7 @@ namespace FixedBox2D.Collision
             var pointCount = 0;
             for (var i = 0; i < Settings.MaxManifoldPoints; ++i)
             {
-                var separation = Vector2.Dot(refFace.Normal, clipPoints2[i].Vector - refFace.V1);
+                var separation = TSVector2.Dot(refFace.Normal, clipPoints2[i].Vector - refFace.V1);
 
                 if (separation <= radius)
                 {

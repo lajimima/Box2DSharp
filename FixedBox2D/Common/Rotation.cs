@@ -1,6 +1,6 @@
 using System;
-using System.Numerics;
 using System.Runtime.CompilerServices;
+using TrueSync;
 
 namespace FixedBox2D.Common
 {
@@ -8,54 +8,51 @@ namespace FixedBox2D.Common
     public struct Rotation
     {
         /// Sine and cosine
-        public float Sin;
+        public FP Sin;
 
-        public float Cos;
+        public FP Cos;
 
-        public Rotation(float sin, float cos)
+        public Rotation(FP sin, FP cos)
         {
             Sin = sin;
             Cos = cos;
         }
 
         /// Initialize from an angle in radians
-        public Rotation(float angle)
+        public Rotation(FP angle)
         {
             // TODO_ERIN optimize
-            Sin = (float) Math.Sin(angle);
-            Cos = (float) Math.Cos(angle);
+            Sin = FP.FastSinAngle(angle);
+            Cos = FP.FastCosAngle(angle);
         }
 
         /// Set using an angle in radians.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Set(float angle)
+        public void Set(FP angle)
         {
             // TODO_ERIN optimize
-            Sin = (float) Math.Sin(angle);
-            Cos = (float) Math.Cos(angle);
+            Sin = FP.FastSinAngle(angle);
+            Cos = FP.FastCosAngle(angle);
         }
 
         /// Set to the identity rotation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetIdentity()
         {
-            Sin = 0.0f;
-            Cos = 1.0f;
+            Sin = FP.Zero;
+            Cos = FP.One;
         }
 
-        /// Get the angle in radians
-        public float Angle => (float) Math.Atan2(Sin, Cos);
-
         /// Get the x-axis
-        public Vector2 GetXAxis()
+        public TSVector2 GetXAxis()
         {
-            return new Vector2(Cos, Sin);
+            return new TSVector2(Cos, Sin);
         }
 
         /// Get the u-axis
-        public Vector2 GetYAxis()
+        public TSVector2 GetYAxis()
         {
-            return new Vector2(-Sin, Cos);
+            return new TSVector2(-Sin, Cos);
         }
     }
 }

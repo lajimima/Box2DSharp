@@ -1,6 +1,6 @@
 using System;
 using System.Diagnostics;
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Common;
 
 namespace FixedBox2D.Dynamics.Joints
@@ -15,51 +15,51 @@ namespace FixedBox2D.Dynamics.Joints
     /// zero length.
     public class PulleyJoint : Joint
     {
-        private readonly float _constant;
+        private readonly FP _constant;
 
-        private readonly float _lengthA;
+        private readonly FP _lengthA;
 
-        private readonly float _lengthB;
+        private readonly FP _lengthB;
 
         // Solver shared
-        private readonly Vector2 _localAnchorA;
+        private readonly TSVector2 _localAnchorA;
 
-        private readonly Vector2 _localAnchorB;
+        private readonly TSVector2 _localAnchorB;
 
-        private readonly float _ratio;
+        private readonly FP _ratio;
 
-        private Vector2 _groundAnchorA;
+        private TSVector2 _groundAnchorA;
 
-        private Vector2 _groundAnchorB;
+        private TSVector2 _groundAnchorB;
 
-        private float _impulse;
+        private FP _impulse;
 
         // Solver temp
         private int _indexA;
 
         private int _indexB;
 
-        private float _invIa;
+        private FP _invIa;
 
-        private float _invIb;
+        private FP _invIb;
 
-        private float _invMassA;
+        private FP _invMassA;
 
-        private float _invMassB;
+        private FP _invMassB;
 
-        private Vector2 _localCenterA;
+        private TSVector2 _localCenterA;
 
-        private Vector2 _localCenterB;
+        private TSVector2 _localCenterB;
 
-        private float _mass;
+        private FP _mass;
 
-        private Vector2 _rA;
+        private TSVector2 _rA;
 
-        private Vector2 _rB;
+        private TSVector2 _rB;
 
-        private Vector2 _uA;
+        private TSVector2 _uA;
 
-        private Vector2 _uB;
+        private TSVector2 _uB;
 
         public PulleyJoint(PulleyJointDef def) : base(def)
         {
@@ -71,85 +71,85 @@ namespace FixedBox2D.Dynamics.Joints
             _lengthA = def.LengthA;
             _lengthB = def.LengthB;
 
-            Debug.Assert(!def.Ratio.Equals(0.0f));
+            Debug.Assert(!def.Ratio.Equals(FP.Zero));
             _ratio = def.Ratio;
 
             _constant = def.LengthA + _ratio * def.LengthB;
 
-            _impulse = 0.0f;
+            _impulse = FP.Zero;
         }
 
         /// Get the first ground anchor.
-        public Vector2 GetGroundAnchorA()
+        public TSVector2 GetGroundAnchorA()
         {
             return _groundAnchorA;
         }
 
         /// Get the second ground anchor.
-        public Vector2 GetGroundAnchorB()
+        public TSVector2 GetGroundAnchorB()
         {
             return _groundAnchorB;
         }
 
         /// Get the current length of the segment attached to bodyA.
-        public float GetLengthA()
+        public FP GetLengthA()
         {
             return _lengthA;
         }
 
         /// Get the current length of the segment attached to bodyB.
-        public float GetLengthB()
+        public FP GetLengthB()
         {
             return _lengthB;
         }
 
         /// Get the pulley ratio.
-        public float GetRatio()
+        public FP GetRatio()
         {
             return _ratio;
         }
 
         /// Get the current length of the segment attached to bodyA.
-        public float GetCurrentLengthA()
+        public FP GetCurrentLengthA()
         {
             var p = BodyA.GetWorldPoint(_localAnchorA);
             var s = _groundAnchorA;
             var d = p - s;
-            return d.Length();
+            return d.magnitude;
         }
 
         /// Get the current length of the segment attached to bodyB.
-        public float GetCurrentLengthB()
+        public FP GetCurrentLengthB()
         {
             var p = BodyB.GetWorldPoint(_localAnchorB);
             var s = _groundAnchorB;
             var d = p - s;
-            return d.Length();
+            return d.magnitude;
         }
 
         /// <inheritdoc />
-        public override Vector2 GetAnchorA()
+        public override TSVector2 GetAnchorA()
         {
             return BodyA.GetWorldPoint(_localAnchorA);
         }
 
         /// <inheritdoc />
-        public override Vector2 GetAnchorB()
+        public override TSVector2 GetAnchorB()
         {
             return BodyB.GetWorldPoint(_localAnchorB);
         }
 
         /// <inheritdoc />
-        public override Vector2 GetReactionForce(float inv_dt)
+        public override TSVector2 GetReactionForce(FP inv_dt)
         {
             var P = _impulse * _uB;
             return inv_dt * P;
         }
 
         /// <inheritdoc />
-        public override float GetReactionTorque(float inv_dt)
+        public override FP GetReactionTorque(FP inv_dt)
         {
-            return 0.0f;
+            return FP.Zero;
         }
 
         /// <inheritdoc />
@@ -184,12 +184,12 @@ namespace FixedBox2D.Dynamics.Joints
             _uA = cA + _rA - _groundAnchorA;
             _uB = cB + _rB - _groundAnchorB;
 
-            var lengthA = _uA.Length();
-            var lengthB = _uB.Length();
+            var lengthA = _uA.magnitude;
+            var lengthB = _uB.magnitude;
 
             if (lengthA > 10.0f * Settings.LinearSlop)
             {
-                _uA *= 1.0f / lengthA;
+                _uA *= FP.One / lengthA;
             }
             else
             {
@@ -198,7 +198,7 @@ namespace FixedBox2D.Dynamics.Joints
 
             if (lengthB > 10.0f * Settings.LinearSlop)
             {
-                _uB *= 1.0f / lengthB;
+                _uB *= FP.One / lengthB;
             }
             else
             {
@@ -214,9 +214,9 @@ namespace FixedBox2D.Dynamics.Joints
 
             _mass = mA + _ratio * _ratio * mB;
 
-            if (_mass > 0.0f)
+            if (_mass > FP.Zero)
             {
-                _mass = 1.0f / _mass;
+                _mass = FP.One / _mass;
             }
 
             if (data.Step.WarmStarting)
@@ -235,7 +235,7 @@ namespace FixedBox2D.Dynamics.Joints
             }
             else
             {
-                _impulse = 0.0f;
+                _impulse = FP.Zero;
             }
 
             data.Velocities[_indexA].V = vA;
@@ -255,7 +255,7 @@ namespace FixedBox2D.Dynamics.Joints
             var vpA = vA + MathUtils.Cross(wA, _rA);
             var vpB = vB + MathUtils.Cross(wB, _rB);
 
-            var Cdot = -Vector2.Dot(_uA, vpA) - _ratio * Vector2.Dot(_uB, vpB);
+            var Cdot = -TSVector2.Dot(_uA, vpA) - _ratio * TSVector2.Dot(_uB, vpB);
             var impulse = -_mass * Cdot;
             _impulse += impulse;
 
@@ -290,12 +290,12 @@ namespace FixedBox2D.Dynamics.Joints
             var uA = cA + rA - _groundAnchorA;
             var uB = cB + rB - _groundAnchorB;
 
-            var lengthA = uA.Length();
-            var lengthB = uB.Length();
+            var lengthA = uA.magnitude;
+            var lengthB = uB.magnitude;
 
             if (lengthA > 10.0f * Settings.LinearSlop)
             {
-                uA *= 1.0f / lengthA;
+                uA *= FP.One / lengthA;
             }
             else
             {
@@ -304,7 +304,7 @@ namespace FixedBox2D.Dynamics.Joints
 
             if (lengthB > 10.0f * Settings.LinearSlop)
             {
-                uB *= 1.0f / lengthB;
+                uB *= FP.One / lengthB;
             }
             else
             {
@@ -320,13 +320,13 @@ namespace FixedBox2D.Dynamics.Joints
 
             var mass = mA + _ratio * _ratio * mB;
 
-            if (mass > 0.0f)
+            if (mass > FP.Zero)
             {
-                mass = 1.0f / mass;
+                mass = FP.One / mass;
             }
 
             var C = _constant - lengthA - _ratio * lengthB;
-            var linearError = Math.Abs(C);
+            var linearError = FP.Abs(C);
 
             var impulse = -mass * C;
 
@@ -367,7 +367,7 @@ namespace FixedBox2D.Dynamics.Joints
         }
 
         /// <inheritdoc />
-        public override void ShiftOrigin(in Vector2 newOrigin)
+        public override void ShiftOrigin(in TSVector2 newOrigin)
         {
             _groundAnchorA -= newOrigin;
             _groundAnchorB -= newOrigin;

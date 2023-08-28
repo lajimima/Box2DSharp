@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Numerics;
+using TrueSync;
 using System.Runtime.CompilerServices;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
@@ -48,16 +48,16 @@ namespace FixedBox2D.Dynamics
         }
 
         /// The world angle of the body in radians.
-        public float Angle;
+        public FP Angle;
 
         /// Angular damping is use to reduce the angular velocity. The damping parameter
-        /// can be larger than 1.0f but the damping effect becomes sensitive to the
+        /// can be larger than FP.One but the damping effect becomes sensitive to the
         /// time step when the damping parameter is large.
         /// Units are 1/time
-        public float AngularDamping;
+        public FP AngularDamping;
 
         /// The angular velocity of the body.
-        public float AngularVelocity;
+        public FP AngularVelocity;
 
         private bool? _awake;
 
@@ -81,27 +81,27 @@ namespace FixedBox2D.Dynamics
         /// Should this body be prevented from rotating? Useful for characters.
         public bool FixedRotation;
 
-        private float? _gravityScale;
+        private FP? _gravityScale;
 
         /// Scale the gravity applied to this body.
-        public float GravityScale
+        public FP GravityScale
         {
-            get => _gravityScale ?? 1.0f;
+            get => _gravityScale ?? FP.One;
             set => _gravityScale = value;
         }
 
         /// Linear damping is use to reduce the linear velocity. The damping parameter
-        /// can be larger than 1.0f but the damping effect becomes sensitive to the
+        /// can be larger than FP.One but the damping effect becomes sensitive to the
         /// time step when the damping parameter is large.
         /// Units are 1/time
-        public float LinearDamping;
+        public FP LinearDamping;
 
         /// The linear velocity of the body's origin in world co-ordinates.
-        public Vector2 LinearVelocity;
+        public TSVector2 LinearVelocity;
 
         /// The world position of the body. Avoid creating bodies at the origin
         /// since this can lead to many overlapping shapes.
-        public Vector2 Position;
+        public TSVector2 Position;
 
         /// Use this to store application specific body data.
         public object UserData;
@@ -134,24 +134,24 @@ namespace FixedBox2D.Dynamics
         /// Get/Set the angular damping of the body.
         /// 角阻尼
         /// </summary>
-        private float _angularDamping;
+        private FP _angularDamping;
 
         /// <summary>
         /// 质心的转动惯量
         /// </summary>
-        private float _inertia;
+        private FP _inertia;
 
         /// <summary>
         /// 线性阻尼
         /// </summary>
-        private float _linearDamping;
+        private FP _linearDamping;
 
         /// <summary>
         /// Get the total mass of the body.
         /// @return the mass, usually in kilograms (kg).
         /// 质量
         /// </summary>
-        private float _mass;
+        private FP _mass;
 
         /// <summary>
         /// 物体类型
@@ -171,22 +171,22 @@ namespace FixedBox2D.Dynamics
         /// <summary>
         /// 受力
         /// </summary>
-        internal Vector2 Force;
+        internal TSVector2 Force;
 
         /// <summary>
         /// 重力系数
         /// </summary>
-        internal float GravityScale;
+        internal FP GravityScale;
 
         /// <summary>
         /// 质心的转动惯量倒数
         /// </summary>
-        internal float InverseInertia;
+        internal FP InverseInertia;
 
         /// <summary>
         /// 质量倒数
         /// </summary>
-        internal float InvMass;
+        internal FP InvMass;
 
         /// <summary>
         /// 岛屿索引
@@ -206,7 +206,7 @@ namespace FixedBox2D.Dynamics
         /// <summary>
         /// 扭矩
         /// </summary>
-        internal float Torque;
+        internal FP Torque;
 
         /// <summary>
         /// 物体位置
@@ -219,8 +219,8 @@ namespace FixedBox2D.Dynamics
             Debug.Assert(def.LinearVelocity.IsValid());
             Debug.Assert(def.Angle.IsValid());
             Debug.Assert(def.AngularVelocity.IsValid());
-            Debug.Assert(def.AngularDamping.IsValid() && def.AngularDamping >= 0.0f);
-            Debug.Assert(def.LinearDamping.IsValid() && def.LinearDamping >= 0.0f);
+            Debug.Assert(def.AngularDamping.IsValid() && def.AngularDamping >= FP.Zero);
+            Debug.Assert(def.LinearDamping.IsValid() && def.LinearDamping >= FP.Zero);
 
             Flags = 0;
 
@@ -256,12 +256,12 @@ namespace FixedBox2D.Dynamics
 
             Sweep = new Sweep
             {
-                LocalCenter = Vector2.Zero,
+                LocalCenter = TSVector2.Zero,
                 C0 = Transform.Position,
                 C = Transform.Position,
                 A0 = def.Angle,
                 A = def.Angle,
-                Alpha0 = 0.0f
+                Alpha0 = FP.Zero
             };
 
             JointEdges = new LinkedList<JointEdge>();
@@ -277,22 +277,22 @@ namespace FixedBox2D.Dynamics
             GravityScale = def.GravityScale;
 
             Force.SetZero();
-            Torque = 0.0f;
+            Torque = FP.Zero;
 
-            SleepTime = 0.0f;
+            SleepTime = FP.Zero;
 
             _type = def.BodyType;
 
-            _mass = 0.0f;
-            InvMass = 0.0f;
+            _mass = FP.Zero;
+            InvMass = FP.Zero;
 
-            _inertia = 0.0f;
-            InverseInertia = 0.0f;
+            _inertia = FP.Zero;
+            InverseInertia = FP.Zero;
 
             UserData = def.UserData;
         }
 
-        public float AngularDamping
+        public FP AngularDamping
         {
             get => _angularDamping;
             set => _angularDamping = value;
@@ -303,14 +303,14 @@ namespace FixedBox2D.Dynamics
         /// the new angular velocity in radians/second.
         /// 角速度
         /// </summary>
-        public float AngularVelocity { get; internal set; }
+        public FP AngularVelocity { get; internal set; }
 
         /// Get the rotational inertia of the body about the local origin.
         /// @return the rotational inertia, usually in kg-m^2.
-        public float Inertia => _inertia + _mass * Vector2.Dot(Sweep.LocalCenter, Sweep.LocalCenter);
+        public FP Inertia => _inertia + _mass * TSVector2.Dot(Sweep.LocalCenter, Sweep.LocalCenter);
 
         /// Get/Set the linear damping of the body.
-        public float LinearDamping
+        public FP LinearDamping
         {
             get => _linearDamping;
             set => _linearDamping = value;
@@ -323,14 +323,14 @@ namespace FixedBox2D.Dynamics
         /// @param v the new linear velocity of the center of mass.
         /// Get the linear velocity of the center of mass.
         /// @return the linear velocity of the center of mass.
-        public Vector2 LinearVelocity { get; internal set; }
+        public TSVector2 LinearVelocity { get; internal set; }
 
-        public float Mass => _mass;
+        public FP Mass => _mass;
 
         /// <summary>
         /// 休眠时间
         /// </summary>
-        internal float SleepTime { get; set; }
+        internal FP SleepTime { get; set; }
 
         /// Set the type of this body. This may alter the mass and velocity.
         public BodyType BodyType
@@ -355,8 +355,8 @@ namespace FixedBox2D.Dynamics
 
                 if (_type == BodyType.StaticBody)
                 {
-                    LinearVelocity = Vector2.Zero;
-                    AngularVelocity = 0.0f;
+                    LinearVelocity = TSVector2.Zero;
+                    AngularVelocity = FP.Zero;
                     Sweep.A0 = Sweep.A;
                     Sweep.C0 = Sweep.C;
                     UnsetFlag(BodyFlags.IsAwake);
@@ -366,7 +366,7 @@ namespace FixedBox2D.Dynamics
                 IsAwake = true;
 
                 Force.SetZero();
-                Torque = 0.0f;
+                Torque = FP.Zero;
 
                 // Delete the attached contacts.
                 // 删除所有接触点
@@ -452,16 +452,16 @@ namespace FixedBox2D.Dynamics
                 if (value)
                 {
                     Flags |= BodyFlags.IsAwake;
-                    SleepTime = 0.0f;
+                    SleepTime = FP.Zero;
                 }
                 else
                 {
                     Flags &= ~BodyFlags.IsAwake;
-                    SleepTime = 0.0f;
-                    LinearVelocity = Vector2.Zero;
-                    AngularVelocity = 0.0f;
+                    SleepTime = FP.Zero;
+                    LinearVelocity = TSVector2.Zero;
+                    AngularVelocity = FP.Zero;
                     Force.SetZero();
-                    Torque = 0.0f;
+                    Torque = FP.Zero;
                 }
             }
         }
@@ -559,7 +559,7 @@ namespace FixedBox2D.Dynamics
                     Flags &= ~BodyFlags.FixedRotation;
                 }
 
-                AngularVelocity = 0.0f;
+                AngularVelocity = FP.Zero;
 
                 ResetMassData();
             }
@@ -586,14 +586,14 @@ namespace FixedBox2D.Dynamics
             GC.SuppressFinalize(this);
         }
 
-        public void SetAngularVelocity(float value)
+        public void SetAngularVelocity(FP value)
         {
             if (_type == BodyType.StaticBody) // 静态物体无角速度
             {
                 return;
             }
 
-            if (value * value > 0.0f)
+            if (value * value > FP.Zero)
             {
                 IsAwake = true;
             }
@@ -601,14 +601,14 @@ namespace FixedBox2D.Dynamics
             AngularVelocity = value;
         }
 
-        public void SetLinearVelocity(in Vector2 value)
+        public void SetLinearVelocity(in TSVector2 value)
         {
             if (_type == BodyType.StaticBody) // 静态物体无加速度
             {
                 return;
             }
 
-            if (Vector2.Dot(value, value) > 0.0f) // 点积大于0时唤醒本物体
+            if (TSVector2.Dot(value, value) > FP.Zero) // 点积大于0时唤醒本物体
             {
                 IsAwake = true;
             }
@@ -648,7 +648,7 @@ namespace FixedBox2D.Dynamics
             Fixtures.Add(fixture);
 
             // Adjust mass properties if needed.
-            if (fixture.Density > 0.0f)
+            if (fixture.Density > FP.Zero)
             {
                 ResetMassData();
             }
@@ -669,7 +669,7 @@ namespace FixedBox2D.Dynamics
         /// @param density the shape density (set to zero for static bodies).
         /// @warning This function is locked during callbacks.
         /// 创建夹具
-        public Fixture CreateFixture(Shape shape, float density)
+        public Fixture CreateFixture(Shape shape, FP density)
         {
             var def = new FixtureDef { Shape = shape, Density = density };
 
@@ -737,7 +737,7 @@ namespace FixedBox2D.Dynamics
 
             // Reset the mass data.
             // 夹具销毁后重新计算物体质量
-            if (density > 0.0f)
+            if (density > FP.Zero)
             {
                 ResetMassData();
             }
@@ -748,7 +748,7 @@ namespace FixedBox2D.Dynamics
         /// Note: contacts are updated on the next call to b2World::Step.
         /// @param position the world position of the body's local origin.
         /// @param angle the world rotation in radians.
-        public void SetTransform(in Vector2 position, float angle)
+        public void SetTransform(in TSVector2 position, FP angle)
         {
             Debug.Assert(_world.IsLocked == false);
             if (_world.IsLocked)
@@ -784,26 +784,26 @@ namespace FixedBox2D.Dynamics
 
         /// Get the world body origin position.
         /// @return the world position of the body's origin.
-        public Vector2 GetPosition()
+        public TSVector2 GetPosition()
         {
             return Transform.Position;
         }
 
         /// Get the angle in radians.
         /// @return the current world rotation angle in radians.
-        public float GetAngle()
+        public FP GetAngle()
         {
             return Sweep.A;
         }
 
         /// Get the world position of the center of mass.
-        public Vector2 GetWorldCenter()
+        public TSVector2 GetWorldCenter()
         {
             return Sweep.C;
         }
 
         /// Get the local position of the center of mass.
-        public Vector2 GetLocalCenter()
+        public TSVector2 GetLocalCenter()
         {
             return Sweep.LocalCenter;
         }
@@ -820,7 +820,7 @@ namespace FixedBox2D.Dynamics
         /// <param name="force"></param>
         /// <param name="point"></param>
         /// <param name="wake"></param>
-        public void ApplyForce(in Vector2 force, in Vector2 point, bool wake)
+        public void ApplyForce(in TSVector2 force, in TSVector2 point, bool wake)
         {
             if (_type != BodyType.DynamicBody)
             {
@@ -848,7 +848,7 @@ namespace FixedBox2D.Dynamics
         /// </summary>
         /// <param name="force"></param>
         /// <param name="wake"></param>
-        public void ApplyForceToCenter(in Vector2 force, bool wake)
+        public void ApplyForceToCenter(in TSVector2 force, bool wake)
         {
             if (_type != BodyType.DynamicBody)
             {
@@ -876,7 +876,7 @@ namespace FixedBox2D.Dynamics
         /// </summary>
         /// <param name="torque"></param>
         /// <param name="wake"></param>
-        public void ApplyTorque(float torque, bool wake)
+        public void ApplyTorque(FP torque, bool wake)
         {
             if (_type != BodyType.DynamicBody)
             {
@@ -907,7 +907,7 @@ namespace FixedBox2D.Dynamics
         /// <param name="impulse"></param>
         /// <param name="point"></param>
         /// <param name="wake"></param>
-        public void ApplyLinearImpulse(in Vector2 impulse, in Vector2 point, bool wake)
+        public void ApplyLinearImpulse(in TSVector2 impulse, in TSVector2 point, bool wake)
         {
             if (_type != BodyType.DynamicBody)
             {
@@ -935,7 +935,7 @@ namespace FixedBox2D.Dynamics
         /// </summary>
         /// <param name="impulse"></param>
         /// <param name="wake"></param>
-        public void ApplyLinearImpulseToCenter(in Vector2 impulse, bool wake)
+        public void ApplyLinearImpulseToCenter(in TSVector2 impulse, bool wake)
         {
             if (_type != BodyType.DynamicBody)
             {
@@ -962,7 +962,7 @@ namespace FixedBox2D.Dynamics
         /// </summary>
         /// <param name="impulse"></param>
         /// <param name="wake"></param>
-        public void ApplyAngularImpulse(float impulse, bool wake)
+        public void ApplyAngularImpulse(FP impulse, bool wake)
         {
             if (_type != BodyType.DynamicBody)
             {
@@ -988,7 +988,7 @@ namespace FixedBox2D.Dynamics
             return new MassData
             {
                 Mass = _mass,
-                RotationInertia = _inertia + _mass * Vector2.Dot(Sweep.LocalCenter, Sweep.LocalCenter),
+                RotationInertia = _inertia + _mass * TSVector2.Dot(Sweep.LocalCenter, Sweep.LocalCenter),
                 Center = Sweep.LocalCenter
             };
         }
@@ -1011,23 +1011,23 @@ namespace FixedBox2D.Dynamics
                 return;
             }
 
-            InvMass = 0.0f;
-            _inertia = 0.0f;
-            InverseInertia = 0.0f;
+            InvMass = FP.Zero;
+            _inertia = FP.Zero;
+            InverseInertia = FP.Zero;
 
             _mass = massData.Mass;
-            if (_mass <= 0.0f)
+            if (_mass <= FP.Zero)
             {
-                _mass = 1.0f;
+                _mass = FP.One;
             }
 
-            InvMass = 1.0f / _mass;
+            InvMass = FP.One / _mass;
 
-            if (massData.RotationInertia > 0.0f && !Flags.IsSet(BodyFlags.FixedRotation)) // 存在转动惯量且物体可旋转
+            if (massData.RotationInertia > FP.Zero && !Flags.IsSet(BodyFlags.FixedRotation)) // 存在转动惯量且物体可旋转
             {
-                _inertia = massData.RotationInertia - _mass * Vector2.Dot(massData.Center, massData.Center);
-                Debug.Assert(_inertia > 0.0f);
-                InverseInertia = 1.0f / _inertia;
+                _inertia = massData.RotationInertia - _mass * TSVector2.Dot(massData.Center, massData.Center);
+                Debug.Assert(_inertia > FP.Zero);
+                InverseInertia = FP.One / _inertia;
             }
 
             // Move center of mass.
@@ -1047,10 +1047,10 @@ namespace FixedBox2D.Dynamics
         {
             // Compute mass data from shapes. Each shape has its own density.
             // 从所有形状计算质量数据,每个形状都有各自的密度
-            _mass = 0.0f;
-            InvMass = 0.0f;
-            _inertia = 0.0f;
-            InverseInertia = 0.0f;
+            _mass = FP.Zero;
+            InvMass = FP.Zero;
+            _inertia = FP.Zero;
+            InverseInertia = FP.Zero;
             Sweep.LocalCenter.SetZero();
 
             // Static and kinematic bodies have zero mass.
@@ -1065,10 +1065,10 @@ namespace FixedBox2D.Dynamics
             Debug.Assert(_type == BodyType.DynamicBody);
 
             // Accumulate mass over all fixtures.
-            var localCenter = Vector2.Zero;
+            var localCenter = TSVector2.Zero;
             foreach (var f in Fixtures)
             {
-                if (f.Density.Equals(0.0f))
+                if (f.Density.Equals(FP.Zero))
                 {
                     continue;
                 }
@@ -1080,23 +1080,23 @@ namespace FixedBox2D.Dynamics
             }
 
             // Compute center of mass.
-            if (_mass > 0.0f)
+            if (_mass > FP.Zero)
             {
-                InvMass = 1.0f / _mass;
+                InvMass = FP.One / _mass;
                 localCenter *= InvMass;
             }
 
-            if (_inertia > 0.0f && !Flags.IsSet(BodyFlags.FixedRotation)) // 存在转动惯量且物体可旋转
+            if (_inertia > FP.Zero && !Flags.IsSet(BodyFlags.FixedRotation)) // 存在转动惯量且物体可旋转
             {
                 // Center the inertia about the center of mass.
-                _inertia -= _mass * Vector2.Dot(localCenter, localCenter);
-                Debug.Assert(_inertia > 0.0f);
-                InverseInertia = 1.0f / _inertia;
+                _inertia -= _mass * TSVector2.Dot(localCenter, localCenter);
+                Debug.Assert(_inertia > FP.Zero);
+                InverseInertia = FP.One / _inertia;
             }
             else
             {
-                _inertia = 0.0f;
-                InverseInertia = 0.0f;
+                _inertia = FP.Zero;
+                InverseInertia = FP.Zero;
             }
 
             // Move center of mass.
@@ -1111,7 +1111,7 @@ namespace FixedBox2D.Dynamics
         /// Get the world coordinates of a point given the local coordinates.
         /// @param localPoint a point on the body measured relative the the body's origin.
         /// @return the same point expressed in world coordinates.
-        public Vector2 GetWorldPoint(in Vector2 localPoint)
+        public TSVector2 GetWorldPoint(in TSVector2 localPoint)
         {
             return MathUtils.Mul(Transform, localPoint);
         }
@@ -1119,7 +1119,7 @@ namespace FixedBox2D.Dynamics
         /// Get the world coordinates of a vector given the local coordinates.
         /// @param localVector a vector fixed in the body.
         /// @return the same vector expressed in world coordinates.
-        public Vector2 GetWorldVector(in Vector2 localVector)
+        public TSVector2 GetWorldVector(in TSVector2 localVector)
         {
             return MathUtils.Mul(Transform.Rotation, localVector);
         }
@@ -1127,7 +1127,7 @@ namespace FixedBox2D.Dynamics
         /// Gets a local point relative to the body's origin given a world point.
         /// @param a point in world coordinates.
         /// @return the corresponding local point relative to the body's origin.
-        public Vector2 GetLocalPoint(in Vector2 worldPoint)
+        public TSVector2 GetLocalPoint(in TSVector2 worldPoint)
         {
             return MathUtils.MulT(Transform, worldPoint);
         }
@@ -1135,7 +1135,7 @@ namespace FixedBox2D.Dynamics
         /// Gets a local vector given a world vector.
         /// @param a vector in world coordinates.
         /// @return the corresponding local vector.
-        public Vector2 GetLocalVector(in Vector2 worldVector)
+        public TSVector2 GetLocalVector(in TSVector2 worldVector)
         {
             return MathUtils.MulT(Transform.Rotation, worldVector);
         }
@@ -1143,7 +1143,7 @@ namespace FixedBox2D.Dynamics
         /// Get the world linear velocity of a world point attached to this body.
         /// @param a point in world coordinates.
         /// @return the world velocity of a point.
-        public Vector2 GetLinearVelocityFromWorldPoint(in Vector2 worldPoint)
+        public TSVector2 GetLinearVelocityFromWorldPoint(in TSVector2 worldPoint)
         {
             return LinearVelocity + MathUtils.Cross(AngularVelocity, worldPoint - Sweep.C);
         }
@@ -1151,7 +1151,7 @@ namespace FixedBox2D.Dynamics
         /// Get the world velocity of a local point.
         /// @param a point in local coordinates.
         /// @return the world velocity of a point.
-        public Vector2 GetLinearVelocityFromLocalPoint(in Vector2 localPoint)
+        public TSVector2 GetLinearVelocityFromLocalPoint(in TSVector2 localPoint)
         {
             return GetLinearVelocityFromWorldPoint(GetWorldPoint(localPoint));
         }
@@ -1242,7 +1242,7 @@ namespace FixedBox2D.Dynamics
         /// 在安全时间段内快进,此时不同步粗检测
         /// </summary>
         /// <param name="alpha"></param>
-        internal void Advance(float alpha)
+        internal void Advance(FP alpha)
         {
             // Advance to the new safe time. This doesn't sync the broad-phase.
             Sweep.Advance(alpha);

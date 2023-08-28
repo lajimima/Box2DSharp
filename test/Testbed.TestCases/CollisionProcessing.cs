@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -16,7 +16,7 @@ namespace Testbed.TestCases
             // Ground body
             {
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-50.0f, 0.0f), new Vector2(50.0f, 0.0f));
+                shape.SetTwoSided(new TSVector2(-50.0f, FP.Zero), new TSVector2(50.0f, FP.Zero));
 
                 var sd = new FixtureDef();
                 sd.Shape = shape;
@@ -27,21 +27,21 @@ namespace Testbed.TestCases
                 ground.CreateFixture(sd);
             }
 
-            float xLo = -5.0f, xHi = 5.0f;
-            float yLo = 2.0f, yHi = 35.0f;
+            FP xLo = -5.0f, xHi = 5.0f;
+            FP yLo = FP.Two, yHi = 35.0f;
 
             // Small triangle
-            var vertices = new Vector2[3];
-            vertices[0].Set(-1.0f, 0.0f);
-            vertices[1].Set(1.0f, 0.0f);
-            vertices[2].Set(0.0f, 2.0f);
+            var vertices = new TSVector2[3];
+            vertices[0].Set(-FP.One, FP.Zero);
+            vertices[1].Set(FP.One, FP.Zero);
+            vertices[2].Set(FP.Zero, FP.Two);
 
             var polygon = new PolygonShape();
             polygon.Set(vertices);
 
             var triangleShapeDef = new FixtureDef();
             triangleShapeDef.Shape = polygon;
-            triangleShapeDef.Density = 1.0f;
+            triangleShapeDef.Density = FP.One;
 
             var triangleBodyDef = new BodyDef();
             triangleBodyDef.BodyType = BodyType.DynamicBody;
@@ -51,9 +51,9 @@ namespace Testbed.TestCases
             body1.CreateFixture(triangleShapeDef);
 
             // Large triangle (recycle definitions)
-            vertices[0] *= 2.0f;
-            vertices[1] *= 2.0f;
-            vertices[2] *= 2.0f;
+            vertices[0] *= FP.Two;
+            vertices[1] *= FP.Two;
+            vertices[2] *= FP.Two;
             polygon.Set(vertices);
 
             triangleBodyDef.Position.Set(RandomFloat(xLo, xHi), RandomFloat(yLo, yHi));
@@ -62,11 +62,11 @@ namespace Testbed.TestCases
             body2.CreateFixture(triangleShapeDef);
 
             // Small box
-            polygon.SetAsBox(1.0f, 0.5f);
+            polygon.SetAsBox(FP.One, 0.5f);
 
             var boxShapeDef = new FixtureDef();
             boxShapeDef.Shape = polygon;
-            boxShapeDef.Density = 1.0f;
+            boxShapeDef.Density = FP.One;
 
             var boxBodyDef = new BodyDef();
             boxBodyDef.BodyType = BodyType.DynamicBody;
@@ -76,7 +76,7 @@ namespace Testbed.TestCases
             body3.CreateFixture(boxShapeDef);
 
             // Large box (recycle definitions)
-            polygon.SetAsBox(2.0f, 1.0f);
+            polygon.SetAsBox(FP.Two, FP.One);
             boxBodyDef.Position.Set(RandomFloat(xLo, xHi), RandomFloat(yLo, yHi));
 
             var body4 = World.CreateBody(boxBodyDef);
@@ -84,11 +84,11 @@ namespace Testbed.TestCases
 
             // Small circle
             var circle = new CircleShape();
-            circle.Radius = 1.0f;
+            circle.Radius = FP.One;
 
             var circleShapeDef = new FixtureDef();
             circleShapeDef.Shape = circle;
-            circleShapeDef.Density = 1.0f;
+            circleShapeDef.Density = FP.One;
 
             var circleBodyDef = new BodyDef();
             circleBodyDef.BodyType = BodyType.DynamicBody;
@@ -98,7 +98,7 @@ namespace Testbed.TestCases
             body5.CreateFixture(circleShapeDef);
 
             // Large circle
-            circle.Radius *= 2.0f;
+            circle.Radius *= FP.Two;
             circleBodyDef.Position.Set(RandomFloat(xLo, xHi), RandomFloat(yLo, yHi));
 
             var body6 = World.CreateBody(circleBodyDef);
@@ -126,7 +126,7 @@ namespace Testbed.TestCases
                 var mass1 = body1.Mass;
                 var mass2 = body2.Mass;
 
-                if (mass1 > 0.0f && mass2 > 0.0f)
+                if (mass1 > FP.Zero && mass2 > FP.Zero)
                 {
                     if (mass2 > mass1)
                     {

@@ -1,16 +1,16 @@
-using System.Numerics;
+using TrueSync;
 
 namespace FixedBox2D.Collision.Shapes
 {
     public struct MassData
     {
         /// The mass of the shape, usually in kilograms.
-        public float Mass;
+        public FP Mass;
 
         /// The position of the shape's centroid relative to the shape's origin.
-        public Vector2 Center;
+        public TSVector2 Center;
 
         /// The rotational inertia of the shape about the local origin.
-        public float RotationInertia;
+        public FP RotationInertia;
     }
 }

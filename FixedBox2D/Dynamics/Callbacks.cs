@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Collider;
 
 namespace FixedBox2D.Dynamics
@@ -13,7 +13,7 @@ namespace FixedBox2D.Dynamics
         /// Callback for ray casts.
         /// See b2World::RayCast
         /// Called for each fixture found in the query. You control how the ray cast
-        /// proceeds by returning a float:
+        /// proceeds by returning a FP:
         /// return -1: ignore this fixture and continue
         /// return 0: terminate the ray cast
         /// return fraction: clip the ray to this point
@@ -23,7 +23,7 @@ namespace FixedBox2D.Dynamics
         /// @param normal the normal vector at the point of intersection
         /// @return -1 to filter, 0 to terminate, fraction to clip the ray for
         /// closest hit, 1 to continue
-        float RayCastCallback(Fixture fixture, in Vector2 point, in Vector2 normal, float fraction);
+        FP RayCastCallback(Fixture fixture, in TSVector2 point, in TSVector2 normal, FP fraction);
     }
 }
 
@@ -36,7 +36,7 @@ namespace FixedBox2D.Dynamics.Internal
 
     public interface ITreeRayCastCallback
     {
-        float RayCastCallback(in RayCastInput input, int proxyId);
+        FP RayCastCallback(in RayCastInput input, int proxyId);
     }
 
     public interface IAddPairCallback

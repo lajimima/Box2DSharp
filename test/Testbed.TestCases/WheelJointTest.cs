@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+﻿using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -12,7 +12,7 @@ namespace Testbed.TestCases
     {
         protected WheelJoint Joint;
 
-        protected float MotorSpeed;
+        protected FP MotorSpeed;
 
         protected bool EnableMotor;
 
@@ -26,8 +26,8 @@ namespace Testbed.TestCases
                 ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-40.0f, FP.Zero), new TSVector2(40.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             EnableLimit = true;
@@ -36,30 +36,30 @@ namespace Testbed.TestCases
 
             {
                 CircleShape shape = new CircleShape();
-                shape.Radius = 2.0f;
+                shape.Radius = FP.Two;
 
                 BodyDef bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
-                bd.Position.Set(0.0f, 10.0f);
+                bd.Position.Set(FP.Zero, 10.0f);
                 bd.AllowSleep = false;
                 var body = World.CreateBody(bd);
                 body.CreateFixture(shape, 5.0f);
 
                 var mass = body.Mass;
-                var hertz = 1.0f;
+                var hertz = FP.One;
                 var dampingRatio = 0.7f;
-                var omega = 2.0f * Settings.Pi * hertz;
+                var omega = FP.Two * Settings.Pi * hertz;
 
                 var jd = new WheelJointDef();
 
                 // Horizontal
-                jd.Initialize(ground, body, bd.Position, new Vector2(0.0f, 1.0f));
+                jd.Initialize(ground, body, bd.Position, new TSVector2(FP.Zero, FP.One));
 
                 jd.MotorSpeed = MotorSpeed;
                 jd.MaxMotorTorque = 10000.0f;
                 jd.EnableMotor = EnableMotor;
                 jd.Stiffness = mass * omega * omega;
-                jd.Damping = 2.0f * mass * dampingRatio * omega;
+                jd.Damping = FP.Two * mass * dampingRatio * omega;
                 jd.LowerTranslation = -3.0f;
                 jd.UpperTranslation = 3.0f;
                 jd.EnableLimit = EnableLimit;

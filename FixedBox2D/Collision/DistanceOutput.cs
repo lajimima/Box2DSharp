@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 
 namespace FixedBox2D.Collision
 {
@@ -6,12 +6,12 @@ namespace FixedBox2D.Collision
     public struct DistanceOutput
     {
         /// closest point on shapeA
-        public Vector2 PointA;
+        public TSVector2 PointA;
 
         /// closest point on shapeB
-        public Vector2 PointB;
+        public TSVector2 PointB;
 
-        public float Distance;
+        public FP Distance;
 
         /// number of GJK iterations used
         public int Iterations;

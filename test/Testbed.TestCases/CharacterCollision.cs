@@ -1,5 +1,5 @@
 using System;
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -20,8 +20,8 @@ namespace Testbed.TestCases
                 var ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-20.0f, FP.Zero), new TSVector2(20.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             // Collinear edges with no adjacency information.
@@ -32,12 +32,12 @@ namespace Testbed.TestCases
                 var ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-8.0f, 1.0f), new Vector2(-6.0f, 1.0f));
-                ground.CreateFixture(shape, 0.0f);
-                shape.SetTwoSided(new Vector2(-6.0f, 1.0f), new Vector2(-4.0f, 1.0f));
-                ground.CreateFixture(shape, 0.0f);
-                shape.SetTwoSided(new Vector2(-4.0f, 1.0f), new Vector2(-2.0f, 1.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-8.0f, FP.One), new TSVector2(-6.0f, FP.One));
+                ground.CreateFixture(shape, FP.Zero);
+                shape.SetTwoSided(new TSVector2(-6.0f, FP.One), new TSVector2(-4.0f, FP.One));
+                ground.CreateFixture(shape, FP.Zero);
+                shape.SetTwoSided(new TSVector2(-4.0f, FP.One), new TSVector2(-FP.Two, FP.One));
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             // Chain shape
@@ -45,16 +45,16 @@ namespace Testbed.TestCases
                 var bd = new BodyDef {Angle = 0.25f * Settings.Pi};
                 var ground = World.CreateBody(bd);
 
-                var vs = new Vector2[4]
+                var vs = new TSVector2[4]
                 {
-                    new Vector2(5.0f, 7.0f),
-                    new Vector2(6.0f, 8.0f),
-                    new Vector2(7.0f, 8.0f),
-                    new Vector2(8.0f, 7.0f)
+                    new TSVector2(5.0f, 7.0f),
+                    new TSVector2(6.0f, 8.0f),
+                    new TSVector2(7.0f, 8.0f),
+                    new TSVector2(8.0f, 7.0f)
                 };
                 var shape = new ChainShape();
                 shape.CreateLoop(vs);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             // Square tiles. This shows that adjacency shapes may
@@ -65,12 +65,12 @@ namespace Testbed.TestCases
                 var ground = World.CreateBody(bd);
 
                 var shape = new PolygonShape();
-                shape.SetAsBox(1.0f, 1.0f, new Vector2(4.0f, 3.0f), 0.0f);
-                ground.CreateFixture(shape, 0.0f);
-                shape.SetAsBox(1.0f, 1.0f, new Vector2(6.0f, 3.0f), 0.0f);
-                ground.CreateFixture(shape, 0.0f);
-                shape.SetAsBox(1.0f, 1.0f, new Vector2(8.0f, 3.0f), 0.0f);
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetAsBox(FP.One, FP.One, new TSVector2(4.0f, 3.0f), FP.Zero);
+                ground.CreateFixture(shape, FP.Zero);
+                shape.SetAsBox(FP.One, FP.One, new TSVector2(6.0f, 3.0f), FP.Zero);
+                ground.CreateFixture(shape, FP.Zero);
+                shape.SetAsBox(FP.One, FP.One, new TSVector2(8.0f, 3.0f), FP.Zero);
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             // Square made from an edge loop. Collision should be smooth.
@@ -78,47 +78,47 @@ namespace Testbed.TestCases
                 var bd = new BodyDef();
                 var ground = World.CreateBody(bd);
 
-                var vs = new Vector2[4]
+                var vs = new TSVector2[4]
                 {
-                    new Vector2(-1.0f, 3.0f),
-                    new Vector2(1.0f, 3.0f),
-                    new Vector2(1.0f, 5.0f),
-                    new Vector2(-1.0f, 5.0f)
+                    new TSVector2(-FP.One, 3.0f),
+                    new TSVector2(FP.One, 3.0f),
+                    new TSVector2(FP.One, 5.0f),
+                    new TSVector2(-FP.One, 5.0f)
                 };
 
                 var shape = new ChainShape();
                 shape.CreateLoop(vs);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             // Edge loop. Collision should be smooth.
             {
-                var bd = new BodyDef {Position = new Vector2(-10.0f, 4.0f)};
+                var bd = new BodyDef {Position = new TSVector2(-10.0f, 4.0f)};
                 var ground = World.CreateBody(bd);
 
-                var vs = new Vector2[10]
+                var vs = new TSVector2[10]
                 {
-                    new Vector2(0.0f, 0.0f),
-                    new Vector2(6.0f, 0.0f),
-                    new Vector2(6.0f, 2.0f),
-                    new Vector2(4.0f, 1.0f),
-                    new Vector2(2.0f, 2.0f),
-                    new Vector2(0.0f, 2.0f),
-                    new Vector2(-2.0f, 2.0f),
-                    new Vector2(-4.0f, 3.0f),
-                    new Vector2(-6.0f, 2.0f),
-                    new Vector2(-6.0f, 0.0f)
+                    new TSVector2(FP.Zero, FP.Zero),
+                    new TSVector2(6.0f, FP.Zero),
+                    new TSVector2(6.0f, FP.Two),
+                    new TSVector2(4.0f, FP.One),
+                    new TSVector2(FP.Two, FP.Two),
+                    new TSVector2(FP.Zero, FP.Two),
+                    new TSVector2(-FP.Two, FP.Two),
+                    new TSVector2(-4.0f, 3.0f),
+                    new TSVector2(-6.0f, FP.Two),
+                    new TSVector2(-6.0f, FP.Zero)
                 };
                 var shape = new ChainShape();
                 shape.CreateLoop(vs);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             // Square character 1
             {
                 var bd = new BodyDef
                 {
-                    Position = new Vector2(-3.0f, 8.0f),
+                    Position = new TSVector2(-3.0f, 8.0f),
                     BodyType = BodyType.DynamicBody,
                     FixedRotation = true,
                     AllowSleep = false
@@ -137,7 +137,7 @@ namespace Testbed.TestCases
             {
                 var bd = new BodyDef
                 {
-                    Position = new Vector2(-5.0f, 5.0f),
+                    Position = new TSVector2(-5.0f, 5.0f),
                     BodyType = BodyType.DynamicBody,
                     FixedRotation = true,
                     AllowSleep = false
@@ -156,7 +156,7 @@ namespace Testbed.TestCases
             {
                 var bd = new BodyDef
                 {
-                    Position = new Vector2(-5.0f, 8.0f),
+                    Position = new TSVector2(-5.0f, 8.0f),
                     BodyType = BodyType.DynamicBody,
                     FixedRotation = true,
                     AllowSleep = false
@@ -164,12 +164,12 @@ namespace Testbed.TestCases
 
                 var body = World.CreateBody(bd);
 
-                var angle = 0.0f;
-                const float delta = Settings.Pi / 3.0f;
-                var vertices = new Vector2[6];
+                var angle = FP.Zero;
+                FP delta = Settings.Pi / 3.0f;
+                var vertices = new TSVector2[6];
                 for (var i = 0; i < 6; ++i)
                 {
-                    vertices[i].Set(0.5f * (float)Math.Cos(angle), 0.5f * (float)Math.Sin(angle));
+                    vertices[i].Set(0.5f * FP.FastCosAngle(angle), 0.5f * (FP)FP.FastSinAngle(angle));
                     angle += delta;
                 }
 
@@ -184,7 +184,7 @@ namespace Testbed.TestCases
             {
                 var bd = new BodyDef
                 {
-                    Position = new Vector2(3.0f, 5.0f),
+                    Position = new TSVector2(3.0f, 5.0f),
                     BodyType = BodyType.DynamicBody,
                     FixedRotation = true,
                     AllowSleep = false
@@ -202,7 +202,7 @@ namespace Testbed.TestCases
             {
                 var bd = new BodyDef
                 {
-                    Position = new Vector2(-7.0f, 6.0f),
+                    Position = new TSVector2(-7.0f, 6.0f),
                     BodyType = BodyType.DynamicBody,
                     AllowSleep = false
                 };
@@ -215,7 +215,7 @@ namespace Testbed.TestCases
                 {
                     Shape = shape,
                     Density = 20.0f,
-                    Friction = 1.0f
+                    Friction = FP.One
                 };
                 _character.CreateFixture(fd);
             }

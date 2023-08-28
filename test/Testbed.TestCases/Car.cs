@@ -3,7 +3,7 @@ using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
 using FixedBox2D.Dynamics.Joints;
 using Testbed.Abstractions;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 
 namespace Testbed.TestCases
 {
@@ -16,7 +16,7 @@ namespace Testbed.TestCases
 
         private Body _wheel2;
 
-        private float _speed;
+        private FP _speed;
 
         private WheelJoint _spring1;
 
@@ -35,20 +35,20 @@ namespace Testbed.TestCases
 
                 var fd = new FixtureDef();
                 fd.Shape = shape;
-                fd.Density = 0.0f;
+                fd.Density = FP.Zero;
                 fd.Friction = 0.6f;
 
-                shape.SetTwoSided(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
+                shape.SetTwoSided(new TSVector2(-20.0f, FP.Zero), new TSVector2(20.0f, FP.Zero));
                 ground.CreateFixture(fd);
 
-                float[] hs = {0.25f, 1.0f, 4.0f, 0.0f, 0.0f, -1.0f, -2.0f, -2.0f, -1.25f, 0.0f};
+                FP[] hs = {0.25f, FP.One, 4.0f, FP.Zero, FP.Zero, -FP.One, -FP.Two, -FP.Two, -1.25f, FP.Zero};
 
-                float x = 20.0f, y1 = 0.0f, dx = 5.0f;
+                FP x = 20.0f, y1 = FP.Zero, dx = 5.0f;
 
                 for (var i = 0; i < 10; ++i)
                 {
                     var y2 = hs[i];
-                    shape.SetTwoSided(new Vector2(x, y1), new Vector2(x + dx, y2));
+                    shape.SetTwoSided(new TSVector2(x, y1), new TSVector2(x + dx, y2));
                     ground.CreateFixture(fd);
                     y1 = y2;
                     x += dx;
@@ -57,42 +57,42 @@ namespace Testbed.TestCases
                 for (var i = 0; i < 10; ++i)
                 {
                     var y2 = hs[i];
-                    shape.SetTwoSided(new Vector2(x, y1), new Vector2(x + dx, y2));
+                    shape.SetTwoSided(new TSVector2(x, y1), new TSVector2(x + dx, y2));
                     ground.CreateFixture(fd);
                     y1 = y2;
                     x += dx;
                 }
 
-                shape.SetTwoSided(new Vector2(x, 0.0f), new Vector2(x + 40.0f, 0.0f));
+                shape.SetTwoSided(new TSVector2(x, FP.Zero), new TSVector2(x + 40.0f, FP.Zero));
                 ground.CreateFixture(fd);
 
                 x += 80.0f;
-                shape.SetTwoSided(new Vector2(x, 0.0f), new Vector2(x + 40.0f, 0.0f));
+                shape.SetTwoSided(new TSVector2(x, FP.Zero), new TSVector2(x + 40.0f, FP.Zero));
                 ground.CreateFixture(fd);
 
                 x += 40.0f;
-                shape.SetTwoSided(new Vector2(x, 0.0f), new Vector2(x + 10.0f, 5.0f));
+                shape.SetTwoSided(new TSVector2(x, FP.Zero), new TSVector2(x + 10.0f, 5.0f));
                 ground.CreateFixture(fd);
 
                 x += 20.0f;
-                shape.SetTwoSided(new Vector2(x, 0.0f), new Vector2(x + 40.0f, 0.0f));
+                shape.SetTwoSided(new TSVector2(x, FP.Zero), new TSVector2(x + 40.0f, FP.Zero));
                 ground.CreateFixture(fd);
 
                 x += 40.0f;
-                shape.SetTwoSided(new Vector2(x, 0.0f), new Vector2(x, 20.0f));
+                shape.SetTwoSided(new TSVector2(x, FP.Zero), new TSVector2(x, 20.0f));
                 ground.CreateFixture(fd);
             }
 
             // Teeter
             {
                 var bd = new BodyDef();
-                bd.Position.Set(140.0f, 1.0f);
+                bd.Position.Set(140.0f, FP.One);
                 bd.BodyType = BodyType.DynamicBody;
                 var body = World.CreateBody(bd);
 
                 var box = new PolygonShape();
                 box.SetAsBox(10.0f, 0.25f);
-                body.CreateFixture(box, 1.0f);
+                body.CreateFixture(box, FP.One);
 
                 var jd = new RevoluteJointDef();
                 jd.Initialize(ground, body, body.GetPosition());
@@ -108,11 +108,11 @@ namespace Testbed.TestCases
             {
                 var N = 20;
                 var shape = new PolygonShape();
-                shape.SetAsBox(1.0f, 0.125f);
+                shape.SetAsBox(FP.One, 0.125f);
 
                 var fd = new FixtureDef();
                 fd.Shape = shape;
-                fd.Density = 1.0f;
+                fd.Density = FP.One;
                 fd.Friction = 0.6f;
 
                 var jd = new RevoluteJointDef();
@@ -122,11 +122,11 @@ namespace Testbed.TestCases
                 {
                     var bd = new BodyDef();
                     bd.BodyType = BodyType.DynamicBody;
-                    bd.Position.Set(161.0f + 2.0f * i, -0.125f);
+                    bd.Position.Set(161.0f + FP.Two * i, -0.125f);
                     var body = World.CreateBody(bd);
                     body.CreateFixture(fd);
 
-                    var anchor = new Vector2(160.0f + 2.0f * i, -0.125f);
+                    var anchor = new TSVector2(160.0f + FP.Two * i, -0.125f);
                     jd.Initialize(prevBody, body, anchor);
                     World.CreateJoint(jd);
 
@@ -134,7 +134,7 @@ namespace Testbed.TestCases
                 }
 
                 {
-                    var anchor = new Vector2(160.0f + 2.0f * N, -0.125f);
+                    var anchor = new TSVector2(160.0f + FP.Two * N, -0.125f);
                     jd.Initialize(prevBody, ground, anchor);
                     World.CreateJoint(jd);
                 }
@@ -173,11 +173,11 @@ namespace Testbed.TestCases
             // Car
             {
                 var chassis = new PolygonShape();
-                var vertices = new Vector2[8];
+                var vertices = new TSVector2[8];
                 vertices[0].Set(-1.5f, -0.5f);
                 vertices[1].Set(1.5f, -0.5f);
-                vertices[2].Set(1.5f, 0.0f);
-                vertices[3].Set(0.0f, 0.9f);
+                vertices[2].Set(1.5f, FP.Zero);
+                vertices[3].Set(FP.Zero, 0.9f);
                 vertices[4].Set(-1.15f, 0.9f);
                 vertices[5].Set(-1.5f, 0.2f);
                 chassis.Set(vertices);
@@ -187,48 +187,48 @@ namespace Testbed.TestCases
 
                 var bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
-                bd.Position.Set(0.0f, 1.0f);
+                bd.Position.Set(FP.Zero, FP.One);
                 _car = World.CreateBody(bd);
-                _car.CreateFixture(chassis, 1.0f);
+                _car.CreateFixture(chassis, FP.One);
 
                 var fd = new FixtureDef();
                 fd.Shape = circle;
-                fd.Density = 1.0f;
+                fd.Density = FP.One;
                 fd.Friction = 0.9f;
 
-                bd.Position.Set(-1.0f, 0.35f);
+                bd.Position.Set(-FP.One, 0.35f);
                 _wheel1 = World.CreateBody(bd);
                 _wheel1.CreateFixture(fd);
 
-                bd.Position.Set(1.0f, 0.4f);
+                bd.Position.Set(FP.One, 0.4f);
                 _wheel2 = World.CreateBody(bd);
                 _wheel2.CreateFixture(fd);
 
                 var jd = new WheelJointDef();
-                var axis = new Vector2(0.0f, 1.0f);
+                var axis = new TSVector2(FP.Zero, FP.One);
                 var mass1 = _wheel1.Mass;
                 var mass2 = _wheel2.Mass;
 
                 var hertz = 4.0f;
                 var dampingRatio = 0.7f;
-                var omega = 2.0f * Settings.Pi * hertz;
+                var omega = FP.Two * Settings.Pi * hertz;
                 jd.Initialize(_car, _wheel1, _wheel1.GetPosition(), axis);
-                jd.MotorSpeed = 0.0f;
+                jd.MotorSpeed = FP.Zero;
                 jd.MaxMotorTorque = 20.0f;
                 jd.EnableMotor = true;
                 jd.Stiffness = mass1 * omega * omega;
-                jd.Damping = 2.0f * mass1 * dampingRatio * omega;
+                jd.Damping = FP.Two * mass1 * dampingRatio * omega;
                 jd.LowerTranslation = -0.25f;
                 jd.UpperTranslation = 0.25f;
                 jd.EnableLimit = true;
                 _spring1 = (WheelJoint)World.CreateJoint(jd);
 
                 jd.Initialize(_car, _wheel2, _wheel2.GetPosition(), axis);
-                jd.MotorSpeed = 0.0f;
+                jd.MotorSpeed = FP.Zero;
                 jd.MaxMotorTorque = 10.0f;
                 jd.EnableMotor = false;
                 jd.Stiffness = mass2 * omega * omega;
-                jd.Damping = 2.0f * mass2 * dampingRatio * omega;
+                jd.Damping = FP.Two * mass2 * dampingRatio * omega;
                 jd.LowerTranslation = -0.25f;
                 jd.UpperTranslation = 0.25f;
                 jd.EnableLimit = true;
@@ -252,7 +252,7 @@ namespace Testbed.TestCases
                 _spring1.SetMotorSpeed(_speed);
                 break;
             case KeyCodes.S:
-                _spring1.SetMotorSpeed(0.0f);
+                _spring1.SetMotorSpeed(FP.Zero);
                 break;
             case KeyCodes.D:
                 _spring1.SetMotorSpeed(-_speed);

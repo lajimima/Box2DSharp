@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+﻿using TrueSync;
 using FixedBox2D.Collision.Collider;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Dynamics;
@@ -36,7 +36,7 @@ namespace UnitTest
         [Fact(DisplayName = "begin contact")]
         public void BeginContact()
         {
-            World world = new World(new Vector2(0.0f, -10.0f));
+            World world = new World(new TSVector2(0.0f, -10.0f));
             MyContactListener listener = new MyContactListener();
             world.SetContactListener(listener);
 
@@ -51,10 +51,10 @@ namespace UnitTest
             bodyA.CreateFixture(circle, 0.0f);
             bodyB.CreateFixture(circle, 0.0f);
 
-            bodyA.SetTransform(new Vector2(0f, 0f), 0f);
-            bodyB.SetTransform(new Vector2(100f, 0f), 0f);
+            bodyA.SetTransform(new TSVector2(0f, 0f), 0f);
+            bodyB.SetTransform(new TSVector2(100f, 0f), 0f);
 
-            const float timeStep = 1f / 60f;
+            const FP timeStep = 1f / 60f;
             const int velocityIterations = 6;
             const int positionIterations = 2;
 
@@ -63,7 +63,7 @@ namespace UnitTest
             world.ContactManager.ContactList.ShouldBeEmpty();
             listener.begin_contact.ShouldBeFalse();
 
-            bodyB.SetTransform(new Vector2(1f, 0f), 0f);
+            bodyB.SetTransform(new TSVector2(1f, 0f), 0f);
 
             world.Step(timeStep, velocityIterations, positionIterations);
 

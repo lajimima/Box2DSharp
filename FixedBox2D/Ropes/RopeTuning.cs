@@ -1,4 +1,6 @@
-﻿namespace FixedBox2D.Ropes
+﻿using TrueSync;
+
+namespace FixedBox2D.Ropes
 {
     ///
     public class RopeTuning
@@ -7,13 +9,13 @@
         {
             StretchingModel = StretchingModel.PbdStretchingModel;
             BendingModel = BendingModel.PbdAngleBendingModel;
-            Damping = 0.0f;
-            StretchStiffness = 1.0f;
-            StretchHertz = 1.0f;
-            StretchDamping = 0.0f;
-            BendStiffness = 0.5f;
-            BendHertz = 1.0f;
-            BendDamping = 0.0f;
+            Damping = FP.Zero;
+            StretchStiffness = FP.One;
+            StretchHertz = FP.One;
+            StretchDamping = FP.Zero;
+            BendStiffness = FP.Half;
+            BendHertz = FP.One;
+            BendDamping = FP.Zero;
             Isometric = false;
             FixedEffectiveMass = false;
             WarmStart = false;
@@ -23,19 +25,19 @@
 
         public BendingModel BendingModel;
 
-        public float Damping;
+        public FP Damping;
 
-        public float StretchStiffness;
+        public FP StretchStiffness;
 
-        public float StretchHertz;
+        public FP StretchHertz;
 
-        public float StretchDamping;
+        public FP StretchDamping;
 
-        public float BendStiffness;
+        public FP BendStiffness;
 
-        public float BendHertz;
+        public FP BendHertz;
 
-        public float BendDamping;
+        public FP BendDamping;
 
         public bool Isometric;
 

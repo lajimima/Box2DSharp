@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -22,7 +22,7 @@ namespace UnitTest
         public void HelloWorld()
         {
             // Define the gravity vector.
-            Vector2 gravity = new Vector2(0.0f, -10.0f);
+            TSVector2 gravity = new TSVector2(0.0f, -10.0f);
 
             // Construct a world object, which will hold and simulate the rigid bodies.
             World world = new World(gravity);
@@ -71,12 +71,12 @@ namespace UnitTest
             // Prepare for simulation. Typically we use a time step of 1/60 of a
             // second (60Hz) and 10 iterations. This provides a high quality simulation
             // in most game scenarios.
-            float timeStep = 1.0f / 60.0f;
+            FP timeStep = 1.0f / 60.0f;
             var velocityIterations = 6;
             var positionIterations = 2;
 
-            Vector2 position = body.GetPosition();
-            float angle = body.GetAngle();
+            TSVector2 position = body.GetPosition();
+            FP angle = body.GetAngle();
 
             // This is our little game loop.
             for (var i = 0; i < 60; ++i)

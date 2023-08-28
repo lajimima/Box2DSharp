@@ -5,7 +5,7 @@ using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
 using Testbed.Abstractions;
 using Color = FixedBox2D.Common.Color;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 
 namespace Testbed.TestCases
 {
@@ -13,16 +13,16 @@ namespace Testbed.TestCases
     {
         public bool Hit;
 
-        public Vector2 Normal;
+        public TSVector2 Normal;
 
-        public Vector2 Point;
+        public TSVector2 Point;
 
         public RayCastClosestCallback()
         {
             Hit = false;
         }
 
-        public float RayCastCallback(Fixture fixture, in Vector2 point, in Vector2 normal, float fraction)
+        public FP RayCastCallback(Fixture fixture, in TSVector2 point, in TSVector2 normal, FP fraction)
         {
             var body = fixture.Body;
             var userData = (int?)body.UserData;
@@ -30,7 +30,7 @@ namespace Testbed.TestCases
             {
                 // By returning -1, we instruct the calling code to ignore this fixture and
                 // continue the ray-cast to the next fixture.
-                return -1.0f;
+                return -FP.One;
             }
 
             Hit = true;
@@ -48,16 +48,16 @@ namespace Testbed.TestCases
     {
         public bool Hit;
 
-        public Vector2 Normal;
+        public TSVector2 Normal;
 
-        public Vector2 Point;
+        public TSVector2 Point;
 
         public RayCastAnyCallback()
         {
             Hit = false;
         }
 
-        public float RayCastCallback(Fixture fixture, in Vector2 point, in Vector2 normal, float _)
+        public FP RayCastCallback(Fixture fixture, in TSVector2 point, in TSVector2 normal, FP _)
         {
             var body = fixture.Body;
             var userData = (int?)body.UserData;
@@ -65,7 +65,7 @@ namespace Testbed.TestCases
             {
                 // By returning -1, we instruct the calling code to ignore this fixture
                 // and continue the ray-cast to the next fixture.
-                return -1.0f;
+                return -FP.One;
             }
 
             Hit = true;
@@ -74,7 +74,7 @@ namespace Testbed.TestCases
 
             // At this point we have a hit, so we know the ray is obstructed.
             // By returning 0, we instruct the calling code to terminate the ray-cast.
-            return 0.0f;
+            return FP.Zero;
         }
     }
 
@@ -85,9 +85,9 @@ namespace Testbed.TestCases
     {
         public const int MaxCount = 3;
 
-        public readonly Vector2[] Normals = new Vector2[MaxCount];
+        public readonly TSVector2[] Normals = new TSVector2[MaxCount];
 
-        public readonly Vector2[] Points = new Vector2[MaxCount];
+        public readonly TSVector2[] Points = new TSVector2[MaxCount];
 
         public int Count;
 
@@ -96,7 +96,7 @@ namespace Testbed.TestCases
             Count = 0;
         }
 
-        public float RayCastCallback(Fixture fixture, in Vector2 point, in Vector2 normal, float _)
+        public FP RayCastCallback(Fixture fixture, in TSVector2 point, in TSVector2 normal, FP _)
         {
             var body = fixture.Body;
             var userData = (int?)body.UserData;
@@ -104,7 +104,7 @@ namespace Testbed.TestCases
             {
                 // By returning -1, we instruct the calling code to ignore this fixture
                 // and continue the ray-cast to the next fixture.
-                return -1.0f;
+                return -FP.One;
             }
 
             Debug.Assert(Count < MaxCount);
@@ -117,11 +117,11 @@ namespace Testbed.TestCases
             {
                 // At this point the buffer is full.
                 // By returning 0, we instruct the calling code to terminate the ray-cast.
-                return 0.0f;
+                return FP.Zero;
             }
 
             // By returning 1, we instruct the caller to continue without clipping the ray.
-            return 1.0f;
+            return FP.One;
         }
     }
 
@@ -144,7 +144,7 @@ namespace Testbed.TestCases
             new PolygonShape()
         };
 
-        protected float _degrees;
+        protected FP _degrees;
 
         private int _bodyIndex;
 
@@ -158,40 +158,40 @@ namespace Testbed.TestCases
                 var ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-40.0f, FP.Zero), new TSVector2(40.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             {
-                var vertices = new Vector2[3];
-                vertices[0].Set(-0.5f, 0.0f);
-                vertices[1].Set(0.5f, 0.0f);
-                vertices[2].Set(0.0f, 1.5f);
+                var vertices = new TSVector2[3];
+                vertices[0].Set(-0.5f, FP.Zero);
+                vertices[1].Set(0.5f, FP.Zero);
+                vertices[2].Set(FP.Zero, 1.5f);
                 _polygons[0].Set(vertices);
             }
 
             {
-                var vertices = new Vector2[3];
-                vertices[0].Set(-0.1f, 0.0f);
-                vertices[1].Set(0.1f, 0.0f);
-                vertices[2].Set(0.0f, 1.5f);
+                var vertices = new TSVector2[3];
+                vertices[0].Set(-FP.EN1, FP.Zero);
+                vertices[1].Set(FP.EN1, FP.Zero);
+                vertices[2].Set(FP.Zero, 1.5f);
                 _polygons[1].Set(vertices);
             }
 
             {
-                var w = 1.0f;
-                var b = w / (2.0f + (float)Math.Sqrt(2.0f));
-                var s = (float)Math.Sqrt(2.0f) * b;
+                var w = FP.One;
+                var b = w / (FP.Two + (FP)FP.Sqrt(FP.Two));
+                var s = (FP)FP.Sqrt(FP.Two) * b;
 
-                var vertices = new Vector2[8];
-                vertices[0].Set(0.5f * s, 0.0f);
+                var vertices = new TSVector2[8];
+                vertices[0].Set(0.5f * s, FP.Zero);
                 vertices[1].Set(0.5f * w, b);
                 vertices[2].Set(0.5f * w, b + s);
                 vertices[3].Set(0.5f * s, w);
                 vertices[4].Set(-0.5f * s, w);
                 vertices[5].Set(-0.5f * w, b + s);
                 vertices[6].Set(-0.5f * w, b);
-                vertices[7].Set(-0.5f * s, 0.0f);
+                vertices[7].Set(-0.5f * s, FP.Zero);
 
                 _polygons[2].Set(vertices);
             }
@@ -205,12 +205,12 @@ namespace Testbed.TestCases
             }
 
             {
-                _edge.SetTwoSided(new Vector2(-1.0f, 0.0f), new Vector2(1.0f, 0.0f));
+                _edge.SetTwoSided(new TSVector2(-FP.One, FP.Zero), new TSVector2(FP.One, FP.Zero));
             }
 
             _bodyIndex = 0;
 
-            _degrees = 0.0f;
+            _degrees = FP.Zero;
 
             _mode = Mode.Closest;
         }
@@ -236,9 +236,9 @@ namespace Testbed.TestCases
 
             var angle = Settings.Pi * _degrees / 180.0f;
             var L = 11.0f;
-            var point1 = new Vector2(0.0f, 10.0f);
+            var point1 = new TSVector2(FP.Zero, 10.0f);
 
-            var d = new Vector2(L * (float)Math.Cos(angle), L * (float)Math.Sin(angle));
+            var d = new TSVector2(L * FP.FastCosAngle(angle), L * (FP)FP.FastSinAngle(angle));
             var point2 = point1 + d;
 
             switch (_mode)
@@ -313,7 +313,7 @@ namespace Testbed.TestCases
             }
 
             var x = RandomFloat(-10.0f, 10.0f);
-            var y = RandomFloat(0.0f, 20.0f);
+            var y = RandomFloat(FP.Zero, 20.0f);
             var bd = new BodyDef();
             bd.Position.Set(x, y);
             bd.Angle = RandomFloat(-Settings.Pi, Settings.Pi);

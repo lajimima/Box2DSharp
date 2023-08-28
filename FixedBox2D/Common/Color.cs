@@ -1,4 +1,5 @@
 using System;
+using TrueSync;
 
 namespace FixedBox2D.Common
 {
@@ -61,12 +62,12 @@ namespace FixedBox2D.Common
             return FromArgb(255, r, g, b);
         }
 
-        public static Color FromArgb(float a, float r, float g, float b)
+        public static Color FromArgb(FP a, FP r, FP g, FP b)
         {
             return FromArgb((int)(a * 255), (int)(r * 255), (int)(g * 255), (int)(b * 255));
         }
 
-        public static Color FromArgb(float r, float g, float b)
+        public static Color FromArgb(FP r, FP g, FP b)
         {
             return FromArgb(255, (int)(r * 255), (int)(g * 255), (int)(b * 255));
         }

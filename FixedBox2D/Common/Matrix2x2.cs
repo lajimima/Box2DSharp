@@ -1,24 +1,24 @@
-using System.Numerics;
 using System.Runtime.CompilerServices;
+using TrueSync;
 
 namespace FixedBox2D.Common
 {
     public struct Matrix2x2
     {
-        public Vector2 Ex;
+        public TSVector2 Ex;
 
-        public Vector2 Ey;
+        public TSVector2 Ey;
 
         /// The default constructor does nothing (for performance).
         /// Construct this matrix using columns.
-        public Matrix2x2(in Vector2 c1, in Vector2 c2)
+        public Matrix2x2(in TSVector2 c1, in TSVector2 c2)
         {
             Ex = c1;
             Ey = c2;
         }
 
         /// Construct this matrix using scalars.
-        public Matrix2x2(float a11, float a12, float a21, float a22)
+        public Matrix2x2(FP a11, FP a12, FP a21, FP a22)
         {
             Ex.X = a11;
             Ex.Y = a21;
@@ -27,7 +27,7 @@ namespace FixedBox2D.Common
         }
 
         /// Initialize this matrix using columns.
-        public void Set(in Vector2 c1, in Vector2 c2)
+        public void Set(in TSVector2 c1, in TSVector2 c2)
         {
             Ex = c1;
             Ey = c2;
@@ -36,20 +36,20 @@ namespace FixedBox2D.Common
         /// Set this to the identity matrix.
         public void SetIdentity()
         {
-            Ex.X = 1.0f;
-            Ey.X = 0.0f;
-            Ex.Y = 0.0f;
-            Ey.Y = 1.0f;
+            Ex.X = FP.One;
+            Ey.X = FP.Zero;
+            Ex.Y = FP.Zero;
+            Ey.Y = FP.One;
         }
 
         /// Set this matrix to all zeros.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetZero()
         {
-            Ex.X = 0.0f;
-            Ey.X = 0.0f;
-            Ex.Y = 0.0f;
-            Ey.Y = 0.0f;
+            Ex.X = FP.Zero;
+            Ey.X = FP.Zero;
+            Ex.Y = FP.Zero;
+            Ey.Y = FP.Zero;
         }
 
         public Matrix2x2 GetInverse()
@@ -60,9 +60,9 @@ namespace FixedBox2D.Common
             var d = Ey.Y;
 
             var det = a * d - b * c;
-            if (!det.Equals(0.0f))
+            if (det != FP.Zero)
             {
-                det = 1.0f / det;
+                det = FP.One / det;
             }
 
             var B = new Matrix2x2();
@@ -75,19 +75,19 @@ namespace FixedBox2D.Common
 
         /// Solve A * x = b, where b is a column vector. This is more efficient
         /// than computing the inverse in one-shot cases.
-        public Vector2 Solve(in Vector2 b)
+        public TSVector2 Solve(in TSVector2 b)
         {
             var a11 = Ex.X;
             var a12 = Ey.X;
             var a21 = Ex.Y;
             var a22 = Ey.Y;
             var det = a11 * a22 - a12 * a21;
-            if (!det.Equals(0.0f))
+            if (det != FP.Zero)
             {
-                det = 1.0f / det;
+                det = FP.One / det;
             }
 
-            var x = new Vector2 {X = det * (a22 * b.X - a12 * b.Y), Y = det * (a11 * b.Y - a21 * b.X)};
+            var x = new TSVector2 {X = det * (a22 * b.X - a12 * b.Y), Y = det * (a11 * b.Y - a21 * b.X)};
             return x;
         }
 

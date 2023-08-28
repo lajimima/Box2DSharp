@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -28,19 +28,19 @@ namespace Testbed.TestCases
                 ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(50.0f, 0.0f), new Vector2(-50.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(50.0f, FP.Zero), new TSVector2(-50.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             {
                 var circle1 = new CircleShape();
-                circle1.Radius = 1.0f;
+                circle1.Radius = FP.One;
 
                 var box = new PolygonShape();
                 box.SetAsBox(0.5f, 5.0f);
 
                 var circle2 = new CircleShape();
-                circle2.Radius = 2.0f;
+                circle2.Radius = FP.Two;
 
                 var bd1 = new BodyDef();
                 bd1.BodyType = BodyType.StaticBody;
@@ -79,10 +79,10 @@ namespace Testbed.TestCases
 
             {
                 var circle1 = new CircleShape();
-                circle1.Radius = 1.0f;
+                circle1.Radius = FP.One;
 
                 var circle2 = new CircleShape();
-                circle2.Radius = 2.0f;
+                circle2.Radius = FP.Two;
 
                 var box = new PolygonShape();
                 box.SetAsBox(0.5f, 5.0f);
@@ -103,7 +103,7 @@ namespace Testbed.TestCases
 
                 var bd2 = new BodyDef();
                 bd2.BodyType = BodyType.DynamicBody;
-                bd2.Position.Set(0.0f, 12.0f);
+                bd2.Position.Set(FP.Zero, 12.0f);
                 var body2 = World.CreateBody(bd2);
                 body2.CreateFixture(circle2, 5.0f);
 
@@ -118,7 +118,7 @@ namespace Testbed.TestCases
                 body3.CreateFixture(box, 5.0f);
 
                 var jd3 = new PrismaticJointDef();
-                jd3.Initialize(ground, body3, bd3.Position, new Vector2(0.0f, 1.0f));
+                jd3.Initialize(ground, body3, bd3.Position, new TSVector2(FP.Zero, FP.One));
                 jd3.LowerTranslation = -5.0f;
                 jd3.UpperTranslation = 5.0f;
                 jd3.EnableLimit = true;
@@ -138,7 +138,7 @@ namespace Testbed.TestCases
                 jd5.BodyB = body3;
                 jd5.Joint1 = _joint2;
                 jd5.Joint2 = _joint3;
-                jd5.Ratio = -1.0f / circle2.Radius;
+                jd5.Ratio = -FP.One / circle2.Radius;
                 _joint5 = (FixedBox2D.Dynamics.Joints.GearJoint)World.CreateJoint(jd5);
             }
         }

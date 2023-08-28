@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Collider;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
@@ -21,8 +21,8 @@ namespace Testbed.TestCases
                 var ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-20.0f, FP.Zero), new TSVector2(20.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             // Platform
@@ -45,7 +45,7 @@ namespace Testbed.TestCases
             {
                 var bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
-                bd.Position.Set(-10.0f + 2.0f * i, 7.0f);
+                bd.Position.Set(-10.0f + FP.Two * i, 7.0f);
                 var body = World.CreateBody(bd);
 
                 var shape = new PolygonShape();

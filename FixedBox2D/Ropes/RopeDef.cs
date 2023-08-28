@@ -1,19 +1,19 @@
-﻿using System.Numerics;
+﻿using TrueSync;
 
 namespace FixedBox2D.Ropes
 {
     /// 
     public struct RopeDef
     {
-        public Vector2 Position;
+        public TSVector2 Position;
 
-        public Vector2[] Vertices;
+        public TSVector2[] Vertices;
 
         public int Count;
 
-        public float[] Masses;
+        public FP[] Masses;
 
-        public Vector2 Gravity;
+        public TSVector2 Gravity;
 
         public RopeTuning Tuning;
     };

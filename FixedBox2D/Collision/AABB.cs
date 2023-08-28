@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using FixedBox2D.Collision.Collider;
 using FixedBox2D.Common;
+using TrueSync;
 
 namespace FixedBox2D.Collision
 {
@@ -15,14 +15,14 @@ namespace FixedBox2D.Collision
         /// <summary>
         ///     the lower vertex
         /// </summary>
-        public Vector2 LowerBound;
+        public TSVector2 LowerBound;
 
         /// <summary>
         ///     the upper vertex
         /// </summary>
-        public Vector2 UpperBound;
+        public TSVector2 UpperBound;
 
-        public AABB(in Vector2 lowerBound, in Vector2 upperBound)
+        public AABB(in TSVector2 lowerBound, in TSVector2 upperBound)
         {
             LowerBound = lowerBound;
             UpperBound = upperBound;
@@ -37,7 +37,7 @@ namespace FixedBox2D.Collision
         public bool IsValid()
         {
             var d = UpperBound - LowerBound;
-            var valid = d.X >= 0.0f && d.Y >= 0.0f;
+            var valid = d.X >= FP.Zero && d.Y >= FP.Zero;
             valid = valid && LowerBound.IsValid() && UpperBound.IsValid();
             return valid;
         }
@@ -48,9 +48,9 @@ namespace FixedBox2D.Collision
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [Pure]
-        public Vector2 GetCenter()
+        public TSVector2 GetCenter()
         {
-            return 0.5f * (LowerBound + UpperBound);
+            return FP.Half * (LowerBound + UpperBound);
         }
 
         /// <summary>
@@ -59,9 +59,9 @@ namespace FixedBox2D.Collision
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [Pure]
-        public Vector2 GetExtents()
+        public TSVector2 GetExtents()
         {
-            return 0.5f * (UpperBound - LowerBound);
+            return FP.Half * (UpperBound - LowerBound);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace FixedBox2D.Collision
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [Pure]
-        public float GetPerimeter()
+        public FP GetPerimeter()
         {
             var wx = UpperBound.X - LowerBound.X;
             var wy = UpperBound.Y - LowerBound.Y;
@@ -85,9 +85,9 @@ namespace FixedBox2D.Collision
 
             var p = input.P1;
             var d = input.P2 - input.P1;
-            var absD = Vector2.Abs(d);
+            var absD = TSVector2.Abs(d);
 
-            var normal = new Vector2();
+            var normal = new TSVector2();
 
             {
                 if (absD.X < Settings.Epsilon)
@@ -100,17 +100,17 @@ namespace FixedBox2D.Collision
                 }
                 else
                 {
-                    var invD = 1.0f / d.X;
+                    var invD = FP.One / d.X;
                     var t1 = (LowerBound.X - p.X) * invD;
                     var t2 = (UpperBound.X - p.X) * invD;
 
                     // Sign of the normal vector.
-                    var s = -1.0f;
+                    var s = -FP.One;
 
                     if (t1 > t2)
                     {
                         MathUtils.Swap(ref t1, ref t2);
-                        s = 1.0f;
+                        s = FP.One;
                     }
 
                     // Push the min up
@@ -122,7 +122,7 @@ namespace FixedBox2D.Collision
                     }
 
                     // Pull the max down
-                    tmax = Math.Min(tmax, t2);
+                    tmax = FP.Min(tmax, t2);
 
                     if (tmin > tmax)
                     {
@@ -141,17 +141,17 @@ namespace FixedBox2D.Collision
                 }
                 else
                 {
-                    var invD = 1.0f / d.Y;
+                    var invD = FP.One / d.Y;
                     var t1 = (LowerBound.Y - p.Y) * invD;
                     var t2 = (UpperBound.Y - p.Y) * invD;
 
                     // Sign of the normal vector.
-                    var s = -1.0f;
+                    var s = -FP.One;
 
                     if (t1 > t2)
                     {
                         MathUtils.Swap(ref t1, ref t2);
-                        s = 1.0f;
+                        s = FP.One;
                     }
 
                     // Push the min up
@@ -163,7 +163,7 @@ namespace FixedBox2D.Collision
                     }
 
                     // Pull the max down
-                    tmax = Math.Min(tmax, t2);
+                    tmax = FP.Min(tmax, t2);
 
                     if (tmin > tmax)
                     {
@@ -174,7 +174,7 @@ namespace FixedBox2D.Collision
 
             // Does the ray start inside the box?
             // Does the ray intersect beyond the max fraction?
-            if (tmin < 0.0f || input.MaxFraction < tmin)
+            if (tmin < FP.Zero || input.MaxFraction < tmin)
             {
                 return false;
             }
@@ -188,8 +188,8 @@ namespace FixedBox2D.Collision
         public static void Combine(in AABB left, in AABB right, out AABB aabb)
         {
             aabb = new AABB(
-                Vector2.Min(left.LowerBound, right.LowerBound),
-                Vector2.Max(left.UpperBound, right.UpperBound));
+                TSVector2.Min(left.LowerBound, right.LowerBound),
+                TSVector2.Max(left.UpperBound, right.UpperBound));
         }
 
         /// <summary>
@@ -198,8 +198,8 @@ namespace FixedBox2D.Collision
         /// <param name="aabb"></param>
         public void Combine(in AABB aabb)
         {
-            LowerBound = Vector2.Min(LowerBound, aabb.LowerBound);
-            UpperBound = Vector2.Max(UpperBound, aabb.UpperBound);
+            LowerBound = TSVector2.Min(LowerBound, aabb.LowerBound);
+            UpperBound = TSVector2.Max(UpperBound, aabb.UpperBound);
         }
 
         /// <summary>
@@ -209,8 +209,8 @@ namespace FixedBox2D.Collision
         /// <param name="aabb2"></param>
         public void Combine(in AABB aabb1, in AABB aabb2)
         {
-            LowerBound = Vector2.Min(aabb1.LowerBound, aabb2.LowerBound);
-            UpperBound = Vector2.Max(aabb1.UpperBound, aabb2.UpperBound);
+            LowerBound = TSVector2.Min(aabb1.LowerBound, aabb2.LowerBound);
+            UpperBound = TSVector2.Max(aabb1.UpperBound, aabb2.UpperBound);
         }
 
         /// <summary>

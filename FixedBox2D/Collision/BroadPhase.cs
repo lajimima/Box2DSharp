@@ -1,9 +1,9 @@
 using System;
 using System.Buffers;
-using System.Numerics;
 using FixedBox2D.Collision.Collider;
 using FixedBox2D.Dynamics;
 using FixedBox2D.Dynamics.Internal;
+using TrueSync;
 
 namespace FixedBox2D.Collision
 {
@@ -74,7 +74,7 @@ namespace FixedBox2D.Collision
 
         /// Call MoveProxy as many times as you like, then when you are done
         /// call UpdatePairs to finalized the proxy pairs (for your time step).
-        public void MoveProxy(int proxyId, in AABB aabb, in Vector2 displacement)
+        public void MoveProxy(int proxyId, in AABB aabb, in TSVector2 displacement)
         {
             var buffer = _tree.MoveProxy(proxyId, aabb, displacement);
             if (buffer)
@@ -195,7 +195,7 @@ namespace FixedBox2D.Collision
         }
 
         /// Get the quality metric of the embedded tree.
-        public float GetTreeQuality()
+        public FP GetTreeQuality()
         {
             return _tree.GetAreaRatio();
         }
@@ -203,7 +203,7 @@ namespace FixedBox2D.Collision
         /// Shift the world origin. Useful for large worlds.
         /// The shift formula is: position -= newOrigin
         /// @param newOrigin the new origin with respect to the old origin
-        public void ShiftOrigin(in Vector2 newOrigin)
+        public void ShiftOrigin(in TSVector2 newOrigin)
         {
             _tree.ShiftOrigin(newOrigin);
         }

@@ -127,13 +127,13 @@ namespace Testbed
             base.OnUpdateFrame(e);
         }
 
-        static float _avgDuration = 0;
+        static FP _avgDuration = 0;
 
-        const float Alpha = 1f / 100f; // 采样数设置为100
+        const FP Alpha = 1f / 100f; // 采样数设置为100
 
         static int _frameCount = 0;
 
-        private int GetFps(float deltaTime) // ms
+        private int GetFps(FP deltaTime) // ms
         {
             ++_frameCount;
 
@@ -153,7 +153,7 @@ namespace Testbed
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            _controller.Update(this, (float)e.Time);
+            _controller.Update(this, (FP)e.Time);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             UpdateText();
             UpdateUI();
@@ -178,8 +178,8 @@ namespace Testbed
         {
             if (DebugDrawer.ShowUI)
             {
-                ImGui.SetNextWindowPos(new System.Numerics.Vector2(0.0f, 0.0f));
-                ImGui.SetNextWindowSize(new System.Numerics.Vector2(Global.Camera.Width, Global.Camera.Height));
+                ImGui.SetNextWindowPos(new System.Numerics.TSVector2(0.0f, 0.0f));
+                ImGui.SetNextWindowSize(new System.Numerics.TSVector2(Global.Camera.Width, Global.Camera.Height));
                 ImGui.SetNextWindowBgAlpha(0);
                 ImGui.Begin("Overlay", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoScrollbar);
                 ImGui.End();
@@ -193,8 +193,8 @@ namespace Testbed
             const int MenuWidth = 180;
             if (DebugDrawer.ShowUI)
             {
-                ImGui.SetNextWindowPos(new System.Numerics.Vector2((float)Global.Camera.Width - MenuWidth - 10, 10));
-                ImGui.SetNextWindowSize(new System.Numerics.Vector2(MenuWidth, (float)Global.Camera.Height - 20));
+                ImGui.SetNextWindowPos(new System.Numerics.TSVector2((FP)Global.Camera.Width - MenuWidth - 10, 10));
+                ImGui.SetNextWindowSize(new System.Numerics.TSVector2(MenuWidth, (FP)Global.Camera.Height - 20));
 
                 ImGui.Begin("Tools", ref DebugDrawer.ShowUI, ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse);
 
@@ -226,7 +226,7 @@ namespace Testbed
                         ImGui.Checkbox("Statistics", ref Global.Settings.DrawStats);
                         ImGui.Checkbox("Profile", ref Global.Settings.DrawProfile);
 
-                        var buttonSz = new System.Numerics.Vector2(-1, 0);
+                        var buttonSz = new System.Numerics.TSVector2(-1, 0);
                         if (ImGui.Button("Pause (P)", buttonSz))
                         {
                             Global.Settings.Pause = !Global.Settings.Pause;
@@ -324,7 +324,7 @@ namespace Testbed
             case Keys.Left:
                 if (e.Control)
                 {
-                    Test.ShiftOrigin(new System.Numerics.Vector2(2.0f, 0.0f));
+                    Test.ShiftOrigin(new System.Numerics.TSVector2(FP.Two, 0.0f));
                 }
                 else
                 {
@@ -335,7 +335,7 @@ namespace Testbed
             case Keys.Right:
                 if (e.Control)
                 {
-                    var newOrigin = new System.Numerics.Vector2(-2.0f, 0.0f);
+                    var newOrigin = new System.Numerics.TSVector2(-FP.Two, 0.0f);
                     Test.ShiftOrigin(newOrigin);
                 }
                 else
@@ -347,7 +347,7 @@ namespace Testbed
             case Keys.Up:
                 if (e.Control)
                 {
-                    var newOrigin = new System.Numerics.Vector2(0.0f, -2.0f);
+                    var newOrigin = new System.Numerics.TSVector2(0.0f, -FP.Two);
                     Test.ShiftOrigin(newOrigin);
                 }
                 else
@@ -359,7 +359,7 @@ namespace Testbed
             case Keys.Down:
                 if (e.Control)
                 {
-                    var newOrigin = new System.Numerics.Vector2(0.0f, 2.0f);
+                    var newOrigin = new System.Numerics.TSVector2(0.0f, FP.Two);
                     Test.ShiftOrigin(newOrigin);
                 }
                 else
@@ -443,7 +443,7 @@ namespace Testbed
         {
             if (e.Button == TKMouseButton.Left)
             {
-                var pw = Global.Camera.ConvertScreenToWorld(new System.Numerics.Vector2(MousePosition.X, MousePosition.Y));
+                var pw = Global.Camera.ConvertScreenToWorld(new System.Numerics.TSVector2(MousePosition.X, MousePosition.Y));
 
                 if (e.Modifiers == TKKeyModifiers.Shift)
                 {
@@ -463,7 +463,7 @@ namespace Testbed
         {
             if (e.Button == TKMouseButton.Left)
             {
-                var pw = Global.Camera.ConvertScreenToWorld(new System.Numerics.Vector2(MousePosition.X, MousePosition.Y));
+                var pw = Global.Camera.ConvertScreenToWorld(new System.Numerics.TSVector2(MousePosition.X, MousePosition.Y));
                 Test.MouseUp(pw);
             }
 
@@ -475,7 +475,7 @@ namespace Testbed
         {
             if (IsMouseButtonDown(TKMouseButton.Left))
             {
-                var pw = Global.Camera.ConvertScreenToWorld(new System.Numerics.Vector2(MousePosition.X, MousePosition.Y));
+                var pw = Global.Camera.ConvertScreenToWorld(new System.Numerics.TSVector2(MousePosition.X, MousePosition.Y));
                 Test.MouseMove(pw);
             }
 
@@ -536,7 +536,7 @@ namespace Testbed
 
         #region View Control
 
-        public Vector2 Scroll;
+        public TSVector2 Scroll;
 
         /// <inheritdoc />
         protected override void OnMouseWheel(MouseWheelEventArgs e)

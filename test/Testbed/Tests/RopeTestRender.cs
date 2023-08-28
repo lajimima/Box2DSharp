@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+﻿using TrueSync;
 using FixedBox2D.Common;
 using FixedBox2D.Ropes;
 using ImGuiNET;
@@ -12,8 +12,8 @@ namespace Testbed.Tests
         /// <inheritdoc />
         protected override void OnRender()
         {
-            ImGui.SetNextWindowPos(new Vector2(10.0f, 100.0f));
-            ImGui.SetNextWindowSize(new Vector2(200.0f, 700.0f));
+            ImGui.SetNextWindowPos(new TSVector2(10.0f, 100.0f));
+            ImGui.SetNextWindowSize(new TSVector2(200.0f, 700.0f));
             ImGui.Begin("Tuning", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
 
             ImGui.Separator();

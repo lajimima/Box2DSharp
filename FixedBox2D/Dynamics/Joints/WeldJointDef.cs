@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Common;
 
 namespace FixedBox2D.Dynamics.Joints
@@ -10,28 +10,28 @@ namespace FixedBox2D.Dynamics.Joints
     {
         /// The rotational stiffness in N*m
         /// Disable softness with a value of 0
-        public float Stiffness;
+        public FP Stiffness;
 
         /// The rotational damping in N*m*s
-        public float Damping;
+        public FP Damping;
 
         /// The local anchor point relative to bodyA's origin.
-        public Vector2 LocalAnchorA;
+        public TSVector2 LocalAnchorA;
 
         /// The local anchor point relative to bodyB's origin.
-        public Vector2 LocalAnchorB;
+        public TSVector2 LocalAnchorB;
 
         /// The bodyB angle minus bodyA angle in the reference state (radians).
-        public float ReferenceAngle;
+        public FP ReferenceAngle;
 
         public WeldJointDef()
         {
             JointType = JointType.WeldJoint;
-            LocalAnchorA.Set(0.0f, 0.0f);
-            LocalAnchorB.Set(0.0f, 0.0f);
-            ReferenceAngle = 0.0f;
-            Stiffness = 0.0f;
-            Damping = 0.0f;
+            LocalAnchorA.Set(FP.Zero, FP.Zero);
+            LocalAnchorB.Set(FP.Zero, FP.Zero);
+            ReferenceAngle = FP.Zero;
+            Stiffness = FP.Zero;
+            Damping = FP.Zero;
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace FixedBox2D.Dynamics.Joints
         /// <param name="bA">the first body connected by this joint</param>
         /// <param name="bB">the second body connected by this joint</param>
         /// <param name="anchor">the point of connection in world coordinates</param>
-        public void Initialize(Body bA, Body bB, in Vector2 anchor)
+        public void Initialize(Body bA, Body bB, in TSVector2 anchor)
         {
             BodyA = bA;
             BodyB = bB;

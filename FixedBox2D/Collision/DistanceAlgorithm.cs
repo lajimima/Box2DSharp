@@ -1,6 +1,6 @@
 using System;
 using System.Diagnostics;
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Common;
 
 namespace FixedBox2D.Collision
@@ -144,7 +144,7 @@ namespace FixedBox2D.Collision
 
             // Prepare output.
             simplex.GetWitnessPoints(out output.PointA, out output.PointB);
-            output.Distance = Vector2.Distance(output.PointA, output.PointB);
+            output.Distance = TSVector2.Distance(output.PointA, output.PointB);
             output.Iterations = iter;
 
             // Cache the simplex.
@@ -156,10 +156,10 @@ namespace FixedBox2D.Collision
                 if (output.Distance < Settings.Epsilon)
                 {
                     // Shapes are too close to safely compute normal
-                    var p = 0.5f * (output.PointA + output.PointB);
+                    var p = FP.Half * (output.PointA + output.PointB);
                     output.PointA = p;
                     output.PointB = p;
-                    output.Distance = 0.0f;
+                    output.Distance = FP.Zero;
                 }
                 else
                 {
@@ -169,13 +169,14 @@ namespace FixedBox2D.Collision
                     var rB = proxyB.Radius;
                     var normal = output.PointB - output.PointA;
                     normal.Normalize();
-                    output.Distance = Math.Max(0.0f, output.Distance - rA - rB);
+                    output.Distance = FP.Max(FP.Zero, output.Distance - rA - rB);
                     output.PointA += rA * normal;
                     output.PointB -= rB * normal;
                 }
             }
         }
 
+        static FP tolerance = FP.Half * Settings.LinearSlop;
         /// <summary>
         /// Perform a linear shape cast of shape B moving and shape A fixed. Determines the hit point, normal, and translation fraction.
         /// </summary>
@@ -187,24 +188,24 @@ namespace FixedBox2D.Collision
             output = new ShapeCastOutput
             {
                 Iterations = 0,
-                Lambda = 1.0f,
-                Normal = Vector2.Zero,
-                Point = Vector2.Zero
+                Lambda = FP.One,
+                Normal = TSVector2.Zero,
+                Point = TSVector2.Zero
             };
 
             ref readonly var proxyA = ref input.ProxyA;
             ref readonly var proxyB = ref input.ProxyB;
 
-            var radiusA = Math.Max(proxyA.Radius, Settings.PolygonRadius);
-            var radiusB = Math.Max(proxyB.Radius, Settings.PolygonRadius);
+            var radiusA = FP.Max(proxyA.Radius, Settings.PolygonRadius);
+            var radiusB = FP.Max(proxyB.Radius, Settings.PolygonRadius);
             var radius = radiusA + radiusB;
 
             var xfA = input.TransformA;
             var xfB = input.TransformB;
 
             var r = input.TranslationB;
-            var n = new Vector2(0.0f, 0.0f);
-            var lambda = 0.0f;
+            var n = new TSVector2(FP.Zero, FP.Zero);
+            var lambda = FP.Zero;
 
             // Initial simplex
             var simplex = new Simplex();
@@ -220,14 +221,13 @@ namespace FixedBox2D.Collision
             var v = wA - wB;
 
             // Sigma is the target distance between polygons
-            var sigma = Math.Max(Settings.PolygonRadius, radius - Settings.PolygonRadius);
-            const float tolerance = 0.5f * Settings.LinearSlop;
+            var sigma = FP.Max(Settings.PolygonRadius, radius - Settings.PolygonRadius);
 
             // Main iteration loop.
             // 迭代次数上限
             const int maxIters = 20;
             var iter = 0;
-            while (iter < maxIters && v.Length() - sigma > tolerance)
+            while (iter < maxIters && v.magnitude - sigma > tolerance)
             {
                 Debug.Assert(simplex.Count < 3);
 
@@ -244,17 +244,17 @@ namespace FixedBox2D.Collision
                 v.Normalize();
 
                 // Intersect ray with plane
-                var vp = Vector2.Dot(v, p);
-                var vr = Vector2.Dot(v, r);
+                var vp = TSVector2.Dot(v, p);
+                var vr = TSVector2.Dot(v, r);
                 if (vp - sigma > lambda * vr)
                 {
-                    if (vr <= 0.0f)
+                    if (vr <= FP.Zero)
                     {
                         return false;
                     }
 
                     lambda = (vp - sigma) / vr;
-                    if (lambda > 1.0f)
+                    if (lambda > FP.One)
                     {
                         return false;
                     }
@@ -273,7 +273,7 @@ namespace FixedBox2D.Collision
                 vertex.IndexB = indexA;
                 vertex.Wb = wA;
                 vertex.W = vertex.Wb - vertex.Wa;
-                vertex.A = 1.0f;
+                vertex.A = FP.One;
 
                 simplex.Count += 1;
 
@@ -318,7 +318,7 @@ namespace FixedBox2D.Collision
             // Prepare output.
             simplex.GetWitnessPoints(out var pointB, out var pointA);
 
-            if (v.LengthSquared() > 0.0f)
+            if (v.LengthSquared() > FP.Zero)
             {
                 n = -v;
                 n.Normalize();

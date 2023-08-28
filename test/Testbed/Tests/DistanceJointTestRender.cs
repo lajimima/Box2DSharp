@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+﻿using TrueSync;
 using FixedBox2D.Dynamics.Joints;
 using ImGuiNET;
 using Testbed.TestCases;
@@ -11,8 +11,8 @@ namespace Testbed.Tests
         /// <inheritdoc />
         protected override void OnRender()
         {
-            ImGui.SetNextWindowPos(new Vector2(10.0f, 100.0f));
-            ImGui.SetNextWindowSize(new Vector2(260.0f, 150.0f));
+            ImGui.SetNextWindowPos(new TSVector2(10.0f, 100.0f));
+            ImGui.SetNextWindowSize(new TSVector2(260.0f, 150.0f));
             ImGui.Begin("Joint Controls", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
 
             if (ImGui.SliderFloat("Length", ref m_length, 0.0f, 20.0f, "%.0f"))
@@ -37,7 +37,7 @@ namespace Testbed.Tests
                 m_joint.Damping = damping;
             }
 
-            if (ImGui.SliderFloat("Damping Ratio", ref m_dampingRatio, 0.0f, 2.0f, "%.1f"))
+            if (ImGui.SliderFloat("Damping Ratio", ref m_dampingRatio, 0.0f, FP.Two, "%.1f"))
             {
                 JointUtils.LinearStiffness(out var stiffness, out var damping, m_hertz, m_dampingRatio, m_joint.BodyA, m_joint.BodyB);
                 m_joint.Stiffness = stiffness;

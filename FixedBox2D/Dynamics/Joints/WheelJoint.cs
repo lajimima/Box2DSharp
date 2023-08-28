@@ -1,6 +1,6 @@
 using System;
 using System.Diagnostics;
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Common;
 
 namespace FixedBox2D.Dynamics.Joints
@@ -13,76 +13,76 @@ namespace FixedBox2D.Dynamics.Joints
     /// </summary>
     public class WheelJoint : Joint
     {
-        private readonly Vector2 _localAnchorA;
+        private readonly TSVector2 _localAnchorA;
 
-        private readonly Vector2 _localAnchorB;
+        private readonly TSVector2 _localAnchorB;
 
-        private readonly Vector2 _localXAxisA;
+        private readonly TSVector2 _localXAxisA;
 
-        private readonly Vector2 _localYAxisA;
+        private readonly TSVector2 _localYAxisA;
 
-        private float _impulse;
+        private FP _impulse;
 
-        private float _motorImpulse;
+        private FP _motorImpulse;
 
-        private float _springImpulse;
+        private FP _springImpulse;
 
-        private float _lowerImpulse;
+        private FP _lowerImpulse;
 
-        private float _upperImpulse;
+        private FP _upperImpulse;
 
-        private float _translation;
+        private FP _translation;
 
-        private float _lowerTranslation;
+        private FP _lowerTranslation;
 
-        private float _upperTranslation;
+        private FP _upperTranslation;
 
-        private float _maxMotorTorque;
+        private FP _maxMotorTorque;
 
-        private float _motorSpeed;
+        private FP _motorSpeed;
 
         private bool _enableLimit;
 
         private bool _enableMotor;
 
-        private float _stiffness;
+        private FP _stiffness;
 
-        private float _damping;
+        private FP _damping;
 
         // Solver temp
         private int _indexA;
 
         private int _indexB;
 
-        private Vector2 _localCenterA;
+        private TSVector2 _localCenterA;
 
-        private Vector2 _localCenterB;
+        private TSVector2 _localCenterB;
 
-        private float _invMassA;
+        private FP _invMassA;
 
-        private float _invMassB;
+        private FP _invMassB;
 
-        private float _invIA;
+        private FP _invIA;
 
-        private float _invIB;
+        private FP _invIB;
 
-        private Vector2 _ax, _ay;
+        private TSVector2 _ax, _ay;
 
-        private float _sAx, _sBx;
+        private FP _sAx, _sBx;
 
-        private float _sAy, _sBy;
+        private FP _sAy, _sBy;
 
-        private float _mass;
+        private FP _mass;
 
-        private float _motorMass;
+        private FP _motorMass;
 
-        private float _axialMass;
+        private FP _axialMass;
 
-        private float _springMass;
+        private FP _springMass;
 
-        private float _bias;
+        private FP _bias;
 
-        private float _gamma;
+        private FP _gamma;
 
         internal WheelJoint(WheelJointDef def)
             : base(def)
@@ -90,18 +90,18 @@ namespace FixedBox2D.Dynamics.Joints
             _localAnchorA = def.LocalAnchorA;
             _localAnchorB = def.LocalAnchorB;
             _localXAxisA = def.LocalAxisA;
-            _localYAxisA = MathUtils.Cross(1.0f, _localXAxisA);
+            _localYAxisA = MathUtils.Cross(FP.One, _localXAxisA);
 
-            _mass = 0.0f;
-            _impulse = 0.0f;
-            _motorMass = 0.0f;
-            _motorImpulse = 0.0f;
-            _springMass = 0.0f;
-            _springImpulse = 0.0f;
+            _mass = FP.Zero;
+            _impulse = FP.Zero;
+            _motorMass = FP.Zero;
+            _motorImpulse = FP.Zero;
+            _springMass = FP.Zero;
+            _springImpulse = FP.Zero;
 
-            _axialMass = 0.0f;
-            _lowerImpulse = 0.0f;
-            _upperImpulse = 0.0f;
+            _axialMass = FP.Zero;
+            _lowerImpulse = FP.Zero;
+            _upperImpulse = FP.Zero;
             _lowerTranslation = def.LowerTranslation;
             _upperTranslation = def.UpperTranslation;
             _enableLimit = def.EnableLimit;
@@ -110,8 +110,8 @@ namespace FixedBox2D.Dynamics.Joints
             _motorSpeed = def.MotorSpeed;
             _enableMotor = def.EnableMotor;
 
-            _bias = 0.0f;
-            _gamma = 0.0f;
+            _bias = FP.Zero;
+            _gamma = FP.Zero;
 
             _ax.SetZero();
             _ay.SetZero();
@@ -121,25 +121,25 @@ namespace FixedBox2D.Dynamics.Joints
         }
 
         /// The local anchor point relative to bodyA's origin.
-        public Vector2 GetLocalAnchorA()
+        public TSVector2 GetLocalAnchorA()
         {
             return _localAnchorA;
         }
 
         /// The local anchor point relative to bodyB's origin.
-        public Vector2 GetLocalAnchorB()
+        public TSVector2 GetLocalAnchorB()
         {
             return _localAnchorB;
         }
 
         /// The local joint axis relative to bodyA.
-        public Vector2 GetLocalAxisA()
+        public TSVector2 GetLocalAxisA()
         {
             return _localXAxisA;
         }
 
         /// Get the current joint translation, usually in meters.
-        public float GetJointTranslation()
+        public FP GetJointTranslation()
         {
             var bA = BodyA;
             var bB = BodyB;
@@ -149,12 +149,12 @@ namespace FixedBox2D.Dynamics.Joints
             var d = pB - pA;
             var axis = bA.GetWorldVector(_localXAxisA);
 
-            var translation = Vector2.Dot(d, axis);
+            var translation = TSVector2.Dot(d, axis);
             return translation;
         }
 
         /// Get the current joint linear speed, usually in meters per second.
-        public float GetJointLinearSpeed()
+        public FP GetJointLinearSpeed()
         {
             var bA = BodyA;
             var bB = BodyB;
@@ -171,13 +171,13 @@ namespace FixedBox2D.Dynamics.Joints
             var wA = bA.AngularVelocity;
             var wB = bB.AngularVelocity;
 
-            var speed = Vector2.Dot(d, MathUtils.Cross(wA, axis))
-                      + Vector2.Dot(axis, vB + MathUtils.Cross(wB, rB) - vA - MathUtils.Cross(wA, rA));
+            var speed = TSVector2.Dot(d, MathUtils.Cross(wA, axis))
+                      + TSVector2.Dot(axis, vB + MathUtils.Cross(wB, rB) - vA - MathUtils.Cross(wA, rA));
             return speed;
         }
 
         /// Get the current joint angle in radians.
-        public float GetJointAngle()
+        public FP GetJointAngle()
         {
             var bA = BodyA;
             var bB = BodyB;
@@ -185,7 +185,7 @@ namespace FixedBox2D.Dynamics.Joints
         }
 
         /// Get the current joint angular speed in radians per second.
-        public float GetJointAngularSpeed()
+        public FP GetJointAngularSpeed()
         {
             var wA = BodyA.AngularVelocity;
             var wB = BodyB.AngularVelocity;
@@ -203,19 +203,19 @@ namespace FixedBox2D.Dynamics.Joints
                 BodyA.IsAwake = true;
                 BodyB.IsAwake = true;
                 _enableLimit = flag;
-                _lowerImpulse = 0.0f;
-                _upperImpulse = 0.0f;
+                _lowerImpulse = FP.Zero;
+                _upperImpulse = FP.Zero;
             }
         }
 
         /// Get the lower joint translation limit, usually in meters.
-        public float GetLowerLimit() => _lowerTranslation;
+        public FP GetLowerLimit() => _lowerTranslation;
 
         /// Get the upper joint translation limit, usually in meters.
-        public float GetUpperLimit() => _upperTranslation;
+        public FP GetUpperLimit() => _upperTranslation;
 
         /// Set the joint translation limits, usually in meters.
-        public void SetLimits(float lower, float upper)
+        public void SetLimits(FP lower, FP upper)
         {
             Debug.Assert(lower <= upper);
             if (!lower.Equals(_lowerTranslation) || !upper.Equals(_upperTranslation))
@@ -224,8 +224,8 @@ namespace FixedBox2D.Dynamics.Joints
                 BodyB.IsAwake = true;
                 _lowerTranslation = lower;
                 _upperTranslation = upper;
-                _lowerImpulse = 0.0f;
-                _upperImpulse = 0.0f;
+                _lowerImpulse = FP.Zero;
+                _upperImpulse = FP.Zero;
             }
         }
 
@@ -247,7 +247,7 @@ namespace FixedBox2D.Dynamics.Joints
         }
 
         /// Set the motor speed, usually in radians per second.
-        public void SetMotorSpeed(float speed)
+        public void SetMotorSpeed(FP speed)
         {
             if (!speed.Equals(_motorSpeed))
             {
@@ -258,13 +258,13 @@ namespace FixedBox2D.Dynamics.Joints
         }
 
         /// Get the motor speed, usually in radians per second.
-        public float GetMotorSpeed()
+        public FP GetMotorSpeed()
         {
             return _motorSpeed;
         }
 
         /// Set/Get the maximum motor force, usually in N-m.
-        public void SetMaxMotorTorque(float torque)
+        public void SetMaxMotorTorque(FP torque)
         {
             if (!torque.Equals(_maxMotorTorque))
             {
@@ -274,47 +274,47 @@ namespace FixedBox2D.Dynamics.Joints
             }
         }
 
-        public float GetMaxMotorTorque()
+        public FP GetMaxMotorTorque()
         {
             return _maxMotorTorque;
         }
 
         /// Get the current motor torque given the inverse time step, usually in N-m.
-        public float GetMotorTorque(float inv_dt)
+        public FP GetMotorTorque(FP inv_dt)
         {
             return inv_dt * _motorImpulse;
         }
 
         /// Access spring stiffness
-        public void SetStiffness(float stiffness) => _stiffness = stiffness;
+        public void SetStiffness(FP stiffness) => _stiffness = stiffness;
 
-        public float GetStiffness() => _stiffness;
+        public FP GetStiffness() => _stiffness;
 
         /// Access damping
-        public void SetDamping(float damping) => _damping = damping;
+        public void SetDamping(FP damping) => _damping = damping;
 
-        public float GetDamping() => _damping;
+        public FP GetDamping() => _damping;
 
         /// <inheritdoc />
-        public override Vector2 GetAnchorA()
+        public override TSVector2 GetAnchorA()
         {
             return BodyA.GetWorldPoint(_localAnchorA);
         }
 
         /// <inheritdoc />
-        public override Vector2 GetAnchorB()
+        public override TSVector2 GetAnchorB()
         {
             return BodyB.GetWorldPoint(_localAnchorB);
         }
 
         /// <inheritdoc />
-        public override Vector2 GetReactionForce(float inv_dt)
+        public override TSVector2 GetReactionForce(FP inv_dt)
         {
             return inv_dt * (_impulse * _ay + (_springImpulse + _lowerImpulse - _upperImpulse) * _ax);
         }
 
         /// <inheritdoc />
-        public override float GetReactionTorque(float inv_dt)
+        public override FP GetReactionTorque(FP inv_dt)
         {
             return inv_dt * _motorImpulse;
         }
@@ -337,8 +337,8 @@ namespace FixedBox2D.Dynamics.Joints
             _invIA = BodyA.InverseInertia;
             _invIB = BodyB.InverseInertia;
 
-            float mA = _invMassA, mB = _invMassB;
-            float iA = _invIA, iB = _invIB;
+            FP mA = _invMassA, mB = _invMassB;
+            FP iA = _invIA, iB = _invIB;
 
             var cA = data.Positions[_indexA].Center;
             var aA = data.Positions[_indexA].Angle;
@@ -366,9 +366,9 @@ namespace FixedBox2D.Dynamics.Joints
 
                 _mass = mA + mB + iA * _sAy * _sAy + iB * _sBy * _sBy;
 
-                if (_mass > 0.0f)
+                if (_mass > FP.Zero)
                 {
-                    _mass = 1.0f / _mass;
+                    _mass = FP.One / _mass;
                 }
             }
 
@@ -378,68 +378,68 @@ namespace FixedBox2D.Dynamics.Joints
             _sBx = MathUtils.Cross(rB, _ax);
 
             var invMass = mA + mB + iA * _sAx * _sAx + iB * _sBx * _sBx;
-            if (invMass > 0.0f)
+            if (invMass > FP.Zero)
             {
-                _axialMass = 1.0f / invMass;
+                _axialMass = FP.One / invMass;
             }
             else
             {
-                _axialMass = 0.0f;
+                _axialMass = FP.Zero;
             }
 
-            _springMass = 0.0f;
-            _bias = 0.0f;
-            _gamma = 0.0f;
+            _springMass = FP.Zero;
+            _bias = FP.Zero;
+            _gamma = FP.Zero;
 
-            if (_stiffness > 0.0f && invMass > 0.0f)
+            if (_stiffness > FP.Zero && invMass > FP.Zero)
             {
-                _springMass = 1.0f / invMass;
+                _springMass = FP.One / invMass;
 
-                var C = Vector2.Dot(d, _ax);
+                var C = TSVector2.Dot(d, _ax);
 
                 // magic formulas
                 var h = data.Step.Dt;
                 _gamma = h * (_damping + h * _stiffness);
-                if (_gamma > 0.0f)
+                if (_gamma > FP.Zero)
                 {
-                    _gamma = 1.0f / _gamma;
+                    _gamma = FP.One / _gamma;
                 }
 
                 _bias = C * h * _stiffness * _gamma;
 
                 _springMass = invMass + _gamma;
-                if (_springMass > 0.0f)
+                if (_springMass > FP.Zero)
                 {
-                    _springMass = 1.0f / _springMass;
+                    _springMass = FP.One / _springMass;
                 }
             }
             else
             {
-                _springImpulse = 0.0f;
+                _springImpulse = FP.Zero;
             }
 
             if (_enableLimit)
             {
-                _translation = Vector2.Dot(_ax, d);
+                _translation = TSVector2.Dot(_ax, d);
             }
             else
             {
-                _lowerImpulse = 0.0f;
-                _upperImpulse = 0.0f;
+                _lowerImpulse = FP.Zero;
+                _upperImpulse = FP.Zero;
             }
 
             if (_enableMotor)
             {
                 _motorMass = iA + iB;
-                if (_motorMass > 0.0f)
+                if (_motorMass > FP.Zero)
                 {
-                    _motorMass = 1.0f / _motorMass;
+                    _motorMass = FP.One / _motorMass;
                 }
             }
             else
             {
-                _motorMass = 0.0f;
-                _motorImpulse = 0.0f;
+                _motorMass = FP.Zero;
+                _motorImpulse = FP.Zero;
             }
 
             if (data.Step.WarmStarting)
@@ -462,11 +462,11 @@ namespace FixedBox2D.Dynamics.Joints
             }
             else
             {
-                _impulse = 0.0f;
-                _springImpulse = 0.0f;
-                _motorImpulse = 0.0f;
-                _lowerImpulse = 0.0f;
-                _upperImpulse = 0.0f;
+                _impulse = FP.Zero;
+                _springImpulse = FP.Zero;
+                _motorImpulse = FP.Zero;
+                _lowerImpulse = FP.Zero;
+                _upperImpulse = FP.Zero;
             }
 
             data.Velocities[_indexA].V = vA;
@@ -478,8 +478,8 @@ namespace FixedBox2D.Dynamics.Joints
         /// <inheritdoc />
         internal override void SolveVelocityConstraints(in SolverData data)
         {
-            float mA = _invMassA, mB = _invMassB;
-            float iA = _invIA, iB = _invIB;
+            FP mA = _invMassA, mB = _invMassB;
+            FP iA = _invIA, iB = _invIB;
 
             var vA = data.Velocities[_indexA].V;
             var wA = data.Velocities[_indexA].W;
@@ -488,7 +488,7 @@ namespace FixedBox2D.Dynamics.Joints
 
             // Solve spring constraint
             {
-                var Cdot = Vector2.Dot(_ax, vB - vA) + _sBx * wB - _sAx * wA;
+                var Cdot = TSVector2.Dot(_ax, vB - vA) + _sBx * wB - _sAx * wA;
                 var impulse = -_springMass * (Cdot + _bias + _gamma * _springImpulse);
                 _springImpulse += impulse;
 
@@ -521,10 +521,10 @@ namespace FixedBox2D.Dynamics.Joints
                 // Lower limit
                 {
                     var C = _translation - _lowerTranslation;
-                    var Cdot = Vector2.Dot(_ax, vB - vA) + _sBx * wB - _sAx * wA;
-                    var impulse = -_axialMass * (Cdot + Math.Max(C, 0.0f) * data.Step.InvDt);
+                    var Cdot = TSVector2.Dot(_ax, vB - vA) + _sBx * wB - _sAx * wA;
+                    var impulse = -_axialMass * (Cdot + FP.Max(C, FP.Zero) * data.Step.InvDt);
                     var oldImpulse = _lowerImpulse;
-                    _lowerImpulse = Math.Max(_lowerImpulse + impulse, 0.0f);
+                    _lowerImpulse = FP.Max(_lowerImpulse + impulse, FP.Zero);
                     impulse = _lowerImpulse - oldImpulse;
 
                     var P = impulse * _ax;
@@ -542,10 +542,10 @@ namespace FixedBox2D.Dynamics.Joints
                 // This also keeps the impulse positive when the limit is active.
                 {
                     var C = _upperTranslation - _translation;
-                    var Cdot = Vector2.Dot(_ax, vA - vB) + _sAx * wA - _sBx * wB;
-                    var impulse = -_axialMass * (Cdot + Math.Max(C, 0.0f) * data.Step.InvDt);
+                    var Cdot = TSVector2.Dot(_ax, vA - vB) + _sAx * wA - _sBx * wB;
+                    var impulse = -_axialMass * (Cdot + FP.Max(C, FP.Zero) * data.Step.InvDt);
                     var oldImpulse = _upperImpulse;
-                    _upperImpulse = Math.Max(_upperImpulse + impulse, 0.0f);
+                    _upperImpulse = FP.Max(_upperImpulse + impulse, FP.Zero);
                     impulse = _upperImpulse - oldImpulse;
 
                     var P = impulse * _ax;
@@ -561,7 +561,7 @@ namespace FixedBox2D.Dynamics.Joints
 
             // Solve point to line constraint
             {
-                var Cdot = Vector2.Dot(_ay, vB - vA) + _sBy * wB - _sAy * wA;
+                var Cdot = TSVector2.Dot(_ay, vB - vA) + _sBy * wB - _sAy * wA;
                 var impulse = -_mass * Cdot;
                 _impulse += impulse;
 
@@ -590,7 +590,7 @@ namespace FixedBox2D.Dynamics.Joints
             var cB = data.Positions[_indexB].Center;
             var aB = data.Positions[_indexB].Angle;
 
-            var linearError = 0.0f;
+            var linearError = FP.Zero;
 
             if (_enableLimit)
             {
@@ -605,25 +605,25 @@ namespace FixedBox2D.Dynamics.Joints
                 var sAx = MathUtils.Cross(d + rA, _ax);
                 var sBx = MathUtils.Cross(rB, _ax);
 
-                var C = 0.0f;
-                var translation = Vector2.Dot(ax, d);
-                if (Math.Abs(_upperTranslation - _lowerTranslation) < 2.0f * Settings.LinearSlop)
+                var C = FP.Zero;
+                var translation = TSVector2.Dot(ax, d);
+                if (FP.Abs(_upperTranslation - _lowerTranslation) < FP.Two * Settings.LinearSlop)
                 {
                     C = translation;
                 }
                 else if (translation <= _lowerTranslation)
                 {
-                    C = Math.Min(translation - _lowerTranslation, 0.0f);
+                    C = FP.Min(translation - _lowerTranslation, FP.Zero);
                 }
                 else if (translation >= _upperTranslation)
                 {
-                    C = Math.Max(translation - _upperTranslation, 0.0f);
+                    C = FP.Max(translation - _upperTranslation, FP.Zero);
                 }
 
                 if (!C.Equals(0))
                 {
                     var invMass = _invMassA + _invMassB + _invIA * sAx * sAx + _invIB * sBx * sBx;
-                    var impulse = 0.0f;
+                    var impulse = FP.Zero;
                     if (!invMass.Equals(0))
                     {
                         impulse = -C / invMass;
@@ -638,7 +638,7 @@ namespace FixedBox2D.Dynamics.Joints
                     cB += _invMassB * P;
                     aB += _invIB * LB;
 
-                    linearError = Math.Abs(C);
+                    linearError = FP.Abs(C);
                 }
             }
 
@@ -656,11 +656,11 @@ namespace FixedBox2D.Dynamics.Joints
                 var sAy = MathUtils.Cross(d + rA, ay);
                 var sBy = MathUtils.Cross(rB, ay);
 
-                var C = Vector2.Dot(d, ay);
+                var C = TSVector2.Dot(d, ay);
 
                 var invMass = _invMassA + _invMassB + _invIA * _sAy * _sAy + _invIB * _sBy * _sBy;
 
-                var impulse = 0.0f;
+                var impulse = FP.Zero;
                 if (!invMass.Equals(0))
                 {
                     impulse = -C / invMass;
@@ -675,7 +675,7 @@ namespace FixedBox2D.Dynamics.Joints
                 cB += _invMassB * P;
                 aB += _invIB * LB;
 
-                linearError = Math.Max(linearError, Math.Abs(C));
+                linearError = FP.Max(linearError, FP.Abs(C));
             }
 
             data.Positions[_indexA].Center = cA;
@@ -710,12 +710,12 @@ namespace FixedBox2D.Dynamics.Joints
                 var upper = pA + _upperTranslation * axis;
                 var perp = MathUtils.Mul(xfA.Rotation, _localYAxisA);
                 drawer.DrawSegment(lower, upper, c1);
-                drawer.DrawSegment(lower - 0.5f * perp, lower + 0.5f * perp, c2);
-                drawer.DrawSegment(upper - 0.5f * perp, upper + 0.5f * perp, c3);
+                drawer.DrawSegment(lower - FP.Half * perp, lower + FP.Half * perp, c2);
+                drawer.DrawSegment(upper - FP.Half * perp, upper + FP.Half * perp, c3);
             }
             else
             {
-                drawer.DrawSegment(pA - 1.0f * axis, pA + 1.0f * axis, c1);
+                drawer.DrawSegment(pA - FP.One * axis, pA + FP.One * axis, c1);
             }
 
             drawer.DrawPoint(pA, 5.0f, c1);

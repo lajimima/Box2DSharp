@@ -1,17 +1,17 @@
-﻿using System.Numerics;
+﻿using TrueSync;
 using FixedBox2D.Common;
 
 namespace Testbed.Abstractions
 {
     public class Camera
     {
-        public Vector2 Center;
+        public TSVector2 Center;
 
         public int Height;
 
         public int Width;
 
-        public float Zoom;
+        public FP Zoom;
 
         public Camera()
         {
@@ -26,32 +26,32 @@ namespace Testbed.Abstractions
             Zoom = 1.0f;
         }
 
-        public Vector2 ConvertScreenToWorld(Vector2 screenPoint)
+        public TSVector2 ConvertScreenToWorld(TSVector2 screenPoint)
         {
-            float w = Width;
-            float h = Height;
+            FP w = Width;
+            FP h = Height;
             var u = screenPoint.X / w;
             var v = (h - screenPoint.Y) / h;
 
             var ratio = w / h;
-            var extents = new Vector2(ratio * 25.0f, 25.0f);
+            var extents = new TSVector2(ratio * 25.0f, 25.0f);
             extents *= Zoom;
 
             var lower = Center - extents;
             var upper = Center + extents;
 
-            Vector2 pw;
+            TSVector2 pw;
             pw.X = (1.0f - u) * lower.X + u * upper.X;
             pw.Y = (1.0f - v) * lower.Y + v * upper.Y;
             return pw;
         }
 
-        public Vector2 ConvertWorldToScreen(Vector2 worldPoint)
+        public TSVector2 ConvertWorldToScreen(TSVector2 worldPoint)
         {
-            float w = Width;
-            float h = Height;
+            FP w = Width;
+            FP h = Height;
             var ratio = w / h;
-            var extents = new Vector2(ratio * 25.0f, 25.0f);
+            var extents = new TSVector2(ratio * 25.0f, 25.0f);
             extents *= Zoom;
 
             var lower = Center - extents;
@@ -60,28 +60,28 @@ namespace Testbed.Abstractions
             var u = (worldPoint.X - lower.X) / (upper.X - lower.X);
             var v = (worldPoint.Y - lower.Y) / (upper.Y - lower.Y);
 
-            var ps = new Vector2(u * w, (1.0f - v) * h);
+            var ps = new TSVector2(u * w, (1.0f - v) * h);
             return ps;
         }
 
-        public void BuildProjectionMatrix(float[] m, float zBias)
+        public void BuildProjectionMatrix(FP[] m, FP zBias)
         {
-            float w = Width;
-            float h = Height;
+            FP w = Width;
+            FP h = Height;
             var ratio = w / h;
-            var extents = new Vector2(ratio * 25.0f, 25.0f);
+            var extents = new TSVector2(ratio * 25.0f, 25.0f);
             extents *= Zoom;
 
             var lower = Center - extents;
             var upper = Center + extents;
 
-            m[0] = 2.0f / (upper.X - lower.X);
+            m[0] = FP.Two / (upper.X - lower.X);
             m[1] = 0.0f;
             m[2] = 0.0f;
             m[3] = 0.0f;
 
             m[4] = 0.0f;
-            m[5] = 2.0f / (upper.Y - lower.Y);
+            m[5] = FP.Two / (upper.Y - lower.Y);
             m[6] = 0.0f;
             m[7] = 0.0f;
 

@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Common;
 
 namespace FixedBox2D.Dynamics.Joints
@@ -18,47 +18,47 @@ namespace FixedBox2D.Dynamics.Joints
         public bool EnableMotor;
 
         /// The local anchor point relative to bodyA's origin.
-        public Vector2 LocalAnchorA;
+        public TSVector2 LocalAnchorA;
 
         /// The local anchor point relative to bodyB's origin.
-        public Vector2 LocalAnchorB;
+        public TSVector2 LocalAnchorB;
 
         /// The local translation unit axis in bodyA.
-        public Vector2 LocalAxisA;
+        public TSVector2 LocalAxisA;
 
         /// The lower translation limit, usually in meters.
-        public float LowerTranslation;
+        public FP LowerTranslation;
 
         /// The maximum motor torque, usually in N-m.
-        public float MaxMotorForce;
+        public FP MaxMotorForce;
 
         /// The desired motor speed in radians per second.
-        public float MotorSpeed;
+        public FP MotorSpeed;
 
         /// The constrained angle between the bodies: bodyB_angle - bodyA_angle.
-        public float ReferenceAngle;
+        public FP ReferenceAngle;
 
         /// The upper translation limit, usually in meters.
-        public float UpperTranslation;
+        public FP UpperTranslation;
 
         public PrismaticJointDef()
         {
             JointType = JointType.PrismaticJoint;
             LocalAnchorA.SetZero();
             LocalAnchorB.SetZero();
-            LocalAxisA.Set(1.0f, 0.0f);
-            ReferenceAngle = 0.0f;
+            LocalAxisA.Set(FP.One, FP.Zero);
+            ReferenceAngle = FP.Zero;
             EnableLimit = false;
-            LowerTranslation = 0.0f;
-            UpperTranslation = 0.0f;
+            LowerTranslation = FP.Zero;
+            UpperTranslation = FP.Zero;
             EnableMotor = false;
-            MaxMotorForce = 0.0f;
-            MotorSpeed = 0.0f;
+            MaxMotorForce = FP.Zero;
+            MotorSpeed = FP.Zero;
         }
 
         /// Initialize the bodies, anchors, axis, and reference angle using the world
         /// anchor and unit world axis.
-        public void Initialize(Body bA, Body bB, in Vector2 anchor, in Vector2 axis)
+        public void Initialize(Body bA, Body bB, in TSVector2 anchor, in TSVector2 axis)
         {
             BodyA = bA;
             BodyB = bB;

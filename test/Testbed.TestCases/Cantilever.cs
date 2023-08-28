@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -20,8 +20,8 @@ namespace Testbed.TestCases
                 ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-40.0f, FP.Zero), new TSVector2(40.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             {
@@ -39,11 +39,11 @@ namespace Testbed.TestCases
                 {
                     var bd = new BodyDef();
                     bd.BodyType = BodyType.DynamicBody;
-                    bd.Position.Set(-14.5f + 1.0f * i, 5.0f);
+                    bd.Position.Set(-14.5f + FP.One * i, 5.0f);
                     var body = World.CreateBody(bd);
                     body.CreateFixture(fd);
 
-                    var anchor = new Vector2(-15.0f + 1.0f * i, 5.0f);
+                    var anchor = new TSVector2(-15.0f + FP.One * i, 5.0f);
                     jd.Initialize(prevBody, body, anchor);
                     World.CreateJoint(jd);
 
@@ -53,7 +53,7 @@ namespace Testbed.TestCases
 
             {
                 var shape = new PolygonShape();
-                shape.SetAsBox(1.0f, 0.125f);
+                shape.SetAsBox(FP.One, 0.125f);
 
                 var fd = new FixtureDef();
                 fd.Shape = shape;
@@ -68,11 +68,11 @@ namespace Testbed.TestCases
                 {
                     var bd = new BodyDef();
                     bd.BodyType = BodyType.DynamicBody;
-                    bd.Position.Set(-14.0f + 2.0f * i, 15.0f);
+                    bd.Position.Set(-14.0f + FP.Two * i, 15.0f);
                     var body = World.CreateBody(bd);
                     body.CreateFixture(fd);
 
-                    var anchor = new Vector2(-15.0f + 2.0f * i, 15.0f);
+                    var anchor = new TSVector2(-15.0f + FP.Two * i, 15.0f);
                     jd.Initialize(prevBody, body, anchor);
                     JointUtils.AngularStiffness(out jd.Stiffness, out jd.Damping, frequencyHz, dampingRatio, prevBody, body);
                     World.CreateJoint(jd);
@@ -96,13 +96,13 @@ namespace Testbed.TestCases
                 {
                     var bd = new BodyDef();
                     bd.BodyType = BodyType.DynamicBody;
-                    bd.Position.Set(-4.5f + 1.0f * i, 5.0f);
+                    bd.Position.Set(-4.5f + FP.One * i, 5.0f);
                     var body = World.CreateBody(bd);
                     body.CreateFixture(fd);
 
                     if (i > 0)
                     {
-                        var anchor = new Vector2(-5.0f + 1.0f * i, 5.0f);
+                        var anchor = new TSVector2(-5.0f + FP.One * i, 5.0f);
                         jd.Initialize(prevBody, body, anchor);
                         World.CreateJoint(jd);
                     }
@@ -128,13 +128,13 @@ namespace Testbed.TestCases
                 {
                     var bd = new BodyDef();
                     bd.BodyType = BodyType.DynamicBody;
-                    bd.Position.Set(5.5f + 1.0f * i, 10.0f);
+                    bd.Position.Set(5.5f + FP.One * i, 10.0f);
                     var body = World.CreateBody(bd);
                     body.CreateFixture(fd);
 
                     if (i > 0)
                     {
-                        var anchor = new Vector2(5.0f + 1.0f * i, 10.0f);
+                        var anchor = new TSVector2(5.0f + FP.One * i, 10.0f);
                         jd.Initialize(prevBody, body, anchor);
                         JointUtils.AngularStiffness(out jd.Stiffness, out jd.Damping, frequencyHz, dampingRatio, jd.BodyA, jd.BodyB);
                         World.CreateJoint(jd);
@@ -146,17 +146,17 @@ namespace Testbed.TestCases
 
             for (var i = 0; i < 2; ++i)
             {
-                var vertices = new Vector2 [3];
-                vertices[0].Set(-0.5f, 0.0f);
-                vertices[1].Set(0.5f, 0.0f);
-                vertices[2].Set(0.0f, 1.5f);
+                var vertices = new TSVector2 [3];
+                vertices[0].Set(-0.5f, FP.Zero);
+                vertices[1].Set(0.5f, FP.Zero);
+                vertices[2].Set(FP.Zero, 1.5f);
 
                 var shape = new PolygonShape();
                 shape.Set(vertices);
 
                 var fd = new FixtureDef();
                 fd.Shape = shape;
-                fd.Density = 1.0f;
+                fd.Density = FP.One;
 
                 var bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
@@ -172,7 +172,7 @@ namespace Testbed.TestCases
 
                 var fd = new FixtureDef();
                 fd.Shape = shape;
-                fd.Density = 1.0f;
+                fd.Density = FP.One;
 
                 var bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;

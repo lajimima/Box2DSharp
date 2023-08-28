@@ -9,8 +9,8 @@ using FixedBox2D.Dynamics.Contacts;
 using FixedBox2D.Dynamics.Joints;
 using Joint = FixedBox2D.Dynamics.Joints.Joint;
 using Random = System.Random;
-using Vector2 = System.Numerics.Vector2;
 using Color = FixedBox2D.Common.Color;
+using TrueSync;
 
 namespace Testbed.Abstractions
 {
@@ -32,7 +32,7 @@ namespace Testbed.Abstractions
 
         public MouseJoint MouseJoint;
 
-        public Vector2 MouseWorld;
+        public TSVector2 MouseWorld;
 
         public Profile TotalProfile;
 
@@ -47,7 +47,7 @@ namespace Testbed.Abstractions
         protected TestBase()
         {
             Regex.Replace(GetType().Name, @"(\B[A-Z])", " $1");
-            World = new World(new Vector2(0, -10));
+            World = new World(new TSVector2(0, -10));
             World.SetContactListener(this);
             World.DestructionListener = this;
             GroundBody = World.CreateBody(new BodyDef());
@@ -188,14 +188,14 @@ namespace Testbed.Abstractions
                 var p = World.Profile;
 
                 // Track maximum profile times
-                MaxProfile.Step = Math.Max(MaxProfile.Step, p.Step);
-                MaxProfile.Collide = Math.Max(MaxProfile.Collide, p.Collide);
-                MaxProfile.Solve = Math.Max(MaxProfile.Solve, p.Solve);
-                MaxProfile.SolveInit = Math.Max(MaxProfile.SolveInit, p.SolveInit);
-                MaxProfile.SolveVelocity = Math.Max(MaxProfile.SolveVelocity, p.SolveVelocity);
-                MaxProfile.SolvePosition = Math.Max(MaxProfile.SolvePosition, p.SolvePosition);
-                MaxProfile.SolveTOI = Math.Max(MaxProfile.SolveTOI, p.SolveTOI);
-                MaxProfile.Broadphase = Math.Max(MaxProfile.Broadphase, p.Broadphase);
+                MaxProfile.Step = FP.Max(MaxProfile.Step, p.Step);
+                MaxProfile.Collide = FP.Max(MaxProfile.Collide, p.Collide);
+                MaxProfile.Solve = FP.Max(MaxProfile.Solve, p.Solve);
+                MaxProfile.SolveInit = FP.Max(MaxProfile.SolveInit, p.SolveInit);
+                MaxProfile.SolveVelocity = FP.Max(MaxProfile.SolveVelocity, p.SolveVelocity);
+                MaxProfile.SolvePosition = FP.Max(MaxProfile.SolvePosition, p.SolvePosition);
+                MaxProfile.SolveTOI = FP.Max(MaxProfile.SolveTOI, p.SolveTOI);
+                MaxProfile.Broadphase = FP.Max(MaxProfile.Broadphase, p.Broadphase);
 
                 TotalProfile.Step += p.Step;
                 TotalProfile.Collide += p.Collide;
@@ -234,6 +234,8 @@ namespace Testbed.Abstractions
             DrawWorld();
         }
 
+        static FP ImpulseScale = FP.EN1;
+        static FP AxisScale = FP.EN1 * 3;
         private void DrawWorld()
         {
             DrawFlag flags = 0;
@@ -266,8 +268,6 @@ namespace Testbed.Abstractions
             World.DebugDraw();
             if (TestSettings.DrawContactPoints)
             {
-                const float ImpulseScale = 0.1f;
-                const float AxisScale = 0.3f;
                 for (var i = 0; i < PointsCount; ++i)
                 {
                     var point = Points[i];
@@ -320,9 +320,9 @@ namespace Testbed.Abstractions
         {
             public Fixture QueryFixture;
 
-            public Vector2 Point;
+            public TSVector2 Point;
 
-            public void Reset(in Vector2 point)
+            public void Reset(in TSVector2 point)
             {
                 QueryFixture = null;
                 Point = point;
@@ -351,7 +351,7 @@ namespace Testbed.Abstractions
 
         private readonly MouseQueryCallback _callback = new MouseQueryCallback();
 
-        public void MouseDown(Vector2 p)
+        public void MouseDown(TSVector2 p)
         {
             if (MouseJoint != null)
             {
@@ -362,7 +362,7 @@ namespace Testbed.Abstractions
 
             // Make a small box.
             var aabb = new AABB();
-            var d = new Vector2(0.001f, 0.001f);
+            var d = new TSVector2(0.001f, 0.001f);
             aabb.LowerBound = p - d;
             aabb.UpperBound = p + d;
 
@@ -371,8 +371,8 @@ namespace Testbed.Abstractions
             World.QueryAABB(_callback, aabb);
             if (_callback.QueryFixture != null)
             {
-                float frequencyHz = 5.0f;
-                float dampingRatio = 0.7f;
+                FP frequencyHz = 5.0f;
+                FP dampingRatio = 0.7f;
 
                 var body = _callback.QueryFixture.Body;
                 var jd = new MouseJointDef
@@ -388,7 +388,7 @@ namespace Testbed.Abstractions
             }
         }
 
-        public void MouseUp(Vector2 p)
+        public void MouseUp(TSVector2 p)
         {
             MouseWorld = p;
             if (MouseJoint != null)
@@ -403,13 +403,13 @@ namespace Testbed.Abstractions
             }
         }
 
-        public void MouseMove(Vector2 p)
+        public void MouseMove(TSVector2 p)
         {
             MouseWorld = p;
             MouseJoint?.SetTarget(p);
         }
 
-        public void ShiftMouseDown(Vector2 p)
+        public void ShiftMouseDown(TSVector2 p)
         {
             MouseWorld = p;
             if (MouseJoint != null)
@@ -441,7 +441,7 @@ namespace Testbed.Abstractions
             /* Do nothing */
         }
 
-        public void ShiftOrigin(Vector2 origin)
+        public void ShiftOrigin(TSVector2 origin)
         {
             World.ShiftOrigin(origin);
         }
@@ -450,18 +450,18 @@ namespace Testbed.Abstractions
         { }
 
         /// Random number in range [-1,1]
-        public float RandomFloat()
+        public FP RandomFloat()
         {
-            float r = Random.Next() & RandomLimit;
+            FP r = Random.Next() & RandomLimit;
             r /= RandomLimit;
-            r = 2.0f * r - 1.0f;
+            r = FP.Two * r - 1.0f;
             return r;
         }
 
         /// Random floating point number in range [lo, hi]
-        public float RandomFloat(float lo, float hi)
+        public FP RandomFloat(FP lo, FP hi)
         {
-            float r = Random.Next() & RandomLimit;
+            FP r = Random.Next() & RandomLimit;
             r /= RandomLimit;
             r = (hi - lo) * r + lo;
             return r;
@@ -473,41 +473,41 @@ namespace Testbed.Abstractions
 
             public Fixture FixtureB;
 
-            public Vector2 Normal;
+            public TSVector2 Normal;
 
-            public Vector2 Position;
+            public TSVector2 Position;
 
             public PointState State;
 
-            public float NormalImpulse;
+            public FP NormalImpulse;
 
-            public float TangentImpulse;
+            public FP TangentImpulse;
 
-            public float Separation;
+            public FP Separation;
         }
 
         #region Bomb
 
-        protected Vector2 BombSpawnPoint;
+        protected TSVector2 BombSpawnPoint;
 
         protected bool BombSpawning;
 
         protected Body Bomb;
 
-        public void SpawnBomb(Vector2 worldPt)
+        public void SpawnBomb(TSVector2 worldPt)
         {
             BombSpawnPoint = worldPt;
             BombSpawning = true;
         }
 
-        public void CompleteBombSpawn(Vector2 p)
+        static FP Multiplier = 30;
+        public void CompleteBombSpawn(TSVector2 p)
         {
             if (BombSpawning == false)
             {
                 return;
             }
 
-            const float Multiplier = 30.0f;
             var vel = BombSpawnPoint - p;
             vel *= Multiplier;
             LaunchBomb(BombSpawnPoint, vel);
@@ -516,12 +516,12 @@ namespace Testbed.Abstractions
 
         public void LaunchBomb()
         {
-            var p = new Vector2(Random.Next(-15, 15), 30.0f);
+            var p = new TSVector2(Random.Next(-15, 15), 30.0f);
             var v = -5.0f * p;
             LaunchBomb(p, v);
         }
 
-        public void LaunchBomb(Vector2 position, Vector2 velocity)
+        public void LaunchBomb(TSVector2 position, TSVector2 velocity)
         {
             if (Bomb != default)
             {

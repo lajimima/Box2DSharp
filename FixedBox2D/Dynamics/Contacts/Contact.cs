@@ -6,6 +6,7 @@ using FixedBox2D.Collision;
 using FixedBox2D.Collision.Collider;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
+using TrueSync;
 
 namespace FixedBox2D.Dynamics.Contacts
 {
@@ -23,7 +24,7 @@ namespace FixedBox2D.Dynamics.Contacts
 
         internal ContactFlag Flags;
 
-        internal float Friction;
+        internal FP Friction;
 
         /// <summary>
         /// Get the child primitive index for fixture A.
@@ -49,13 +50,13 @@ namespace FixedBox2D.Dynamics.Contacts
 
         internal readonly ContactEdge NodeB = new ContactEdge();
 
-        internal float Restitution;
+        internal FP Restitution;
 
-        internal float RestitutionThreshold;
+        internal FP RestitutionThreshold;
 
-        internal float TangentSpeed;
+        internal FP TangentSpeed;
 
-        internal float Toi;
+        internal FP Toi;
 
         internal int ToiCount;
 
@@ -75,7 +76,7 @@ namespace FixedBox2D.Dynamics.Contacts
             Friction = MixFriction(FixtureA.Friction, FixtureB.Friction);
             Restitution = MixRestitution(FixtureA.Restitution, FixtureB.Restitution);
             RestitutionThreshold = MixRestitutionThreshold(FixtureA.RestitutionThreshold, FixtureB.RestitutionThreshold);
-            TangentSpeed = 0.0f;
+            TangentSpeed = FP.Zero;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -100,20 +101,20 @@ namespace FixedBox2D.Dynamics.Contacts
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float MixFriction(float friction1, float friction2)
+        private static FP MixFriction(FP friction1, FP friction2)
         {
-            return (float)Math.Sqrt(friction1 * friction2);
+            return FP.Sqrt(friction1 * friction2);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float MixRestitution(float restitution1, float restitution2)
+        private static FP MixRestitution(FP restitution1, FP restitution2)
         {
             return restitution1 > restitution2 ? restitution1 : restitution2;
         }
 
         /// Restitution mixing law. This picks the lowest value.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float MixRestitutionThreshold(float threshold1, float threshold2)
+        private static FP MixRestitutionThreshold(FP threshold1, FP threshold2)
         {
             return threshold1 < threshold2 ? threshold1 : threshold2;
         }
@@ -168,14 +169,14 @@ namespace FixedBox2D.Dynamics.Contacts
         /// Override the default friction mixture. You can call this in b2ContactListener::PreSolve.
         /// This value persists until set or reset.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetFriction(float friction)
+        public void SetFriction(FP friction)
         {
             Friction = friction;
         }
 
         /// Get the friction.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float GetFriction()
+        public FP GetFriction()
         {
             return Friction;
         }
@@ -190,14 +191,14 @@ namespace FixedBox2D.Dynamics.Contacts
         /// Override the default restitution mixture. You can call this in b2ContactListener::PreSolve.
         /// The value persists until you set or reset.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetRestitution(float restitution)
+        public void SetRestitution(FP restitution)
         {
             Restitution = restitution;
         }
 
         /// Get the restitution.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float GetRestitution()
+        public FP GetRestitution()
         {
             return Restitution;
         }
@@ -212,14 +213,14 @@ namespace FixedBox2D.Dynamics.Contacts
         /// Override the default restitution velocity threshold mixture. You can call this in b2ContactListener::PreSolve.
         /// The value persists until you set or reset.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetRestitutionThreshold(float threshold)
+        public void SetRestitutionThreshold(FP threshold)
         {
             RestitutionThreshold = threshold;
         }
 
         /// Get the restitution threshold.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float GetRestitutionThreshold()
+        public FP GetRestitutionThreshold()
         {
             return RestitutionThreshold;
         }
@@ -233,14 +234,14 @@ namespace FixedBox2D.Dynamics.Contacts
 
         /// Set the desired tangent speed for a conveyor belt behavior. In meters per second.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetTangentSpeed(float speed)
+        public void SetTangentSpeed(FP speed)
         {
             TangentSpeed = speed;
         }
 
         /// Get the desired tangent speed. In meters per second.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float GetTangentSpeed()
+        public FP GetTangentSpeed()
         {
             return TangentSpeed;
         }
@@ -303,8 +304,8 @@ namespace FixedBox2D.Dynamics.Contacts
                 for (var i = 0; i < Manifold.PointCount; ++i)
                 {
                     ref var mp2 = ref Manifold.Points[i];
-                    mp2.NormalImpulse = 0.0f;
-                    mp2.TangentImpulse = 0.0f;
+                    mp2.NormalImpulse = FP.Zero;
+                    mp2.TangentImpulse = FP.Zero;
                     var id2 = mp2.Id;
 
                     for (var j = 0; j < oldManifold.PointCount; ++j)

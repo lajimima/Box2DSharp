@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
@@ -51,7 +51,7 @@ namespace Testbed.TestCases
             input.ProxyB.Set(_shapeB, 0);
             input.SweepA = sweepA;
             input.SweepB = sweepB;
-            input.Tmax = 1.0f;
+            input.Tmax = FP.One;
 
             TimeOfImpact.ComputeTimeOfImpact(out var output, input, World.ToiProfile, World.GJkProfile);
 
@@ -59,9 +59,9 @@ namespace Testbed.TestCases
 
             DrawString($"max toi iters = {ToiMaxIters}, max root iters = {ToiMaxRootIters}");
 
-            var vertices = new Vector2[Settings.MaxPolygonVertices];
+            var vertices = new TSVector2[Settings.MaxPolygonVertices];
 
-            sweepA.GetTransform(out var transformA, 0.0f);
+            sweepA.GetTransform(out var transformA, FP.Zero);
 
             for (var i = 0; i < _shapeA.Count; ++i)
             {
@@ -70,9 +70,9 @@ namespace Testbed.TestCases
 
             Drawer.DrawPolygon(vertices, _shapeA.Count, Color.FromArgb(230, 230, 230));
 
-            sweepB.GetTransform(out var transformB, 0.0f);
+            sweepB.GetTransform(out var transformB, FP.Zero);
 
-            //Vec2 localPoint(2.0f, -0.1f);
+            //Vec2 localPoint(FP.Two, -FP.EN1);
 
             for (var i = 0; i < _shapeB.Count; ++i)
             {
@@ -90,7 +90,7 @@ namespace Testbed.TestCases
 
             Drawer.DrawPolygon(vertices, _shapeB.Count, Color.FromArgb(127, 178, 230));
 
-            sweepB.GetTransform(out transformB, 1.0f);
+            sweepB.GetTransform(out transformB, FP.One);
 
             for (var i = 0; i < _shapeB.Count; ++i)
             {

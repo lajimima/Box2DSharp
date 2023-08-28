@@ -4,7 +4,7 @@ using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
 using FixedBox2D.Dynamics.Joints;
 using Testbed.Abstractions;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 
 namespace Testbed.TestCases
 {
@@ -17,18 +17,18 @@ namespace Testbed.TestCases
 
         private bool _motorOn;
 
-        private float _motorSpeed;
+        private FP _motorSpeed;
 
-        private Vector2 _offset;
+        private TSVector2 _offset;
 
         private Body _wheel;
 
         public TheoJansen()
         {
-            _offset.Set(0.0f, 8.0f);
-            _motorSpeed = 2.0f;
+            _offset.Set(FP.Zero, 8.0f);
+            _motorSpeed = FP.Two;
             _motorOn = true;
-            var pivot = new Vector2(0.0f, 0.8f);
+            var pivot = new TSVector2(FP.Zero, 0.8f);
 
             // Ground
             {
@@ -36,14 +36,14 @@ namespace Testbed.TestCases
                 var ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-50.0f, 0.0f), new Vector2(50.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-50.0f, FP.Zero), new TSVector2(50.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
 
-                shape.SetTwoSided(new Vector2(-50.0f, 0.0f), new Vector2(-50.0f, 10.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-50.0f, FP.Zero), new TSVector2(-50.0f, 10.0f));
+                ground.CreateFixture(shape, FP.Zero);
 
-                shape.SetTwoSided(new Vector2(50.0f, 0.0f), new Vector2(50.0f, 10.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(50.0f, FP.Zero), new TSVector2(50.0f, 10.0f));
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             // Balls
@@ -54,19 +54,19 @@ namespace Testbed.TestCases
 
                 var bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
-                bd.Position.Set(-40.0f + 2.0f * i, 0.5f);
+                bd.Position.Set(-40.0f + FP.Two * i, 0.5f);
 
                 var body = World.CreateBody(bd);
-                body.CreateFixture(shape, 1.0f);
+                body.CreateFixture(shape, FP.One);
             }
 
             // Chassis
             {
                 var shape = new PolygonShape();
-                shape.SetAsBox(2.5f, 1.0f);
+                shape.SetAsBox(2.5f, FP.One);
 
                 var sd = new FixtureDef();
-                sd.Density = 1.0f;
+                sd.Density = FP.One;
                 sd.Shape = shape;
                 sd.Filter.GroupIndex = -1;
                 var bd = new BodyDef();
@@ -80,7 +80,7 @@ namespace Testbed.TestCases
                 var shape = new CircleShape();
                 shape.Radius = 1.6f;
                 var sd = new FixtureDef();
-                sd.Density = 1.0f;
+                sd.Density = FP.One;
                 sd.Shape = shape;
                 sd.Filter.GroupIndex = -1;
                 var bd = new BodyDef();
@@ -100,61 +100,61 @@ namespace Testbed.TestCases
                 _motorJoint = (RevoluteJoint)World.CreateJoint(jd);
             }
 
-            Vector2 wheelAnchor;
+            TSVector2 wheelAnchor;
 
-            wheelAnchor = pivot + new Vector2(0.0f, -0.8f);
+            wheelAnchor = pivot + new TSVector2(FP.Zero, -0.8f);
 
-            CreateLeg(-1.0f, wheelAnchor);
-            CreateLeg(1.0f, wheelAnchor);
+            CreateLeg(-FP.One, wheelAnchor);
+            CreateLeg(FP.One, wheelAnchor);
 
-            _wheel.SetTransform(_wheel.GetPosition(), 120.0f * (float)Math.PI / 180.0f);
-            CreateLeg(-1.0f, wheelAnchor);
-            CreateLeg(1.0f, wheelAnchor);
+            _wheel.SetTransform(_wheel.GetPosition(), 120.0f * (FP)Math.PI / 180.0f);
+            CreateLeg(-FP.One, wheelAnchor);
+            CreateLeg(FP.One, wheelAnchor);
 
-            _wheel.SetTransform(_wheel.GetPosition(), -120.0f * (float)Math.PI / 180.0f);
-            CreateLeg(-1.0f, wheelAnchor);
-            CreateLeg(1.0f, wheelAnchor);
+            _wheel.SetTransform(_wheel.GetPosition(), -120.0f * (FP)Math.PI / 180.0f);
+            CreateLeg(-FP.One, wheelAnchor);
+            CreateLeg(FP.One, wheelAnchor);
         }
 
-        private void CreateLeg(float s, Vector2 wheelAnchor)
+        private void CreateLeg(FP s, TSVector2 wheelAnchor)
         {
-            var p1 = new Vector2(5.4f * s, -6.1f);
-            var p2 = new Vector2(7.2f * s, -1.2f);
-            var p3 = new Vector2(4.3f * s, -1.9f);
-            var p4 = new Vector2(3.1f * s, 0.8f);
-            var p5 = new Vector2(6.0f * s, 1.5f);
-            var p6 = new Vector2(2.5f * s, 3.7f);
+            var p1 = new TSVector2(5.4f * s, -6.1f);
+            var p2 = new TSVector2(7.2f * s, -1.2f);
+            var p3 = new TSVector2(4.3f * s, -1.9f);
+            var p4 = new TSVector2(3.1f * s, 0.8f);
+            var p5 = new TSVector2(6.0f * s, 1.5f);
+            var p6 = new TSVector2(2.5f * s, 3.7f);
 
-            var fd1 = new FixtureDef {Filter = {GroupIndex = -1}, Density = 1.0f};
-            var fd2 = new FixtureDef {Filter = {GroupIndex = -1}, Density = 1.0f};
+            var fd1 = new FixtureDef {Filter = {GroupIndex = -1}, Density = FP.One};
+            var fd2 = new FixtureDef {Filter = {GroupIndex = -1}, Density = FP.One};
 
             var poly1 = new PolygonShape();
             var poly2 = new PolygonShape();
 
-            if (s > 0.0f)
+            if (s > FP.Zero)
             {
-                var vertices = new Vector2[3];
+                var vertices = new TSVector2[3];
 
                 vertices[0] = p1;
                 vertices[1] = p2;
                 vertices[2] = p3;
                 poly1.Set(vertices);
 
-                vertices[0] = Vector2.Zero;
+                vertices[0] = TSVector2.Zero;
                 vertices[1] = p5 - p4;
                 vertices[2] = p6 - p4;
                 poly2.Set(vertices);
             }
             else
             {
-                var vertices = new Vector2[3];
+                var vertices = new TSVector2[3];
 
                 vertices[0] = p1;
                 vertices[1] = p3;
                 vertices[2] = p2;
                 poly1.Set(vertices);
 
-                vertices[0] = Vector2.Zero;
+                vertices[0] = TSVector2.Zero;
                 vertices[1] = p6 - p4;
                 vertices[2] = p5 - p4;
                 poly2.Set(vertices);
@@ -223,7 +223,7 @@ namespace Testbed.TestCases
 
             if (keyInput.Key == KeyCodes.S)
             {
-                _motorJoint.SetMotorSpeed(0.0f);
+                _motorJoint.SetMotorSpeed(FP.Zero);
             }
 
             if (keyInput.Key == KeyCodes.D)

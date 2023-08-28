@@ -1,12 +1,12 @@
-using System.Numerics;
+using TrueSync;
 
 namespace FixedBox2D.Dynamics
 {
     /// This is an internal structure.
     public struct Velocity
     {
-        public Vector2 V;
+        public TSVector2 V;
 
-        public float W;
+        public FP W;
     }
 }

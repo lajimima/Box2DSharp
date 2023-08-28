@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using FixedBox2D.Dynamics;
 using NETCoreTest.Framework;
+using TrueSync;
 
 namespace NETCoreTest
 {
@@ -78,14 +79,14 @@ namespace NETCoreTest
             var p = _tumbler.World.Profile;
 
             // Track maximum profile times
-            MaxProfile.Step = Math.Max(MaxProfile.Step, p.Step);
-            MaxProfile.Collide = Math.Max(MaxProfile.Collide, p.Collide);
-            MaxProfile.Solve = Math.Max(MaxProfile.Solve, p.Solve);
-            MaxProfile.SolveInit = Math.Max(MaxProfile.SolveInit, p.SolveInit);
-            MaxProfile.SolveVelocity = Math.Max(MaxProfile.SolveVelocity, p.SolveVelocity);
-            MaxProfile.SolvePosition = Math.Max(MaxProfile.SolvePosition, p.SolvePosition);
-            MaxProfile.SolveTOI = Math.Max(MaxProfile.SolveTOI, p.SolveTOI);
-            MaxProfile.Broadphase = Math.Max(MaxProfile.Broadphase, p.Broadphase);
+            MaxProfile.Step = FP.Max(MaxProfile.Step, p.Step);
+            MaxProfile.Collide = FP.Max(MaxProfile.Collide, p.Collide);
+            MaxProfile.Solve = FP.Max(MaxProfile.Solve, p.Solve);
+            MaxProfile.SolveInit = FP.Max(MaxProfile.SolveInit, p.SolveInit);
+            MaxProfile.SolveVelocity = FP.Max(MaxProfile.SolveVelocity, p.SolveVelocity);
+            MaxProfile.SolvePosition = FP.Max(MaxProfile.SolvePosition, p.SolvePosition);
+            MaxProfile.SolveTOI = FP.Max(MaxProfile.SolveTOI, p.SolveTOI);
+            MaxProfile.Broadphase = FP.Max(MaxProfile.Broadphase, p.Broadphase);
 
             TotalProfile.Step += p.Step;
             TotalProfile.Collide += p.Collide;

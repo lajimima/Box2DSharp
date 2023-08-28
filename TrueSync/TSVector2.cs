@@ -40,22 +40,20 @@ namespace TrueSync {
     {
 #region Private Fields
 
-        public static readonly TSVector2 zero = new TSVector2(0, 0);
-        public static readonly TSVector2 one = new TSVector2(1, 1);
+        public static readonly TSVector2 Zero = new TSVector2(0, 0);
+        public static readonly TSVector2 One = new TSVector2(1, 1);
 
-        public static readonly TSVector2 right = new TSVector2(1, 0);
-        public static readonly TSVector2 left = new TSVector2(-1, 0);
+        public static readonly TSVector2 Right = new TSVector2(1, 0);
+        public static readonly TSVector2 Left = new TSVector2(-1, 0);
 
-        public static readonly TSVector2 up = new TSVector2(0, 1);
-        public static readonly TSVector2 down = new TSVector2(0, -1);
-
-        public static readonly TSVector2 initPos = new TSVector2(-1, -1) * 1000;
+        public static readonly TSVector2 Up = new TSVector2(0, 1);
+        public static readonly TSVector2 Down = new TSVector2(0, -1);
         #endregion Private Fields
 
         #region Public Fields
 
-        public FP x;
-        public FP y;
+        public FP X;
+        public FP Y;
 
 #endregion Public Fields
 
@@ -104,8 +102,8 @@ namespace TrueSync {
         /// </param>
         public TSVector2(FP x, FP y)
         {
-            this.x = x;
-            this.y = y;
+            this.X = x;
+            this.Y = y;
         }
 
         /// <summary>
@@ -116,13 +114,13 @@ namespace TrueSync {
         /// </param>
         public TSVector2(FP value)
         {
-            x = value;
-            y = value;
+            X = value;
+            Y = value;
         }
 
         public void Set(FP x, FP y) {
-            this.x = x;
-            this.y = y;
+            this.X = x;
+            this.Y = y;
         }
 
 #endregion Constructors
@@ -132,8 +130,8 @@ namespace TrueSync {
         public static void Reflect(ref TSVector2 vector, ref TSVector2 normal, out TSVector2 result)
         {
             FP dot = Dot(vector, normal);
-            result.x = vector.x - ((2*dot)*normal.x);
-            result.y = vector.y - ((2*dot)*normal.y);
+            result.X = vector.X - ((2*dot)*normal.X);
+            result.Y = vector.Y - ((2*dot)*normal.Y);
         }
 
         public static TSVector2 Reflect(TSVector2 vector, TSVector2 normal)
@@ -145,59 +143,59 @@ namespace TrueSync {
 
         public static TSVector2 Add(TSVector2 value1, TSVector2 value2)
         {
-            value1.x += value2.x;
-            value1.y += value2.y;
+            value1.X += value2.X;
+            value1.Y += value2.Y;
             return value1;
         }
 
         public static void Add(ref TSVector2 value1, ref TSVector2 value2, out TSVector2 result)
         {
-            result.x = value1.x + value2.x;
-            result.y = value1.y + value2.y;
+            result.X = value1.X + value2.X;
+            result.Y = value1.Y + value2.Y;
         }
 
         public static TSVector2 Barycentric(TSVector2 value1, TSVector2 value2, TSVector2 value3, FP amount1, FP amount2)
         {
             return new TSVector2(
-                TSMath.Barycentric(value1.x, value2.x, value3.x, amount1, amount2),
-                TSMath.Barycentric(value1.y, value2.y, value3.y, amount1, amount2));
+                TSMath.Barycentric(value1.X, value2.X, value3.X, amount1, amount2),
+                TSMath.Barycentric(value1.Y, value2.Y, value3.Y, amount1, amount2));
         }
 
         public static void Barycentric(ref TSVector2 value1, ref TSVector2 value2, ref TSVector2 value3, FP amount1,
                                        FP amount2, out TSVector2 result)
         {
             result = new TSVector2(
-                TSMath.Barycentric(value1.x, value2.x, value3.x, amount1, amount2),
-                TSMath.Barycentric(value1.y, value2.y, value3.y, amount1, amount2));
+                TSMath.Barycentric(value1.X, value2.X, value3.X, amount1, amount2),
+                TSMath.Barycentric(value1.Y, value2.Y, value3.Y, amount1, amount2));
         }
 
         public static TSVector2 CatmullRom(TSVector2 value1, TSVector2 value2, TSVector2 value3, TSVector2 value4, FP amount)
         {
             return new TSVector2(
-                TSMath.CatmullRom(value1.x, value2.x, value3.x, value4.x, amount),
-                TSMath.CatmullRom(value1.y, value2.y, value3.y, value4.y, amount));
+                TSMath.CatmullRom(value1.X, value2.X, value3.X, value4.X, amount),
+                TSMath.CatmullRom(value1.Y, value2.Y, value3.Y, value4.Y, amount));
         }
 
         public static void CatmullRom(ref TSVector2 value1, ref TSVector2 value2, ref TSVector2 value3, ref TSVector2 value4,
                                       FP amount, out TSVector2 result)
         {
             result = new TSVector2(
-                TSMath.CatmullRom(value1.x, value2.x, value3.x, value4.x, amount),
-                TSMath.CatmullRom(value1.y, value2.y, value3.y, value4.y, amount));
+                TSMath.CatmullRom(value1.X, value2.X, value3.X, value4.X, amount),
+                TSMath.CatmullRom(value1.Y, value2.Y, value3.Y, value4.Y, amount));
         }
 
         public static TSVector2 Clamp(TSVector2 value1, TSVector2 min, TSVector2 max)
         {
             return new TSVector2(
-                FP.Clamp(value1.x, min.x, max.x),
-                FP.Clamp(value1.y, min.y, max.y));
+                FP.Clamp(value1.X, min.X, max.X),
+                FP.Clamp(value1.Y, min.Y, max.Y));
         }
 
         public static void Clamp(ref TSVector2 value1, ref TSVector2 min, ref TSVector2 max, out TSVector2 result)
         {
             result = new TSVector2(
-                FP.Clamp(value1.x, min.x, max.x),
-                FP.Clamp(value1.y, min.y, max.y));
+                FP.Clamp(value1.X, min.X, max.X),
+                FP.Clamp(value1.Y, min.Y, max.Y));
         }
 
         /// <summary>
@@ -235,7 +233,7 @@ namespace TrueSync {
 
         public static void DistanceSquared(ref TSVector2 value1, ref TSVector2 value2, out FP result)
         {
-            result = (value1.x - value2.x)*(value1.x - value2.x) + (value1.y - value2.y)*(value1.y - value2.y);
+            result = (value1.X - value2.X)*(value1.X - value2.X) + (value1.Y - value2.Y)*(value1.Y - value2.Y);
         }
 
         /// <summary>
@@ -252,43 +250,43 @@ namespace TrueSync {
         /// </returns>
         public static TSVector2 Divide(TSVector2 value1, TSVector2 value2)
         {
-            value1.x /= value2.x;
-            value1.y /= value2.y;
+            value1.X /= value2.X;
+            value1.Y /= value2.Y;
             return value1;
         }
 
         public static void Divide(ref TSVector2 value1, ref TSVector2 value2, out TSVector2 result)
         {
-            result.x = value1.x/value2.x;
-            result.y = value1.y/value2.y;
+            result.X = value1.X/value2.X;
+            result.Y = value1.Y/value2.Y;
         }
 
         public static TSVector2 Divide(TSVector2 value1, FP divider)
         {
             FP factor = 1/divider;
-            value1.x *= factor;
-            value1.y *= factor;
+            value1.X *= factor;
+            value1.Y *= factor;
             return value1;
         }
 
         public static void Divide(ref TSVector2 value1, FP divider, out TSVector2 result)
         {
             FP factor = 1/divider;
-            result.x = value1.x*factor;
-            result.y = value1.y*factor;
+            result.X = value1.X*factor;
+            result.Y = value1.Y*factor;
         }
 
         public static FP Dot(TSVector2 value1, TSVector2 value2)
         {
-            return value1.x*value2.x + value1.y*value2.y;
+            return value1.X*value2.X + value1.Y*value2.Y;
         }
         public static FP Dot(ref TSVector2 value1, ref TSVector2 value2)
         {
-            return value1.x * value2.x + value1.y * value2.y;
+            return value1.X * value2.X + value1.Y * value2.Y;
         }
         public static void Dot(ref TSVector2 value1, ref TSVector2 value2, out FP result)
         {
-            result = value1.x*value2.x + value1.y*value2.y;
+            result = value1.X*value2.X + value1.Y*value2.Y;
         }
 
         public override bool Equals(object obj)
@@ -303,7 +301,7 @@ namespace TrueSync {
 
         public override int GetHashCode()
         {
-            return (int) (x + y);
+            return (int) (X + Y);
         }
 
         public static TSVector2 Hermite(TSVector2 value1, TSVector2 tangent1, TSVector2 value2, TSVector2 tangent2, FP amount)
@@ -316,13 +314,13 @@ namespace TrueSync {
         public static void Hermite(ref TSVector2 value1, ref TSVector2 tangent1, ref TSVector2 value2, ref TSVector2 tangent2,
                                    FP amount, out TSVector2 result)
         {
-            result.x = TSMath.Hermite(value1.x, tangent1.x, value2.x, tangent2.x, amount);
-            result.y = TSMath.Hermite(value1.y, tangent1.y, value2.y, tangent2.y, amount);
+            result.X = TSMath.Hermite(value1.X, tangent1.X, value2.X, tangent2.X, amount);
+            result.Y = TSMath.Hermite(value1.Y, tangent1.Y, value2.Y, tangent2.Y, amount);
         }
 
         public FP magnitude {
             get {
-                return FP.Sqrt(x * x + y * y);
+                return FP.Sqrt(X * X + Y * Y);
             }
         }
 
@@ -333,122 +331,122 @@ namespace TrueSync {
         {
             get
             {
-                return FP.Sqrt(x * x + y * y);
+                return FP.Sqrt(X * X + Y * Y);
             }
         }
         public FP LengthSquared()
         {
-           return  x  * x + y * y ;
+           return  X  * X + Y * Y ;
         }
 
         public static TSVector2 Lerp(TSVector2 value1, TSVector2 value2, FP amount) {
             amount = FP.Clamp(amount, 0, 1);
 
             return new TSVector2(
-                FP.Lerp(value1.x, value2.x, amount),
-                FP.Lerp(value1.y, value2.y, amount));
+                FP.Lerp(value1.X, value2.X, amount),
+                FP.Lerp(value1.Y, value2.Y, amount));
         }
 
         public static TSVector2 LerpUnclamped(TSVector2 value1, TSVector2 value2, FP amount)
         {
             return new TSVector2(
-                FP.Lerp(value1.x, value2.x, amount),
-                FP.Lerp(value1.y, value2.y, amount));
+                FP.Lerp(value1.X, value2.X, amount),
+                FP.Lerp(value1.Y, value2.Y, amount));
         }
 
         public static void LerpUnclamped(ref TSVector2 value1, ref TSVector2 value2, FP amount, out TSVector2 result)
         {
             result = new TSVector2(
-                FP.Lerp(value1.x, value2.x, amount),
-                FP.Lerp(value1.y, value2.y, amount));
+                FP.Lerp(value1.X, value2.X, amount),
+                FP.Lerp(value1.Y, value2.Y, amount));
         }
 
         public static TSVector2 Max(TSVector2 value1, TSVector2 value2)
         {
             return new TSVector2(
-                TSMath.Max(value1.x, value2.x),
-                TSMath.Max(value1.y, value2.y));
+                TSMath.Max(value1.X, value2.X),
+                TSMath.Max(value1.Y, value2.Y));
         }
 
         public static void Max(ref TSVector2 value1, ref TSVector2 value2, out TSVector2 result)
         {
-            result.x = TSMath.Max(value1.x, value2.x);
-            result.y = TSMath.Max(value1.y, value2.y);
+            result.X = TSMath.Max(value1.X, value2.X);
+            result.Y = TSMath.Max(value1.Y, value2.Y);
         }
 
         public static TSVector2 Min(TSVector2 value1, TSVector2 value2)
         {
             return new TSVector2(
-                TSMath.Min(value1.x, value2.x),
-                TSMath.Min(value1.y, value2.y));
+                TSMath.Min(value1.X, value2.X),
+                TSMath.Min(value1.Y, value2.Y));
         }
 
         public static void Min(ref TSVector2 value1, ref TSVector2 value2, out TSVector2 result)
         {
-            result.x = TSMath.Min(value1.x, value2.x);
-            result.y = TSMath.Min(value1.y, value2.y);
+            result.X = TSMath.Min(value1.X, value2.X);
+            result.Y = TSMath.Min(value1.Y, value2.Y);
         }
 
         public void Scale(TSVector2 other) {
-            this.x = x * other.x;
-            this.y = y * other.y;
+            this.X = X * other.X;
+            this.Y = Y * other.Y;
         }
 
         public static TSVector2 Scale(TSVector2 value1, TSVector2 value2) {
             TSVector2 result;
-            result.x = value1.x * value2.x;
-            result.y = value1.y * value2.y;
+            result.X = value1.X * value2.X;
+            result.Y = value1.Y * value2.Y;
 
             return result;
         }
 
         public static TSVector2 Multiply(TSVector2 value1, TSVector2 value2)
         {
-            value1.x *= value2.x;
-            value1.y *= value2.y;
+            value1.X *= value2.X;
+            value1.Y *= value2.Y;
             return value1;
         }
 
         public static TSVector2 Multiply(TSVector2 value1, FP scaleFactor)
         {
-            value1.x *= scaleFactor;
-            value1.y *= scaleFactor;
+            value1.X *= scaleFactor;
+            value1.Y *= scaleFactor;
             return value1;
         }
 
         public static void Multiply(ref TSVector2 value1, FP scaleFactor, out TSVector2 result)
         {
-            result.x = value1.x*scaleFactor;
-            result.y = value1.y*scaleFactor;
+            result.X = value1.X*scaleFactor;
+            result.Y = value1.Y*scaleFactor;
         }
 
         public static void Multiply(ref TSVector2 value1, ref TSVector2 value2, out TSVector2 result)
         {
-            result.x = value1.x*value2.x;
-            result.y = value1.y*value2.y;
+            result.X = value1.X*value2.X;
+            result.Y = value1.Y*value2.Y;
         }
 
         public static TSVector2 Negate(TSVector2 value)
         {
-            value.x = -value.x;
-            value.y = -value.y;
+            value.X = -value.X;
+            value.Y = -value.Y;
             return value;
         }
 
         public static void Negate(ref TSVector2 value, out TSVector2 result)
         {
-            result.x = -value.x;
-            result.y = -value.y;
+            result.X = -value.X;
+            result.Y = -value.Y;
         }
 
         public void Normalize()
         {
-            FP factor = x * x + y * y;
+            FP factor = X * X + Y * Y;
             if (factor > FP.Zero)
             {
                 factor = FP.Sqrt(factor);
-                x /= factor;
-                y /= factor;
+                X /= factor;
+                Y /= factor;
             }
         }
 
@@ -469,45 +467,45 @@ namespace TrueSync {
 
         public static void Normalize(ref TSVector2 value, out TSVector2 result)
         {
-            FP factor = value.x * value.x + value.y * value.y;
+            FP factor = value.X * value.X + value.Y * value.Y;
             if (factor > FP.Zero)
             {
                 factor = FP.Sqrt(factor);
-                result.x = value.x / factor;
-                result.y = value.y / factor;
+                result.X = value.X / factor;
+                result.Y = value.Y / factor;
             }
             else
             {
-                result.x = value.x;
-                result.y = value.y;
+                result.X = value.X;
+                result.Y = value.Y;
             }
         }
 
         public static TSVector2 SmoothStep(TSVector2 value1, TSVector2 value2, FP amount)
         {
             return new TSVector2(
-                TSMath.SmoothStep(value1.x, value2.x, amount),
-                TSMath.SmoothStep(value1.y, value2.y, amount));
+                TSMath.SmoothStep(value1.X, value2.X, amount),
+                TSMath.SmoothStep(value1.Y, value2.Y, amount));
         }
 
         public static void SmoothStep(ref TSVector2 value1, ref TSVector2 value2, FP amount, out TSVector2 result)
         {
             result = new TSVector2(
-                TSMath.SmoothStep(value1.x, value2.x, amount),
-                TSMath.SmoothStep(value1.y, value2.y, amount));
+                TSMath.SmoothStep(value1.X, value2.X, amount),
+                TSMath.SmoothStep(value1.Y, value2.Y, amount));
         }
 
         public static TSVector2 Subtract(TSVector2 value1, TSVector2 value2)
         {
-            value1.x -= value2.x;
-            value1.y -= value2.y;
+            value1.X -= value2.X;
+            value1.Y -= value2.Y;
             return value1;
         }
 
         public static void Subtract(ref TSVector2 value1, ref TSVector2 value2, out TSVector2 result)
         {
-            result.x = value1.x - value2.x;
-            result.y = value1.y - value2.y;
+            result.X = value1.X - value2.X;
+            result.Y = value1.Y - value2.Y;
         }
 
         public static FP Angle(TSVector2 a, TSVector2 b) {
@@ -517,17 +515,17 @@ namespace TrueSync {
 
         public static TSVector2 RotateAround(  FP radius,ref TSVector2 point,FP angle )
         {   
-            TSVector2 ret = TSVector2.zero;
-            ret.x = point.x + (radius * TSMath.Cos(angle));
-            ret.y = point.y + (radius * TSMath.Sin(angle));
+            TSVector2 ret = TSVector2.Zero;
+            ret.X = point.X + (radius * TSMath.Cos(angle));
+            ret.Y = point.Y + (radius * TSMath.Sin(angle));
             return ret;
         }
 
         public static TSVector2 Eclipse(FP radius, FP radiusB, TSVector2 point, FP angle)
         {   
-            TSVector2 ret = TSVector2.zero;
-            ret.x = point.x + (radius * TSMath.Cos(angle));
-            ret.y = point.y + (radiusB * TSMath.Sin(angle));
+            TSVector2 ret = TSVector2.Zero;
+            ret.X = point.X + (radius * TSMath.Cos(angle));
+            ret.Y = point.Y + (radiusB * TSMath.Sin(angle));
             return ret;
         }   
 
@@ -536,7 +534,7 @@ namespace TrueSync {
         /// </summary>
         /// <returns></returns>
         public TSVector ToTSVector() {
-            return new TSVector(this.x, FP.Zero, this.y);
+            return new TSVector(this.X, FP.Zero, this.Y);
         }
 
         /// <summary>
@@ -545,12 +543,12 @@ namespace TrueSync {
         /// <returns></returns>
         public TSVector ToTSVector(FP y)
         {
-            return new TSVector(this.x, y, this.y);
+            return new TSVector(this.X, y, this.Y);
         }
 
 
         public override string ToString() {
-            return string.Format("({0:f1}, {1:f1})", x.AsFloat(), y.AsFloat());
+            return string.Format("({0:f1}, {1:f1})", X.AsFloat(), Y.AsFloat());
         }
 
 #endregion Public Methods
@@ -559,66 +557,66 @@ namespace TrueSync {
 
         public static TSVector2 operator -(TSVector2 value)
         {
-            value.x._serializedValue = -value.x._serializedValue;
-            value.y._serializedValue = -value.y._serializedValue;
+            value.X._serializedValue = -value.X._serializedValue;
+            value.Y._serializedValue = -value.Y._serializedValue;
             return value;
         }
 
 
         public static bool operator ==(TSVector2 value1, TSVector2 value2)
         {
-            return value1.x._serializedValue == value2.x._serializedValue && value1.y._serializedValue == value2.y._serializedValue;
+            return value1.X._serializedValue == value2.X._serializedValue && value1.Y._serializedValue == value2.Y._serializedValue;
         }
 
 
         public static bool operator !=(TSVector2 value1, TSVector2 value2)
         {
-            return value1.x._serializedValue != value2.x._serializedValue || value1.y._serializedValue != value2.y._serializedValue;
+            return value1.X._serializedValue != value2.X._serializedValue || value1.Y._serializedValue != value2.Y._serializedValue;
         }
 
 
         public static TSVector2 operator +(TSVector2 value1, TSVector2 value2)
         {
-            value1.x._serializedValue += value2.x._serializedValue;
-            value1.y._serializedValue += value2.y._serializedValue;
+            value1.X._serializedValue += value2.X._serializedValue;
+            value1.Y._serializedValue += value2.Y._serializedValue;
             return value1;
         }
 
 
         public static TSVector2 operator -(TSVector2 value1, TSVector2 value2)
         {
-            value1.x._serializedValue -= value2.x._serializedValue;
-            value1.y._serializedValue -= value2.y._serializedValue;
+            value1.X._serializedValue -= value2.X._serializedValue;
+            value1.Y._serializedValue -= value2.Y._serializedValue;
             return value1;
         }
 
 
         public static FP operator *(TSVector2 value1, TSVector2 value2)
         {
-            return value1.x * value2.x + value1.y * value2.y;
+            return value1.X * value2.X + value1.Y * value2.Y;
         }
 
 
         public static TSVector2 operator *(TSVector2 value, FP scaleFactor)
         {
-            value.x *= scaleFactor;
-            value.y *= scaleFactor;
+            value.X *= scaleFactor;
+            value.Y *= scaleFactor;
             return value;
         }
 
 
         public static TSVector2 operator *(FP scaleFactor, TSVector2 value)
         {
-            value.x *= scaleFactor;
-            value.y *= scaleFactor;
+            value.X *= scaleFactor;
+            value.Y *= scaleFactor;
             return value;
         }
 
 
         public static TSVector2 operator /(TSVector2 value1, TSVector2 value2)
         {
-            value1.x /= value2.x;
-            value1.y /= value2.y;
+            value1.X /= value2.X;
+            value1.Y /= value2.Y;
             return value1;
         }
 
@@ -626,8 +624,8 @@ namespace TrueSync {
         public static TSVector2 operator /(TSVector2 value1, FP divider)
         {
             FP factor = FP.One/divider;
-            value1.x *= factor;
-            value1.y *= factor;
+            value1.X *= factor;
+            value1.Y *= factor;
             return value1;
         }
 
@@ -638,19 +636,24 @@ namespace TrueSync {
         {
             get
             {
-                return ((this.x * this.x) + (this.y * this.y));
+                return ((this.X * this.X) + (this.Y * this.Y));
             }
         }
 
         public static explicit operator TSVector(TSVector2 value)
         {
             TSVector result;
-            result.x = value.x;
-            result.y = value.y;
-            result.z = FP.Zero;
+            result.X = value.X;
+            result.Y = value.Y;
+            result.Z = FP.Zero;
             return result;
         }
 #endregion
+
+        public static TSVector2 Abs(TSVector2 vec2)
+        {
+            return new TSVector2 { X = FP.Abs(vec2.X), Y = FP.Abs(vec2.Y), };
+        }
     }
 }
 #endif

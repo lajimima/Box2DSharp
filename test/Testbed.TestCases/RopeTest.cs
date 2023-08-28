@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+﻿using TrueSync;
 using FixedBox2D.Common;
 using FixedBox2D.Ropes;
 using Testbed.Abstractions;
@@ -20,37 +20,37 @@ namespace Testbed.TestCases
 
         protected int Iterations2;
 
-        protected Vector2 Position1;
+        protected TSVector2 Position1;
 
-        protected Vector2 Position2;
+        protected TSVector2 Position2;
 
-        protected float Speed;
+        protected FP Speed;
 
+        static FP L = FP.Half;
         public RopeTest()
         {
             const int N = 20;
-            const float L = 0.5f;
-            var vertices = new Vector2[N];
-            var masses = new float[N];
+            var vertices = new TSVector2[N];
+            var masses = new FP[N];
 
             for (var i = 0; i < N; ++i)
             {
-                vertices[i].Set(0.0f, L * (N - i));
-                masses[i] = 1.0f;
+                vertices[i].Set(FP.Zero, L * (N - i));
+                masses[i] = FP.One;
             }
 
-            masses[0] = 0.0f;
-            masses[1] = 0.0f;
+            masses[0] = FP.Zero;
+            masses[1] = FP.Zero;
             Tuning1 = new RopeTuning
             {
                 BendHertz = 30.0f,
                 BendDamping = 4.0f,
-                BendStiffness = 1.0f,
+                BendStiffness = FP.One,
                 BendingModel = BendingModel.PbdTriangleBendingModel,
                 Isometric = true,
                 StretchHertz = 30.0f,
                 StretchDamping = 4.0f,
-                StretchStiffness = 1.0f,
+                StretchStiffness = FP.One,
                 StretchingModel = StretchingModel.PbdStretchingModel
             };
 
@@ -58,12 +58,12 @@ namespace Testbed.TestCases
             {
                 BendHertz = 30.0f,
                 BendDamping = 0.7f,
-                BendStiffness = 1.0f,
+                BendStiffness = FP.One,
                 BendingModel = BendingModel.PbdHeightBendingModel,
                 Isometric = true,
                 StretchHertz = 30.0f,
-                StretchDamping = 1.0f,
-                StretchStiffness = 1.0f,
+                StretchDamping = FP.One,
+                StretchStiffness = FP.One,
                 StretchingModel = StretchingModel.PbdStretchingModel
             };
 
@@ -74,7 +74,7 @@ namespace Testbed.TestCases
             {
                 Vertices = vertices,
                 Count = N,
-                Gravity = new Vector2(0.0f, -10.0f),
+                Gravity = new TSVector2(FP.Zero, -10.0f),
                 Masses = masses,
                 Position = Position1,
                 Tuning = Tuning1
@@ -95,7 +95,7 @@ namespace Testbed.TestCases
 
         protected override void PreStep()
         {
-            var dt = TestSettings.Hertz > 0.0f ? 1.0f / TestSettings.Hertz : 0.0f;
+            var dt = TestSettings.Hertz > FP.Zero ? FP.One / TestSettings.Hertz : FP.Zero;
             if (Input.IsKeyDown(KeyCodes.Comma))
             {
                 Position1.X -= Speed * dt;
@@ -110,7 +110,7 @@ namespace Testbed.TestCases
 
             if (TestSettings.Pause && !TestSettings.SingleStep)
             {
-                dt = 0.0f;
+                dt = FP.Zero;
             }
 
             Rope1.SetTuning(Tuning1);

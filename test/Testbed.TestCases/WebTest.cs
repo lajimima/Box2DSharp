@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+﻿using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -18,8 +18,8 @@ namespace Testbed.TestCases
                 ground = World.CreateBody(bd);
 
                 EdgeShape shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-40.0f, FP.Zero), new TSVector2(40.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             {
@@ -46,32 +46,32 @@ namespace Testbed.TestCases
                 m_bodies[3].CreateFixture(shape, 5.0f);
 
                 DistanceJointDef jd = new DistanceJointDef();
-                Vector2 p1;
-                Vector2 p2;
-                Vector2 d;
+                TSVector2 p1;
+                TSVector2 p2;
+                TSVector2 d;
 
-                float frequencyHz = 2.0f;
-                float dampingRatio = 0.0f;
+                FP frequencyHz = FP.Two;
+                FP dampingRatio = FP.Zero;
 
                 jd.BodyA = ground;
                 jd.BodyB = m_bodies[0];
-                jd.LocalAnchorA.Set(-10.0f, 0.0f);
+                jd.LocalAnchorA.Set(-10.0f, FP.Zero);
                 jd.LocalAnchorB.Set(-0.5f, -0.5f);
                 p1 = jd.BodyA.GetWorldPoint(jd.LocalAnchorA);
                 p2 = jd.BodyB.GetWorldPoint(jd.LocalAnchorB);
                 d = p2 - p1;
-                jd.Length = d.Length();
+                jd.Length = d.magnitude;
                 JointUtils.LinearStiffness(out jd.Stiffness, out jd.Damping, frequencyHz, dampingRatio, jd.BodyA, jd.BodyB);
                 m_joints[0] = World.CreateJoint(jd);
 
                 jd.BodyA = ground;
                 jd.BodyB = m_bodies[1];
-                jd.LocalAnchorA.Set(10.0f, 0.0f);
+                jd.LocalAnchorA.Set(10.0f, FP.Zero);
                 jd.LocalAnchorB.Set(0.5f, -0.5f);
                 p1 = jd.BodyA.GetWorldPoint(jd.LocalAnchorA);
                 p2 = jd.BodyB.GetWorldPoint(jd.LocalAnchorB);
                 d = p2 - p1;
-                jd.Length = d.Length();
+                jd.Length = d.magnitude;
                 JointUtils.LinearStiffness(out jd.Stiffness, out jd.Damping, frequencyHz, dampingRatio, jd.BodyA, jd.BodyB);
                 m_joints[1] = World.CreateJoint(jd);
 
@@ -82,7 +82,7 @@ namespace Testbed.TestCases
                 p1 = jd.BodyA.GetWorldPoint(jd.LocalAnchorA);
                 p2 = jd.BodyB.GetWorldPoint(jd.LocalAnchorB);
                 d = p2 - p1;
-                jd.Length = d.Length();
+                jd.Length = d.magnitude;
                 JointUtils.LinearStiffness(out jd.Stiffness, out jd.Damping, frequencyHz, dampingRatio, jd.BodyA, jd.BodyB);
                 m_joints[2] = World.CreateJoint(jd);
 
@@ -93,52 +93,52 @@ namespace Testbed.TestCases
                 p1 = jd.BodyA.GetWorldPoint(jd.LocalAnchorA);
                 p2 = jd.BodyB.GetWorldPoint(jd.LocalAnchorB);
                 d = p2 - p1;
-                jd.Length = d.Length();
+                jd.Length = d.magnitude;
                 JointUtils.LinearStiffness(out jd.Stiffness, out jd.Damping, frequencyHz, dampingRatio, jd.BodyA, jd.BodyB);
                 m_joints[3] = World.CreateJoint(jd);
 
                 jd.BodyA = m_bodies[0];
                 jd.BodyB = m_bodies[1];
-                jd.LocalAnchorA.Set(0.5f, 0.0f);
-                jd.LocalAnchorB.Set(-0.5f, 0.0f);
+                jd.LocalAnchorA.Set(0.5f, FP.Zero);
+                jd.LocalAnchorB.Set(-0.5f, FP.Zero);
                 ;
                 p1 = jd.BodyA.GetWorldPoint(jd.LocalAnchorA);
                 p2 = jd.BodyB.GetWorldPoint(jd.LocalAnchorB);
                 d = p2 - p1;
-                jd.Length = d.Length();
+                jd.Length = d.magnitude;
                 JointUtils.LinearStiffness(out jd.Stiffness, out jd.Damping, frequencyHz, dampingRatio, jd.BodyA, jd.BodyB);
                 m_joints[4] = World.CreateJoint(jd);
 
                 jd.BodyA = m_bodies[1];
                 jd.BodyB = m_bodies[2];
-                jd.LocalAnchorA.Set(0.0f, 0.5f);
-                jd.LocalAnchorB.Set(0.0f, -0.5f);
+                jd.LocalAnchorA.Set(FP.Zero, 0.5f);
+                jd.LocalAnchorB.Set(FP.Zero, -0.5f);
                 p1 = jd.BodyA.GetWorldPoint(jd.LocalAnchorA);
                 p2 = jd.BodyB.GetWorldPoint(jd.LocalAnchorB);
                 d = p2 - p1;
-                jd.Length = d.Length();
+                jd.Length = d.magnitude;
                 JointUtils.LinearStiffness(out jd.Stiffness, out jd.Damping, frequencyHz, dampingRatio, jd.BodyA, jd.BodyB);
                 m_joints[5] = World.CreateJoint(jd);
 
                 jd.BodyA = m_bodies[2];
                 jd.BodyB = m_bodies[3];
-                jd.LocalAnchorA.Set(-0.5f, 0.0f);
-                jd.LocalAnchorB.Set(0.5f, 0.0f);
+                jd.LocalAnchorA.Set(-0.5f, FP.Zero);
+                jd.LocalAnchorB.Set(0.5f, FP.Zero);
                 p1 = jd.BodyA.GetWorldPoint(jd.LocalAnchorA);
                 p2 = jd.BodyB.GetWorldPoint(jd.LocalAnchorB);
                 d = p2 - p1;
-                jd.Length = d.Length();
+                jd.Length = d.magnitude;
                 JointUtils.LinearStiffness(out jd.Stiffness, out jd.Damping, frequencyHz, dampingRatio, jd.BodyA, jd.BodyB);
                 m_joints[6] = World.CreateJoint(jd);
 
                 jd.BodyA = m_bodies[3];
                 jd.BodyB = m_bodies[0];
-                jd.LocalAnchorA.Set(0.0f, -0.5f);
-                jd.LocalAnchorB.Set(0.0f, 0.5f);
+                jd.LocalAnchorA.Set(FP.Zero, -0.5f);
+                jd.LocalAnchorB.Set(FP.Zero, 0.5f);
                 p1 = jd.BodyA.GetWorldPoint(jd.LocalAnchorA);
                 p2 = jd.BodyB.GetWorldPoint(jd.LocalAnchorB);
                 d = p2 - p1;
-                jd.Length = d.Length();
+                jd.Length = d.magnitude;
                 JointUtils.LinearStiffness(out jd.Stiffness, out jd.Damping, frequencyHz, dampingRatio, jd.BodyA, jd.BodyB);
                 m_joints[7] = World.CreateJoint(jd);
             }

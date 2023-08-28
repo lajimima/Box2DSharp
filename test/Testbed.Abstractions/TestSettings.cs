@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using TrueSync;
 
 namespace Testbed.Abstractions
 {
@@ -48,7 +49,7 @@ namespace Testbed.Abstractions
         public int WindowHeight;
 
         [DataMember]
-        public float Hertz;
+        public FP Hertz;
 
         [DataMember]
         public int VelocityIterations;

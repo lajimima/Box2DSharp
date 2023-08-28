@@ -2,7 +2,7 @@
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using Testbed.Abstractions;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 
 namespace Testbed.Render
 {
@@ -47,7 +47,7 @@ namespace Testbed.Render
             // Vertex buffer
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboIds[0]);
             GL.VertexAttribPointer(_vertexAttribute, 2, VertexAttribPointerType.Float, false, 0, 0);
-            GL.BufferData(BufferTarget.ArrayBuffer, SizeCache<Vector2>.Size * MaxVertices, _vertices, BufferUsageHint.DynamicDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, SizeCache<TSVector2>.Size * MaxVertices, _vertices, BufferUsageHint.DynamicDraw);
             RenderHelper.CheckGLError();
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboIds[1]);
@@ -79,7 +79,7 @@ namespace Testbed.Render
             }
         }
 
-        public void Vertex(Vector2 v, Color4 c)
+        public void Vertex(TSVector2 v, Color4 c)
         {
             if (_count == MaxVertices)
             {
@@ -100,7 +100,7 @@ namespace Testbed.Render
 
             GL.UseProgram(_programId);
 
-            var proj = new float[16];
+            var proj = new FP[16];
             Global.Camera.BuildProjectionMatrix(proj, 0.1f);
 
             GL.UniformMatrix4(_projectionUniform, 1, false, proj);
@@ -126,7 +126,7 @@ namespace Testbed.Render
 
         private const int MaxVertices = 512;
 
-        private readonly Vector2[] _vertices = new Vector2[MaxVertices];
+        private readonly TSVector2[] _vertices = new TSVector2[MaxVertices];
 
         private readonly Color4[] _colors = new Color4[MaxVertices];
 

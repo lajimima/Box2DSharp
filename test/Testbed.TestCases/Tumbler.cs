@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -29,27 +29,27 @@ namespace Testbed.TestCases
                 {
                     BodyType = BodyType.DynamicBody,
                     AllowSleep = false,
-                    Position = new Vector2(0.0f, 10.0f)
+                    Position = new TSVector2(FP.Zero, 10.0f)
                 };
                 var body = World.CreateBody(bd);
 
                 var shape = new PolygonShape();
-                shape.SetAsBox(0.5f, 10.0f, new Vector2(10.0f, 0.0f), 0.0f);
+                shape.SetAsBox(0.5f, 10.0f, new TSVector2(10.0f, FP.Zero), FP.Zero);
                 body.CreateFixture(shape, 5.0f);
-                shape.SetAsBox(0.5f, 10.0f, new Vector2(-10.0f, 0.0f), 0.0f);
+                shape.SetAsBox(0.5f, 10.0f, new TSVector2(-10.0f, FP.Zero), FP.Zero);
                 body.CreateFixture(shape, 5.0f);
-                shape.SetAsBox(10.0f, 0.5f, new Vector2(0.0f, 10.0f), 0.0f);
+                shape.SetAsBox(10.0f, 0.5f, new TSVector2(FP.Zero, 10.0f), FP.Zero);
                 body.CreateFixture(shape, 5.0f);
-                shape.SetAsBox(10.0f, 0.5f, new Vector2(0.0f, -10.0f), 0.0f);
+                shape.SetAsBox(10.0f, 0.5f, new TSVector2(FP.Zero, -10.0f), FP.Zero);
                 body.CreateFixture(shape, 5.0f);
 
                 var jd = new RevoluteJointDef
                 {
                     BodyA = ground,
                     BodyB = body,
-                    LocalAnchorA = new Vector2(0.0f, 10.0f),
-                    LocalAnchorB = new Vector2(0.0f, 0.0f),
-                    ReferenceAngle = 0.0f,
+                    LocalAnchorA = new TSVector2(FP.Zero, 10.0f),
+                    LocalAnchorB = new TSVector2(FP.Zero, FP.Zero),
+                    ReferenceAngle = FP.Zero,
                     MotorSpeed = 0.05f * Settings.Pi,
                     MaxMotorTorque = 1e8f,
                     EnableMotor = true
@@ -68,13 +68,13 @@ namespace Testbed.TestCases
                 var bd = new BodyDef
                 {
                     BodyType = BodyType.DynamicBody,
-                    Position = new Vector2(0.0f, 10.0f)
+                    Position = new TSVector2(FP.Zero, 10.0f)
                 };
                 var body = World.CreateBody(bd);
 
                 var shape = new PolygonShape();
                 shape.SetAsBox(0.125f, 0.125f);
-                body.CreateFixture(shape, 1.0f);
+                body.CreateFixture(shape, FP.One);
 
                 ++_count;
             }

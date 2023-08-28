@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Common;
 
 namespace FixedBox2D.Dynamics.Contacts
@@ -12,28 +12,28 @@ namespace FixedBox2D.Dynamics.Contacts
 
         public int ContactIndex;
 
-        public float Friction;
+        public FP Friction;
 
         public int IndexA;
 
         public int IndexB;
 
-        public float InvIa, InvIb;
+        public FP InvIa, InvIb;
 
-        public float InvMassA, InvMassB;
+        public FP InvMassA, InvMassB;
 
         public Matrix2x2 K;
 
-        public Vector2 Normal;
+        public TSVector2 Normal;
 
         public Matrix2x2 NormalMass;
 
         public int PointCount;
 
-        public float Restitution;
+        public FP Restitution;
 
-        public float Threshold;
+        public FP Threshold;
 
-        public float TangentSpeed;
+        public FP TangentSpeed;
     }
 }

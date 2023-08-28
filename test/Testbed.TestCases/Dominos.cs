@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -16,11 +16,11 @@ namespace Testbed.TestCases
 
             {
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
+                shape.SetTwoSided(new TSVector2(-40.0f, FP.Zero), new TSVector2(40.0f, FP.Zero));
 
                 var bd = new BodyDef();
                 b1 = World.CreateBody(bd);
-                b1.CreateFixture(shape, 0.0f);
+                b1.CreateFixture(shape, FP.Zero);
             }
 
             {
@@ -30,23 +30,23 @@ namespace Testbed.TestCases
                 var bd = new BodyDef();
                 bd.Position.Set(-1.5f, 10.0f);
                 var ground = World.CreateBody(bd);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             {
                 var shape = new PolygonShape();
-                shape.SetAsBox(0.1f, 1.0f);
+                shape.SetAsBox(FP.EN1, FP.One);
 
                 var fd = new FixtureDef();
                 fd.Shape = shape;
                 fd.Density = 20.0f;
-                fd.Friction = 0.1f;
+                fd.Friction = FP.EN1;
 
                 for (var i = 0; i < 10; ++i)
                 {
                     var bd = new BodyDef();
                     bd.BodyType = BodyType.DynamicBody;
-                    bd.Position.Set(-6.0f + 1.0f * i, 11.25f);
+                    bd.Position.Set(-6.0f + FP.One * i, 11.25f);
                     var body = World.CreateBody(bd);
                     body.CreateFixture(fd);
                 }
@@ -54,12 +54,12 @@ namespace Testbed.TestCases
 
             {
                 var shape = new PolygonShape();
-                shape.SetAsBox(7.0f, 0.25f, Vector2.Zero, 0.3f);
+                shape.SetAsBox(7.0f, 0.25f, TSVector2.Zero, 0.3f);
 
                 var bd = new BodyDef();
-                bd.Position.Set(1.0f, 6.0f);
+                bd.Position.Set(FP.One, 6.0f);
                 var ground = World.CreateBody(bd);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             Body b2;
@@ -70,7 +70,7 @@ namespace Testbed.TestCases
                 var bd = new BodyDef();
                 bd.Position.Set(-7.0f, 4.0f);
                 b2 = World.CreateBody(bd);
-                b2.CreateFixture(shape, 0.0f);
+                b2.CreateFixture(shape, FP.Zero);
             }
 
             Body b3;
@@ -80,7 +80,7 @@ namespace Testbed.TestCases
 
                 var bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
-                bd.Position.Set(-0.9f, 1.0f);
+                bd.Position.Set(-0.9f, FP.One);
                 bd.Angle = -0.15f;
 
                 b3 = World.CreateBody(bd);
@@ -88,9 +88,9 @@ namespace Testbed.TestCases
             }
 
             var jd = new RevoluteJointDef();
-            var anchor = new Vector2();
+            var anchor = new TSVector2();
 
-            anchor.Set(-2.0f, 1.0f);
+            anchor.Set(-FP.Two, FP.One);
             jd.Initialize(b1, b3, anchor);
             jd.CollideConnected = true;
             World.CreateJoint(jd);
@@ -125,19 +125,19 @@ namespace Testbed.TestCases
 
                 fd.Shape = shape;
                 fd.Density = 10.0f;
-                fd.Friction = 0.1f;
+                fd.Friction = FP.EN1;
 
-                shape.SetAsBox(1.0f, 0.1f, new Vector2(0.0f, -0.9f), 0.0f);
+                shape.SetAsBox(FP.One, FP.EN1, new TSVector2(FP.Zero, -0.9f), FP.Zero);
                 b5.CreateFixture(fd);
 
-                shape.SetAsBox(0.1f, 1.0f, new Vector2(-0.9f, 0.0f), 0.0f);
+                shape.SetAsBox(FP.EN1, FP.One, new TSVector2(-0.9f, FP.Zero), FP.Zero);
                 b5.CreateFixture(fd);
 
-                shape.SetAsBox(0.1f, 1.0f, new Vector2(0.9f, 0.0f), 0.0f);
+                shape.SetAsBox(FP.EN1, FP.One, new TSVector2(0.9f, FP.Zero), FP.Zero);
                 b5.CreateFixture(fd);
             }
 
-            anchor.Set(6.0f, 2.0f);
+            anchor.Set(6.0f, FP.Two);
             jd.Initialize(b1, b5, anchor);
             World.CreateJoint(jd);
 
@@ -145,7 +145,7 @@ namespace Testbed.TestCases
 
             {
                 var shape = new PolygonShape();
-                shape.SetAsBox(1.0f, 0.1f);
+                shape.SetAsBox(FP.One, FP.EN1);
 
                 var bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
@@ -161,11 +161,11 @@ namespace Testbed.TestCases
             Body b7;
             {
                 var shape = new PolygonShape();
-                shape.SetAsBox(0.1f, 1.0f);
+                shape.SetAsBox(FP.EN1, FP.One);
 
                 var bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
-                bd.Position.Set(7.4f, 1.0f);
+                bd.Position.Set(7.4f, FP.One);
 
                 b7 = World.CreateBody(bd);
                 b7.CreateFixture(shape, 10.0f);
@@ -174,12 +174,12 @@ namespace Testbed.TestCases
             var djd = new DistanceJointDef();
             djd.BodyA = b3;
             djd.BodyB = b7;
-            djd.LocalAnchorA.Set(6.0f, 0.0f);
-            djd.LocalAnchorB.Set(0.0f, -1.0f);
+            djd.LocalAnchorA.Set(6.0f, FP.Zero);
+            djd.LocalAnchorB.Set(FP.Zero, -FP.One);
             var d = djd.BodyB.GetWorldPoint(djd.LocalAnchorB) - djd.BodyA.GetWorldPoint(djd.LocalAnchorA);
-            djd.Length = d.Length();
+            djd.Length = d.magnitude;
 
-            JointUtils.LinearStiffness(out djd.Stiffness, out djd.Damping, 1.0f, 1.0f, djd.BodyA, djd.BodyB);
+            JointUtils.LinearStiffness(out djd.Stiffness, out djd.Damping, FP.One, FP.One, djd.BodyA, djd.BodyB);
             World.CreateJoint(djd);
 
             {
@@ -192,7 +192,7 @@ namespace Testbed.TestCases
                 {
                     var bd = new BodyDef();
                     bd.BodyType = BodyType.DynamicBody;
-                    bd.Position.Set(5.9f + 2.0f * radius * i, 2.4f);
+                    bd.Position.Set(5.9f + FP.Two * radius * i, 2.4f);
                     var body = World.CreateBody(bd);
                     body.CreateFixture(shape, 10.0f);
                 }

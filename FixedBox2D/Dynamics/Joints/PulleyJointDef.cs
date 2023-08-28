@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Common;
 
 namespace FixedBox2D.Dynamics.Joints
@@ -9,43 +9,43 @@ namespace FixedBox2D.Dynamics.Joints
     public class PulleyJointDef : JointDef
     {
         /// The first ground anchor in world coordinates. This point never moves.
-        public Vector2 GroundAnchorA;
+        public TSVector2 GroundAnchorA;
 
         /// The second ground anchor in world coordinates. This point never moves.
-        public Vector2 GroundAnchorB;
+        public TSVector2 GroundAnchorB;
 
         /// The a reference length for the segment attached to bodyA.
-        public float LengthA;
+        public FP LengthA;
 
         /// The a reference length for the segment attached to bodyB.
-        public float LengthB;
+        public FP LengthB;
 
         /// The local anchor point relative to bodyA's origin.
-        public Vector2 LocalAnchorA;
+        public TSVector2 LocalAnchorA;
 
         /// The local anchor point relative to bodyB's origin.
-        public Vector2 LocalAnchorB;
+        public TSVector2 LocalAnchorB;
 
         /// The pulley ratio, used to simulate a block-and-tackle.
-        public float Ratio;
+        public FP Ratio;
 
         public PulleyJointDef()
         {
             JointType = JointType.PulleyJoint;
 
-            GroundAnchorA.Set(-1.0f, 1.0f);
+            GroundAnchorA.Set(-FP.One, FP.One);
 
-            GroundAnchorB.Set(1.0f, 1.0f);
+            GroundAnchorB.Set(FP.One, FP.One);
 
-            LocalAnchorA.Set(-1.0f, 0.0f);
+            LocalAnchorA.Set(-FP.One, FP.Zero);
 
-            LocalAnchorB.Set(1.0f, 0.0f);
+            LocalAnchorB.Set(FP.One, FP.Zero);
 
-            LengthA = 0.0f;
+            LengthA = FP.Zero;
 
-            LengthB = 0.0f;
+            LengthB = FP.Zero;
 
-            Ratio = 1.0f;
+            Ratio = FP.One;
 
             CollideConnected = true;
         }
@@ -54,11 +54,11 @@ namespace FixedBox2D.Dynamics.Joints
         public void Initialize(
             Body bA,
             Body bB,
-            in Vector2 groundA,
-            in Vector2 groundB,
-            in Vector2 anchorA,
-            in Vector2 anchorB,
-            float r)
+            in TSVector2 groundA,
+            in TSVector2 groundB,
+            in TSVector2 anchorA,
+            in TSVector2 anchorB,
+            FP r)
         {
             BodyA = bA;
             BodyB = bB;
@@ -67,9 +67,9 @@ namespace FixedBox2D.Dynamics.Joints
             LocalAnchorA = BodyA.GetLocalPoint(anchorA);
             LocalAnchorB = BodyB.GetLocalPoint(anchorB);
             var dA = anchorA - groundA;
-            LengthA = dA.Length();
+            LengthA = dA.magnitude;
             var dB = anchorB - groundB;
-            LengthB = dB.Length();
+            LengthB = dB.magnitude;
             Ratio = r;
             Debug.Assert(Ratio > Settings.Epsilon);
         }

@@ -1,22 +1,24 @@
+using TrueSync;
+
 namespace FixedBox2D.Dynamics
 {
     /// Profiling data. Times are in milliseconds.
     public struct Profile
     {
-        public float Step;
+        public FP Step;
 
-        public float Collide;
+        public FP Collide;
 
-        public float Solve;
+        public FP Solve;
 
-        public float SolveInit;
+        public FP SolveInit;
 
-        public float SolveVelocity;
+        public FP SolveVelocity;
 
-        public float SolvePosition;
+        public FP SolvePosition;
 
-        public float Broadphase;
+        public FP Broadphase;
 
-        public float SolveTOI;
+        public FP SolveTOI;
     }
 }

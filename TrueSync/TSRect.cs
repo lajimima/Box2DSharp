@@ -45,8 +45,8 @@ namespace TrueSync
             }
             set
             {
-                this.m_XMin = value.x;
-                this.m_YMin = value.y;
+                this.m_XMin = value.X;
+                this.m_YMin = value.Y;
             }
         }
 
@@ -58,8 +58,8 @@ namespace TrueSync
             }
             set
             {
-                this.m_XMin = value.x - this.m_Width / 2;
-                this.m_YMin = value.y - this.m_Height / 2;
+                this.m_XMin = value.X - this.m_Width / 2;
+                this.m_YMin = value.Y - this.m_Height / 2;
             }
         }
 
@@ -71,8 +71,8 @@ namespace TrueSync
             }
             set
             {
-                this.xMin = value.x;
-                this.yMin = value.y;
+                this.xMin = value.X;
+                this.yMin = value.Y;
             }
         }
 
@@ -84,8 +84,8 @@ namespace TrueSync
             }
             set
             {
-                this.xMax = value.x;
-                this.yMax = value.y;
+                this.xMax = value.X;
+                this.yMax = value.Y;
             }
         }
 
@@ -121,8 +121,8 @@ namespace TrueSync
             }
             set
             {
-                this.m_Width = value.x;
-                this.m_Height = value.y;
+                this.m_Width = value.X;
+                this.m_Height = value.Y;
             }
         }
 
@@ -224,10 +224,10 @@ namespace TrueSync
 
         public TSRect(TSVector2 position, TSVector2 size)
         {
-            this.m_XMin = position.x;
-            this.m_YMin = position.y;
-            this.m_Width = size.x;
-            this.m_Height = size.y;
+            this.m_XMin = position.X;
+            this.m_YMin = position.Y;
+            this.m_Width = size.X;
+            this.m_Height = size.Y;
         }
 
         public TSRect(TSRect source)
@@ -264,12 +264,12 @@ namespace TrueSync
 
         public bool Contains(TSVector2 point)
         {
-            return point.x >= this.xMin && point.x < this.xMax && point.y >= this.yMin && point.y < this.yMax;
+            return point.X >= this.xMin && point.X < this.xMax && point.Y >= this.yMin && point.Y < this.yMax;
         }
 
         public bool Contains(TSVector point)
         {
-            return point.x >= this.xMin && point.x < this.xMax && point.y >= this.yMin && point.y < this.yMax;
+            return point.X >= this.xMin && point.X < this.xMax && point.Y >= this.yMin && point.Y < this.yMax;
         }
 
         public bool Contains(TSVector point, bool allowInverse)
@@ -279,11 +279,11 @@ namespace TrueSync
                 return this.Contains(point);
             }
             bool flag = false;
-            if ((this.width < FP.Zero && point.x <= this.xMin && point.x > this.xMax) || (this.width >= FP.Zero && point.x >= this.xMin && point.x < this.xMax))
+            if ((this.width < FP.Zero && point.X <= this.xMin && point.X > this.xMax) || (this.width >= FP.Zero && point.X >= this.xMin && point.X < this.xMax))
             {
                 flag = true;
             }
-            return flag && ((this.height < FP.Zero && point.y <= this.yMin && point.y > this.yMax) || (this.height >= FP.Zero && point.y >= this.yMin && point.y < this.yMax));
+            return flag && ((this.height < FP.Zero && point.Y <= this.yMin && point.Y > this.yMax) || (this.height >= FP.Zero && point.Y >= this.yMin && point.Y < this.yMax));
         }
 
         private static TSRect OrderMinMax(TSRect rect)
@@ -321,7 +321,7 @@ namespace TrueSync
 
         public static TSVector2 NormalizedToPoint(TSRect rectangle, TSVector2 normalizedRectCoordinates)
         {
-            return new TSVector2(FP.Lerp(rectangle.x, rectangle.xMax, normalizedRectCoordinates.x), FP.Lerp(rectangle.y, rectangle.yMax, normalizedRectCoordinates.y));
+            return new TSVector2(FP.Lerp(rectangle.x, rectangle.xMax, normalizedRectCoordinates.X), FP.Lerp(rectangle.y, rectangle.yMax, normalizedRectCoordinates.Y));
         }
 
 

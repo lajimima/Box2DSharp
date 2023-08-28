@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -18,8 +18,8 @@ namespace Testbed.TestCases
                 ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-40.0f, FP.Zero), new TSVector2(40.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             {
@@ -35,7 +35,7 @@ namespace Testbed.TestCases
 
                 var jd = new RevoluteJointDef {CollideConnected = false};
 
-                const float y = 25.0f;
+                FP y = 25.0f;
                 var prevBody = ground;
                 for (var i = 0; i < 30; ++i)
                 {
@@ -44,7 +44,7 @@ namespace Testbed.TestCases
                     var body = World.CreateBody(bd);
                     body.CreateFixture(fd);
 
-                    var anchor = new Vector2(i, y);
+                    var anchor = new TSVector2(i, y);
                     jd.Initialize(prevBody, body, anchor);
                     World.CreateJoint(jd);
 

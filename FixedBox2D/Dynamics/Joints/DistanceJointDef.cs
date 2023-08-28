@@ -1,5 +1,5 @@
 using System;
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Common;
 
 namespace FixedBox2D.Dynamics.Joints
@@ -11,36 +11,36 @@ namespace FixedBox2D.Dynamics.Joints
     public class DistanceJointDef : JointDef
     {
         /// Minimum length. Clamped to a stable minimum value.
-        public float MinLength;
+        public FP MinLength;
 
         /// Maximum length. Must be greater than or equal to the minimum length.
-        public float MaxLength;
+        public FP MaxLength;
 
         /// The linear stiffness in N/m.
-        public float Stiffness;
+        public FP Stiffness;
 
         /// The linear damping in N*s/m.
-        public float Damping;
+        public FP Damping;
 
         /// The rest length of this joint. Clamped to a stable minimum value.
-        public float Length;
+        public FP Length;
 
         /// The local anchor point relative to bodyA's origin.
-        public Vector2 LocalAnchorA;
+        public TSVector2 LocalAnchorA;
 
         /// The local anchor point relative to bodyB's origin.
-        public Vector2 LocalAnchorB;
+        public TSVector2 LocalAnchorB;
 
         public DistanceJointDef()
         {
             JointType = JointType.DistanceJoint;
-            LocalAnchorA.Set(0.0f, 0.0f);
-            LocalAnchorB.Set(0.0f, 0.0f);
-            MinLength = 0.0f;
+            LocalAnchorA.Set(FP.Zero, FP.Zero);
+            LocalAnchorB.Set(FP.Zero, FP.Zero);
+            MinLength = FP.Zero;
             MaxLength = Settings.MaxFloat;
-            Length = 1.0f;
-            Stiffness = 0.0f;
-            Damping = 0.0f;
+            Length = FP.One;
+            Stiffness = FP.Zero;
+            Damping = FP.Zero;
         }
 
         /// Initialize the bodies, anchors, and rest length using world space anchors.
@@ -48,15 +48,15 @@ namespace FixedBox2D.Dynamics.Joints
         public void Initialize(
             Body b1,
             Body b2,
-            in Vector2 anchor1,
-            in Vector2 anchor2)
+            in TSVector2 anchor1,
+            in TSVector2 anchor2)
         {
             BodyA = b1;
             BodyB = b2;
             LocalAnchorA = BodyA.GetLocalPoint(anchor1);
             LocalAnchorB = BodyB.GetLocalPoint(anchor2);
             var d = anchor2 - anchor1;
-            Length = Math.Max(d.Length(), Settings.LinearSlop);
+            Length = FP.Max(d.magnitude, Settings.LinearSlop);
             MinLength = Length;
             MaxLength = Length;
         }

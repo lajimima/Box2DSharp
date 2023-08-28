@@ -1,12 +1,12 @@
-using System.Numerics;
+using TrueSync;
 
 namespace FixedBox2D.Dynamics
 {
     /// This is an internal structure.
     public struct Position
     {
-        public Vector2 Center;
+        public TSVector2 Center;
 
-        public float Angle;
+        public FP Angle;
     }
 }

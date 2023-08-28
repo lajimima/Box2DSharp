@@ -1,6 +1,6 @@
 using System;
 using System.Diagnostics;
-using System.Numerics;
+using TrueSync;
 using System.Runtime.CompilerServices;
 using FixedBox2D.Collision.Collider;
 using FixedBox2D.Collision.Shapes;
@@ -63,30 +63,30 @@ namespace FixedBox2D.Collision
         public static int ClipSegmentToLine(
             in Span<ClipVertex> vOut,
             in Span<ClipVertex> vIn,
-            in Vector2 normal,
-            float offset,
+            in TSVector2 normal,
+            FP offset,
             int vertexIndexA)
         {
             // Start with no output points
             var count = 0;
 
             // Calculate the distance of end points to the line
-            var distance0 = Vector2.Dot(normal, vIn[0].Vector) - offset;
-            var distance1 = Vector2.Dot(normal, vIn[1].Vector) - offset;
+            var distance0 = TSVector2.Dot(normal, vIn[0].Vector) - offset;
+            var distance1 = TSVector2.Dot(normal, vIn[1].Vector) - offset;
 
             // If the points are behind the plane
-            if (distance0 <= 0.0f)
+            if (distance0 <= FP.Zero)
             {
                 vOut[count++] = vIn[0];
             }
 
-            if (distance1 <= 0.0f)
+            if (distance1 <= FP.Zero)
             {
                 vOut[count++] = vIn[1];
             }
 
             // If the points are on different sides of the plane
-            if (distance0 * distance1 < 0.0f)
+            if (distance0 * distance1 < FP.Zero)
             {
                 // Find intersection point of edge and plane
                 var interp = distance0 / (distance0 - distance1);
@@ -131,13 +131,13 @@ namespace FixedBox2D.Collision
         {
             //var d1 = b.LowerBound - a.UpperBound;
 
-            if (b.LowerBound.X - a.UpperBound.X > 0.0f || b.LowerBound.Y - a.UpperBound.Y > 0.0f)
+            if (b.LowerBound.X - a.UpperBound.X > FP.Zero || b.LowerBound.Y - a.UpperBound.Y > FP.Zero)
             {
                 return false;
             }
 
             //var d2 = a.LowerBound - b.UpperBound;
-            if (a.LowerBound.X - b.UpperBound.X > 0.0f || a.LowerBound.Y - b.UpperBound.Y > 0.0f)
+            if (a.LowerBound.X - b.UpperBound.X > FP.Zero || a.LowerBound.Y - b.UpperBound.Y > FP.Zero)
             {
                 return false;
             }

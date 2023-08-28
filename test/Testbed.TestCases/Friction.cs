@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -16,8 +16,8 @@ namespace Testbed.TestCases
                 var ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-40.0f, FP.Zero), new TSVector2(40.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             {
@@ -29,18 +29,18 @@ namespace Testbed.TestCases
                 bd.Angle = -0.25f;
 
                 var ground = World.CreateBody(bd);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             {
                 var shape = new PolygonShape();
-                shape.SetAsBox(0.25f, 1.0f);
+                shape.SetAsBox(0.25f, FP.One);
 
                 var bd = new BodyDef();
                 bd.Position.Set(10.5f, 19.0f);
 
                 var ground = World.CreateBody(bd);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             {
@@ -52,18 +52,18 @@ namespace Testbed.TestCases
                 bd.Angle = 0.25f;
 
                 var ground = World.CreateBody(bd);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             {
                 var shape = new PolygonShape();
-                shape.SetAsBox(0.25f, 1.0f);
+                shape.SetAsBox(0.25f, FP.One);
 
                 var bd = new BodyDef();
                 bd.Position.Set(-10.5f, 11.0f);
 
                 var ground = World.CreateBody(bd);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             {
@@ -75,7 +75,7 @@ namespace Testbed.TestCases
                 bd.Angle = -0.25f;
 
                 var ground = World.CreateBody(bd);
-                ground.CreateFixture(shape, 0.0f);
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             {
@@ -86,7 +86,7 @@ namespace Testbed.TestCases
                 fd.Shape = shape;
                 fd.Density = 25.0f;
 
-                float[] friction = {0.75f, 0.5f, 0.35f, 0.1f, 0.0f};
+                FP[] friction = {0.75f, 0.5f, 0.35f, FP.EN1, FP.Zero};
 
                 for (var i = 0; i < 5; ++i)
                 {

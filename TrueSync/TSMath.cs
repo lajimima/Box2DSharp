@@ -374,7 +374,7 @@ namespace TrueSync
             return result;
         }
 
-        internal static FP Log2(FP x)
+        public static FP Log2(FP x)
         {
             if (x.RawValue <= 0)
             {
@@ -481,12 +481,12 @@ namespace TrueSync
         public static TSVector OnUnitSemiSphere(FP radius)
         {
             var a = OnUnitSphere(radius);
-            var y = a.y;
+            var y = a.Y;
             if (y < 0)
             {
                 y = -y;
             }
-            return new TSVector(a.x, y, a.z);
+            return new TSVector(a.X, y, a.Z);
         }
 
         // Loops the value t, so that it is never larger than length and never smaller than 0.

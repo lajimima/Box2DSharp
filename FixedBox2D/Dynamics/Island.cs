@@ -1,7 +1,7 @@
 using System;
 using System.Buffers;
 using System.Diagnostics;
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics.Contacts;
 using FixedBox2D.Dynamics.Joints;
@@ -109,7 +109,13 @@ namespace FixedBox2D.Dynamics
 
         private readonly Stopwatch _solveTimer = new Stopwatch();
 
-        internal void Solve(out Profile profile, in TimeStep step, in Vector2 gravity, bool allowSleep)
+        // 线速度最小值平方
+        static FP linTolSqr = Settings.LinearSleepTolerance * Settings.LinearSleepTolerance;
+
+        // 角速度最小值平方
+        static FP angTolSqr = Settings.AngularSleepTolerance * Settings.AngularSleepTolerance;
+
+        internal void Solve(out Profile profile, in TimeStep step, in TSVector2 gravity, bool allowSleep)
         {
             profile = default;
 
@@ -142,8 +148,8 @@ namespace FixedBox2D.Dynamics
                     // v2 = exp(-c * dt) * v1
                     // Pade approximation:
                     // v2 = v1 * 1 / (1 + c * dt)
-                    v *= 1.0f / (1.0f + h * b.LinearDamping);
-                    w *= 1.0f / (1.0f + h * b.AngularDamping);
+                    v *= FP.One / (FP.One + h * b.LinearDamping);
+                    w *= FP.One / (FP.One + h * b.AngularDamping);
                 }
 
                 Positions[i].Center = c;
@@ -203,16 +209,16 @@ namespace FixedBox2D.Dynamics
 
                 // Check for large velocities
                 var translation = h * v;
-                if (Vector2.Dot(translation, translation) > Settings.MaxTranslationSquared)
+                if (TSVector2.Dot(translation, translation) > Settings.MaxTranslationSquared)
                 {
-                    var ratio = Settings.MaxTranslation / translation.Length();
+                    var ratio = Settings.MaxTranslation / translation.magnitude;
                     v *= ratio;
                 }
 
                 var rotation = h * w;
                 if (rotation * rotation > Settings.MaxRotationSquared)
                 {
-                    var ratio = Settings.MaxRotation / Math.Abs(rotation);
+                    var ratio = Settings.MaxRotation / FP.Abs(rotation);
                     w *= ratio;
                 }
 
@@ -268,12 +274,6 @@ namespace FixedBox2D.Dynamics
             {
                 var minSleepTime = Settings.MaxFloat;
 
-                // 线速度最小值平方
-                const float linTolSqr = Settings.LinearSleepTolerance * Settings.LinearSleepTolerance;
-
-                // 角速度最小值平方
-                const float angTolSqr = Settings.AngularSleepTolerance * Settings.AngularSleepTolerance;
-
                 for (var i = 0; i < BodyCount; ++i)
                 {
                     var b = Bodies[i];
@@ -284,15 +284,15 @@ namespace FixedBox2D.Dynamics
 
                     if (!b.Flags.IsSet(BodyFlags.AutoSleep)                              // 不允许休眠
                      || b.AngularVelocity * b.AngularVelocity > angTolSqr            // 或 角速度大于最小值
-                     || Vector2.Dot(b.LinearVelocity, b.LinearVelocity) > linTolSqr) // 或 线速度大于最小值
+                     || TSVector2.Dot(b.LinearVelocity, b.LinearVelocity) > linTolSqr) // 或 线速度大于最小值
                     {
-                        b.SleepTime = 0.0f;
-                        minSleepTime = 0.0f;
+                        b.SleepTime = FP.Zero;
+                        minSleepTime = FP.Zero;
                     }
                     else
                     {
                         b.SleepTime += h;
-                        minSleepTime = Math.Min(minSleepTime, b.SleepTime);
+                        minSleepTime = FP.Min(minSleepTime, b.SleepTime);
                     }
                 }
 
@@ -403,16 +403,16 @@ namespace FixedBox2D.Dynamics
 
                 // Check for large velocities
                 var translation = h * v;
-                if (Vector2.Dot(translation, translation) > Settings.MaxTranslationSquared)
+                if (TSVector2.Dot(translation, translation) > Settings.MaxTranslationSquared)
                 {
-                    var ratio = Settings.MaxTranslation / translation.Length();
+                    var ratio = Settings.MaxTranslation / translation.magnitude;
                     v *= ratio;
                 }
 
                 var rotation = h * w;
                 if (rotation * rotation > Settings.MaxRotationSquared)
                 {
-                    var ratio = Settings.MaxRotation / Math.Abs(rotation);
+                    var ratio = Settings.MaxRotation / FP.Abs(rotation);
                     w *= ratio;
                 }
 

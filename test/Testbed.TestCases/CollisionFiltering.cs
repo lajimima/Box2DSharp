@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
@@ -34,7 +34,7 @@ namespace Testbed.TestCases
                 // Ground body
                 {
                     var shape = new EdgeShape();
-                    shape.SetTwoSided(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
+                    shape.SetTwoSided(new TSVector2(-40.0f, FP.Zero), new TSVector2(40.0f, FP.Zero));
 
                     var sd = new FixtureDef();
                     sd.Shape = shape;
@@ -46,31 +46,31 @@ namespace Testbed.TestCases
                 }
 
                 // Small triangle
-                var vertices = new Vector2[3];
-                vertices[0].Set(-1.0f, 0.0f);
-                vertices[1].Set(1.0f, 0.0f);
-                vertices[2].Set(0.0f, 2.0f);
+                var vertices = new TSVector2[3];
+                vertices[0].Set(-FP.One, FP.Zero);
+                vertices[1].Set(FP.One, FP.Zero);
+                vertices[2].Set(FP.Zero, FP.Two);
                 var polygon = new PolygonShape();
                 polygon.Set(vertices);
 
                 var triangleShapeDef = new FixtureDef();
                 triangleShapeDef.Shape = polygon;
-                triangleShapeDef.Density = 1.0f;
+                triangleShapeDef.Density = FP.One;
                 triangleShapeDef.Filter.GroupIndex = SmallGroup;
                 triangleShapeDef.Filter.CategoryBits = TriangleCategory;
                 triangleShapeDef.Filter.MaskBits = TriangleMask;
 
                 var triangleBodyDef = new BodyDef();
                 triangleBodyDef.BodyType = BodyType.DynamicBody;
-                triangleBodyDef.Position.Set(-5.0f, 2.0f);
+                triangleBodyDef.Position.Set(-5.0f, FP.Two);
 
                 var body1 = World.CreateBody(triangleBodyDef);
                 body1.CreateFixture(triangleShapeDef);
 
                 // Large triangle (recycle definitions)
-                vertices[0] *= 2.0f;
-                vertices[1] *= 2.0f;
-                vertices[2] *= 2.0f;
+                vertices[0] *= FP.Two;
+                vertices[1] *= FP.Two;
+                vertices[2] *= FP.Two;
                 polygon.Set(vertices);
                 triangleShapeDef.Filter.GroupIndex = LargeGroup;
                 triangleBodyDef.Position.Set(-5.0f, 6.0f);
@@ -86,67 +86,67 @@ namespace Testbed.TestCases
                     var body = World.CreateBody(bd);
 
                     var p = new PolygonShape();
-                    p.SetAsBox(0.5f, 1.0f);
-                    body.CreateFixture(p, 1.0f);
+                    p.SetAsBox(0.5f, FP.One);
+                    body.CreateFixture(p, FP.One);
 
                     var jd = new PrismaticJointDef();
                     jd.BodyA = body2;
                     jd.BodyB = body;
                     jd.EnableLimit = true;
-                    jd.LocalAnchorA.Set(0.0f, 4.0f);
+                    jd.LocalAnchorA.Set(FP.Zero, 4.0f);
                     jd.LocalAnchorB.SetZero();
-                    jd.LocalAxisA.Set(0.0f, 1.0f);
-                    jd.LowerTranslation = -1.0f;
-                    jd.UpperTranslation = 1.0f;
+                    jd.LocalAxisA.Set(FP.Zero, FP.One);
+                    jd.LowerTranslation = -FP.One;
+                    jd.UpperTranslation = FP.One;
 
                     World.CreateJoint(jd);
                 }
 
                 // Small box
-                polygon.SetAsBox(1.0f, 0.5f);
+                polygon.SetAsBox(FP.One, 0.5f);
                 var boxShapeDef = new FixtureDef();
                 boxShapeDef.Shape = polygon;
-                boxShapeDef.Density = 1.0f;
-                boxShapeDef.Restitution = 0.1f;
+                boxShapeDef.Density = FP.One;
+                boxShapeDef.Restitution = FP.EN1;
                 boxShapeDef.Filter.GroupIndex = SmallGroup;
                 boxShapeDef.Filter.CategoryBits = BoxCategory;
                 boxShapeDef.Filter.MaskBits = BoxMask;
 
                 var boxBodyDef = triangleBodyDef;
                 boxBodyDef.BodyType = BodyType.DynamicBody;
-                boxBodyDef.Position.Set(0.0f, 2.0f);
+                boxBodyDef.Position.Set(FP.Zero, FP.Two);
 
                 var body3 = World.CreateBody(boxBodyDef);
                 body3.CreateFixture(boxShapeDef);
 
                 // Large box (recycle definitions)
-                polygon.SetAsBox(2.0f, 1.0f);
+                polygon.SetAsBox(FP.Two, FP.One);
                 boxShapeDef.Filter.GroupIndex = LargeGroup;
-                boxBodyDef.Position.Set(0.0f, 6.0f);
+                boxBodyDef.Position.Set(FP.Zero, 6.0f);
 
                 var body4 = World.CreateBody(boxBodyDef);
                 body4.CreateFixture(boxShapeDef);
 
                 // Small circle
                 var circle = new CircleShape();
-                circle.Radius = 1.0f;
+                circle.Radius = FP.One;
 
                 var circleShapeDef = new FixtureDef();
                 circleShapeDef.Shape = circle;
-                circleShapeDef.Density = 1.0f;
+                circleShapeDef.Density = FP.One;
                 circleShapeDef.Filter.GroupIndex = SmallGroup;
                 circleShapeDef.Filter.CategoryBits = CircleCategory;
                 circleShapeDef.Filter.MaskBits = CircleMask;
 
                 var circleBodyDef = new BodyDef();
                 circleBodyDef.BodyType = BodyType.DynamicBody;
-                circleBodyDef.Position.Set(5.0f, 2.0f);
+                circleBodyDef.Position.Set(5.0f, FP.Two);
 
                 var body5 = World.CreateBody(circleBodyDef);
                 body5.CreateFixture(circleShapeDef);
 
                 // Large circle
-                circle.Radius *= 2.0f;
+                circle.Radius *= FP.Two;
                 circleShapeDef.Filter.GroupIndex = LargeGroup;
                 circleBodyDef.Position.Set(5.0f, 6.0f);
 

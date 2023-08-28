@@ -1,5 +1,5 @@
 using System;
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Collider;
 using FixedBox2D.Common;
 
@@ -13,16 +13,16 @@ namespace FixedBox2D.Collision.Shapes
     public class EdgeShape : Shape
     {
         /// These are the edge vertices
-        public Vector2 Vertex1;
+        public TSVector2 Vertex1;
 
         /// These are the edge vertices
-        public Vector2 Vertex2;
+        public TSVector2 Vertex2;
 
         /// Optional adjacent vertices. These are used for smooth collision.
-        public Vector2 Vertex0;
+        public TSVector2 Vertex0;
 
         /// Optional adjacent vertices. These are used for smooth collision.
-        public Vector2 Vertex3;
+        public TSVector2 Vertex3;
 
         /// Uses m_vertex0 and m_vertex3 to create smooth collision.
         public bool OneSided;
@@ -43,7 +43,7 @@ namespace FixedBox2D.Collision.Shapes
         /// <param name="v1"></param>
         /// <param name="v2"></param>
         /// <param name="v3"></param>
-        public void SetOneSided(in Vector2 v0, in Vector2 v1, in Vector2 v2, in Vector2 v3)
+        public void SetOneSided(in TSVector2 v0, in TSVector2 v1, in TSVector2 v2, in TSVector2 v3)
         {
             Vertex0 = v0;
             Vertex1 = v1;
@@ -57,7 +57,7 @@ namespace FixedBox2D.Collision.Shapes
         /// </summary>
         /// <param name="v1"></param>
         /// <param name="v2"></param>
-        public void SetTwoSided(in Vector2 v1, in Vector2 v2)
+        public void SetTwoSided(in TSVector2 v1, in TSVector2 v2)
         {
             Vertex1 = v1;
             Vertex2 = v2;
@@ -85,7 +85,7 @@ namespace FixedBox2D.Collision.Shapes
         }
 
         /// <inheritdoc />
-        public override bool TestPoint(in Transform transform, in Vector2 point)
+        public override bool TestPoint(in Transform transform, in TSVector2 point)
         {
             return false;
         }
@@ -109,27 +109,27 @@ namespace FixedBox2D.Collision.Shapes
             var e = v2 - v1;
 
             // Normal points to the right, looking from v1 at v2
-            var normal = new Vector2(e.Y, -e.X);
+            var normal = new TSVector2(e.Y, -e.X);
             normal.Normalize();
 
             // q = p1 + t * d
             // dot(normal, q - v1) = 0
             // dot(normal, p1 - v1) + t * dot(normal, d) = 0
-            var numerator = Vector2.Dot(normal, v1 - p1);
-            if (OneSided && numerator > 0.0f)
+            var numerator = TSVector2.Dot(normal, v1 - p1);
+            if (OneSided && numerator > FP.Zero)
             {
                 return false;
             }
 
-            var denominator = Vector2.Dot(normal, d);
+            var denominator = TSVector2.Dot(normal, d);
 
-            if (Math.Abs(denominator) < Settings.Epsilon)
+            if (FP.Abs(denominator) < Settings.Epsilon)
             {
                 return false;
             }
 
             var t = numerator / denominator;
-            if (t < 0.0f || input.MaxFraction < t)
+            if (t < FP.Zero || input.MaxFraction < t)
             {
                 return false;
             }
@@ -139,14 +139,14 @@ namespace FixedBox2D.Collision.Shapes
             // q = v1 + s * r
             // s = dot(q - v1, r) / dot(r, r)
             var r = v2 - v1;
-            var rr = Vector2.Dot(r, r);
-            if (Math.Abs(rr) < Settings.Epsilon)
+            var rr = TSVector2.Dot(r, r);
+            if (FP.Abs(rr) < Settings.Epsilon)
             {
                 return false;
             }
 
-            var s = Vector2.Dot(q - v1, r) / rr;
-            if (s < 0.0f || 1.0f < s)
+            var s = TSVector2.Dot(q - v1, r) / rr;
+            if (s < FP.Zero || FP.One < s)
             {
                 return false;
             }
@@ -154,7 +154,7 @@ namespace FixedBox2D.Collision.Shapes
             output = new RayCastOutput
             {
                 Fraction = t,
-                Normal = numerator > 0.0f
+                Normal = numerator > FP.Zero
                              ? -MathUtils.Mul(transform.Rotation, normal)
                              : MathUtils.Mul(transform.Rotation, normal)
             };
@@ -168,20 +168,20 @@ namespace FixedBox2D.Collision.Shapes
             var v1 = MathUtils.Mul(xf, Vertex1);
             var v2 = MathUtils.Mul(xf, Vertex2);
 
-            var lower = Vector2.Min(v1, v2);
-            var upper = Vector2.Max(v1, v2);
+            var lower = TSVector2.Min(v1, v2);
+            var upper = TSVector2.Max(v1, v2);
 
-            var r = new Vector2(Radius, Radius);
+            var r = new TSVector2(Radius, Radius);
             aabb = new AABB(lower - r, upper + r);
         }
 
         /// <inheritdoc />
-        public override void ComputeMass(out MassData massData, float density)
+        public override void ComputeMass(out MassData massData, FP density)
         {
             massData = new MassData
             {
                 Mass = 0,
-                Center = 0.5f * (Vertex1 + Vertex2),
+                Center = FP.Half * (Vertex1 + Vertex2),
                 RotationInertia = 0
             };
         }

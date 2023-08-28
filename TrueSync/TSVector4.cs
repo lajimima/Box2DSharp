@@ -94,9 +94,9 @@ namespace TrueSync
         }
         public TSVector4(TSVector v, FP w)
         {
-            this.x = v.x;
-            this.y = v.y;
-            this.z = v.z;
+            this.x = v.X;
+            this.y = v.Y;
+            this.z = v.Z;
             this.w = w;
         }
         public TSVector4(FP x, FP y, FP z)
@@ -317,7 +317,7 @@ namespace TrueSync
 
         public static implicit operator TSVector4(TSVector v)
         {
-            return new TSVector4(v.x, v.y, v.z, FP.Zero);
+            return new TSVector4(v.X, v.Y, v.Z, FP.Zero);
         }
 
         public static implicit operator TSVector(TSVector4 v)
@@ -327,7 +327,7 @@ namespace TrueSync
 
         public static implicit operator TSVector4(TSVector2 v)
         {
-            return new TSVector4(v.x, v.y, FP.Zero, FP.Zero);
+            return new TSVector4(v.X, v.Y, FP.Zero, FP.Zero);
         }
 
         public static implicit operator TSVector2(TSVector4 v)

@@ -5,20 +5,20 @@ using FixedBox2D.Common;
 using Testbed.Abstractions;
 using Color = FixedBox2D.Common.Color;
 using Transform = FixedBox2D.Common.Transform;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 
 namespace Testbed.TestCases
 {
     [TestCase("Geometry", "Polygon Collision")]
     public class PolygonCollision : TestBase
     {
-        private float _angleB;
+        private FP _angleB;
 
         private PolygonShape _polygonA = new PolygonShape();
 
         private PolygonShape _polygonB = new PolygonShape();
 
-        private Vector2 _positionB;
+        private TSVector2 _positionB;
 
         private Transform _transformA;
 
@@ -28,7 +28,7 @@ namespace Testbed.TestCases
         {
             {
                 _polygonA.SetAsBox(0.2f, 0.4f);
-                _transformA.Set(new Vector2(0.0f, 0.0f), 0.0f);
+                _transformA.Set(new TSVector2(FP.Zero, FP.Zero), FP.Zero);
             }
 
             {
@@ -44,32 +44,32 @@ namespace Testbed.TestCases
         {
             if (keyInput.Key == KeyCodes.A)
             {
-                _positionB.X -= 0.1f;
+                _positionB.X -= FP.EN1;
             }
 
             if (keyInput.Key == KeyCodes.D)
             {
-                _positionB.X += 0.1f;
+                _positionB.X += FP.EN1;
             }
 
             if (keyInput.Key == KeyCodes.S)
             {
-                _positionB.Y -= 0.1f;
+                _positionB.Y -= FP.EN1;
             }
 
             if (keyInput.Key == KeyCodes.W)
             {
-                _positionB.Y += 0.1f;
+                _positionB.Y += FP.EN1;
             }
 
             if (keyInput.Key == KeyCodes.Q)
             {
-                _angleB += 0.1f * Settings.Pi;
+                _angleB += FP.EN1 * Settings.Pi;
             }
 
             if (keyInput.Key == KeyCodes.E)
             {
-                _angleB -= 0.1f * Settings.Pi;
+                _angleB -= FP.EN1 * Settings.Pi;
             }
 
             _transformB.Set(_positionB, _angleB);
@@ -85,7 +85,7 @@ namespace Testbed.TestCases
             DrawString($"point count = {manifold.PointCount}");
             {
                 var color = Color.FromArgb(230, 230, 230);
-                var v = new Vector2[Settings.MaxPolygonVertices];
+                var v = new TSVector2[Settings.MaxPolygonVertices];
                 for (var i = 0; i < _polygonA.Count; ++i)
                 {
                     v[i] = MathUtils.Mul(_transformA, _polygonA.Vertices[i]);

@@ -89,23 +89,23 @@ namespace TrueSync
                 if (test > unit * FP.Half)
                 { // singularity at north pole
                     FP at = FP.Atan2(x, w);
-                    v.y = at + at;
-                    v.z = FP.PiOver2;
-                    v.x = FP.Zero;
+                    v.Y = at + at;
+                    v.Z = FP.PiOver2;
+                    v.X = FP.Zero;
                     return NormalizeAngles(v * FP.Rad2Deg);
                 }
                 if (test < -unit * FP.Half)
                 { // singularity at south pole
                     FP at = FP.Atan2(x, w);
-                    v.y = -(at + at);
-                    v.z = -FP.PiOver2;
-                    v.x = FP.Zero;
+                    v.Y = -(at + at);
+                    v.Z = -FP.PiOver2;
+                    v.X = FP.Zero;
                     return NormalizeAngles(v * FP.Rad2Deg);
                 }
 
-                v.y = FP.Atan2(2 * y * w - 2 * x * z, sqx - sqy - sqz + sqw);     // Yaw
-                v.z = FP.Asin(2 * test / unit);                             // Pitch
-                v.x = FP.Atan2(2 * x * w - 2 * y * z, -sqx + sqy - sqz + sqw);      // Roll
+                v.Y = FP.Atan2(2 * y * w - 2 * x * z, sqx - sqy - sqz + sqw);     // Yaw
+                v.Z = FP.Asin(2 * test / unit);                             // Pitch
+                v.X = FP.Atan2(2 * x * w - 2 * y * z, -sqx + sqy - sqz + sqw);      // Roll
                 return NormalizeAngles(v * FP.Rad2Deg);
             }
         }
@@ -125,18 +125,18 @@ namespace TrueSync
                 if (test > unit * FP.Half)
                 { // singularity at north pole
                     FP at = FP.Atan2(x, w);
-                    v.y = at + at;
-                    return NormalizeAngle(v.y * FP.Rad2Deg);
+                    v.Y = at + at;
+                    return NormalizeAngle(v.Y * FP.Rad2Deg);
                 }
                 if (test < -unit * FP.Half)
                 { // singularity at south pole
                     FP at = FP.Atan2(x, w);
-                    v.y = -(at + at);
-                    return NormalizeAngle(v.y * FP.Rad2Deg);
+                    v.Y = -(at + at);
+                    return NormalizeAngle(v.Y * FP.Rad2Deg);
                 }
 
-                v.y = FP.Atan2(2 * y * w - 2 * x * z, sqx - sqy - sqz + sqw);     // Yaw
-                return NormalizeAngle(v.y * FP.Rad2Deg);
+                v.Y = FP.Atan2(2 * y * w - 2 * x * z, sqx - sqy - sqz + sqw);     // Yaw
+                return NormalizeAngle(v.Y * FP.Rad2Deg);
             }
         }
 
@@ -155,9 +155,9 @@ namespace TrueSync
                 FP num11 = w * num2;
 
                 TSVector result;
-                result.x = num8 + num11;
-                result.y = num9 - num10;
-                result.z = FP.One - num4 - num5;
+                result.X = num8 + num11;
+                result.Y = num9 - num10;
+                result.Z = FP.One - num4 - num5;
 
                 return result;
             }
@@ -176,8 +176,8 @@ namespace TrueSync
                 FP num11 = w * num2;
 
                 TSVector2 result;
-                result.x = num8 + num11;
-                result.y = FP.One - num4 - num5;
+                result.X = num8 + num11;
+                result.Y = FP.One - num4 - num5;
 
                 return result;
             }
@@ -185,9 +185,9 @@ namespace TrueSync
 
         private static TSVector NormalizeAngles(TSVector angles)
         {
-            angles.x = NormalizeAngle(angles.x);
-            angles.y = NormalizeAngle(angles.y);
-            angles.z = NormalizeAngle(angles.z);
+            angles.X = NormalizeAngle(angles.X);
+            angles.Y = NormalizeAngle(angles.Y);
+            angles.Z = NormalizeAngle(angles.Z);
             return angles;
         }
 
@@ -313,7 +313,7 @@ namespace TrueSync
 
         public static TSQuaternion Euler(TSVector eulerAngles)
         {
-            return Euler(eulerAngles.x, eulerAngles.y, eulerAngles.z);
+            return Euler(eulerAngles.X, eulerAngles.Y, eulerAngles.Z);
         }
 
         public static TSQuaternion AngleAxis(FP angle, TSVector axis)
@@ -326,9 +326,9 @@ namespace TrueSync
             TSQuaternion rotation;
             FP sin = FP.Sin(halfAngle);
 
-            rotation.x = axis.x * sin;
-            rotation.y = axis.y * sin;
-            rotation.z = axis.z * sin;
+            rotation.x = axis.X * sin;
+            rotation.y = axis.Y * sin;
+            rotation.z = axis.Z * sin;
             rotation.w = FP.Cos(halfAngle);
 
             return rotation;
@@ -390,7 +390,7 @@ namespace TrueSync
         public static TSQuaternion FromToRotation(TSVector fromVector, TSVector toVector)
         {
             TSVector w = TSVector.Cross(fromVector, toVector);
-            TSQuaternion q = new TSQuaternion(w.x, w.y, w.z, TSVector.Dot(fromVector, toVector));
+            TSQuaternion q = new TSQuaternion(w.X, w.Y, w.Z, TSVector.Dot(fromVector, toVector));
             q.w += FP.Sqrt(fromVector.sqrMagnitude * toVector.sqrMagnitude);
             q.Normalize();
 
@@ -658,9 +658,9 @@ namespace TrueSync
             FP num12 = quat.w * num3;
 
             TSVector result;
-            result.x = (FP.One - (num5 + num6)) * vec.x + (num7 - num12) * vec.y + (num8 + num11) * vec.z;
-            result.y = (num7 + num12) * vec.x + (FP.One - (num4 + num6)) * vec.y + (num9 - num10) * vec.z;
-            result.z = (num8 - num11) * vec.x + (num9 + num10) * vec.y + (FP.One - (num4 + num5)) * vec.z;
+            result.X = (FP.One - (num5 + num6)) * vec.X + (num7 - num12) * vec.Y + (num8 + num11) * vec.Z;
+            result.Y = (num7 + num12) * vec.X + (FP.One - (num4 + num6)) * vec.Y + (num9 - num10) * vec.Z;
+            result.Z = (num8 - num11) * vec.X + (num9 + num10) * vec.Y + (FP.One - (num4 + num5)) * vec.Z;
 
             return result;
         }

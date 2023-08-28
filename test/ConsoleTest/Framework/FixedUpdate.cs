@@ -20,7 +20,7 @@ namespace NETCoreTest.Framework
 
         private readonly int[] _lastUpdateCount;
 
-        private readonly float _updateCountAverageSlowLimit;
+        private readonly FP _updateCountAverageSlowLimit;
 
         private TimeSpan _singleFrameUpdateTime;
 
@@ -60,7 +60,7 @@ namespace NETCoreTest.Framework
             // updateCountAverageSlowLimit = (2 * 2 + (4 - 2)) / 4 = 1.5f
             const int BadUpdateCountTime = 2; // number of bad frame (a bad frame is a frame that has at least 2 updates)
             var maxLastCount = 2 * Math.Min(BadUpdateCountTime, _lastUpdateCount.Length);
-            _updateCountAverageSlowLimit = (float) (maxLastCount + (_lastUpdateCount.Length - maxLastCount)) / _lastUpdateCount.Length;
+            _updateCountAverageSlowLimit = (FP) (maxLastCount + (_lastUpdateCount.Length - maxLastCount)) / _lastUpdateCount.Length;
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace NETCoreTest.Framework
 
             // Calculate a moving average on updateCount
             _lastUpdateCount[_nextLastUpdateCountIndex] = updateCount;
-            var updateCountMean = _lastUpdateCount.Aggregate<int, float>(0, (current, t) => current + t);
+            var updateCountMean = _lastUpdateCount.Aggregate<int, FP>(0, (current, t) => current + t);
 
             updateCountMean /= _lastUpdateCount.Length;
             _nextLastUpdateCountIndex = (_nextLastUpdateCountIndex + 1) % _lastUpdateCount.Length;

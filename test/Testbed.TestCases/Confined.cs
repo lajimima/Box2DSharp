@@ -3,7 +3,7 @@ using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
 using Testbed.Abstractions;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 
 namespace Testbed.TestCases
 {
@@ -25,20 +25,20 @@ namespace Testbed.TestCases
                 var shape = new EdgeShape();
 
                 // Floor
-                shape.SetTwoSided(new Vector2(-10.0f, 0.0f), new Vector2(10.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-10.0f, FP.Zero), new TSVector2(10.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
 
                 // Left wall
-                shape.SetTwoSided(new Vector2(-10.0f, 0.0f), new Vector2(-10.0f, 20.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-10.0f, FP.Zero), new TSVector2(-10.0f, 20.0f));
+                ground.CreateFixture(shape, FP.Zero);
 
                 // Right wall
-                shape.SetTwoSided(new Vector2(10.0f, 0.0f), new Vector2(10.0f, 20.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(10.0f, FP.Zero), new TSVector2(10.0f, 20.0f));
+                ground.CreateFixture(shape, FP.Zero);
 
                 // Roof
-                shape.SetTwoSided(new Vector2(-10.0f, 20.0f), new Vector2(10.0f, 20.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-10.0f, 20.0f), new TSVector2(10.0f, 20.0f));
+                ground.CreateFixture(shape, FP.Zero);
             }
             {
                 var radius = 0.5f;
@@ -48,8 +48,8 @@ namespace Testbed.TestCases
 
                 var fd = new FixtureDef();
                 fd.Shape = shape;
-                fd.Density = 1.0f;
-                fd.Friction = 0.1f;
+                fd.Density = FP.One;
+                fd.Friction = FP.EN1;
 
                 for (var j = 0; j < e_columnCount; ++j)
                 {
@@ -57,29 +57,29 @@ namespace Testbed.TestCases
                     {
                         var bd = new BodyDef();
                         bd.BodyType = BodyType.DynamicBody;
-                        bd.Position.Set(-10.0f + (2.1f * j + 1.0f + 0.01f * i) * radius, (2.0f * i + 1.0f) * radius);
+                        bd.Position.Set(-10.0f + (2.1f * j + FP.One + 0.01f * i) * radius, (FP.Two * i + FP.One) * radius);
                         var body = World.CreateBody(bd);
 
                         body.CreateFixture(fd);
                     }
                 }
             }
-            World.Gravity = new Vector2(0.0f, 0.0f);
+            World.Gravity = new TSVector2(FP.Zero, FP.Zero);
         }
 
         private void CreateCircle()
         {
-            var radius = 2.0f;
+            var radius = FP.Two;
             var shape = new CircleShape();
             shape.Position.SetZero();
             shape.Radius = radius;
 
             var fd = new FixtureDef();
             fd.Shape = shape;
-            fd.Density = 1.0f;
-            fd.Friction = 0.0f;
+            fd.Density = FP.One;
+            fd.Friction = FP.Zero;
 
-            var p = new Vector2(RandomFloat(), 3.0f + RandomFloat());
+            var p = new TSVector2(RandomFloat(), 3.0f + RandomFloat());
             var bd = new BodyDef();
             bd.BodyType = BodyType.DynamicBody;
             bd.Position = p;
@@ -125,9 +125,9 @@ namespace Testbed.TestCases
             //     }
             //
             //     var p = b.GetPosition();
-            //     if (p.X <= -10.0f || 10.0f <= p.X || p.Y <= 0.0f || 20.0f <= p.Y)
+            //     if (p.X <= -10.0f || 10.0f <= p.X || p.Y <= FP.Zero || 20.0f <= p.Y)
             //     {
-            //         p.X += 0.1f;
+            //         p.X += FP.EN1;
             //     }
             // }
         }

@@ -4,7 +4,7 @@ using FixedBox2D.Dynamics;
 using FixedBox2D.Dynamics.Joints;
 using Testbed.Abstractions;
 using Joint = FixedBox2D.Dynamics.Joints.Joint;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 
 namespace Testbed.TestCases
 {
@@ -35,8 +35,8 @@ namespace Testbed.TestCases
                 ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-40.0f, FP.Zero), new TSVector2(40.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             {
@@ -55,18 +55,18 @@ namespace Testbed.TestCases
                 jd.CollideConnected = false;
 
                 const int N = 10;
-                const float y = 15.0f;
-                _distanceJointDef.LocalAnchorA.Set(0.0f, y);
+                FP y = 15.0f;
+                _distanceJointDef.LocalAnchorA.Set(FP.Zero, y);
 
                 var prevBody = ground;
                 for (var i = 0; i < N; ++i)
                 {
                     var bd = new BodyDef();
                     bd.BodyType = BodyType.DynamicBody;
-                    bd.Position.Set(0.5f + 1.0f * i, y);
+                    bd.Position.Set(0.5f + FP.One * i, y);
                     if (i == N - 1)
                     {
-                        bd.Position.Set(1.0f * i, y);
+                        bd.Position.Set(FP.One * i, y);
                         bd.AngularDamping = 0.4f;
                     }
 
@@ -88,7 +88,7 @@ namespace Testbed.TestCases
 
                     body.CreateFixture(fd);
 
-                    var anchor = new Vector2(i, y);
+                    var anchor = new TSVector2(i, y);
                     jd.Initialize(prevBody, body, anchor);
                     World.CreateJoint(jd);
 
@@ -98,8 +98,8 @@ namespace Testbed.TestCases
                 _distanceJointDef.LocalAnchorB.SetZero();
 
                 var extraLength = 0.01f;
-                _distanceJointDef.MinLength = 0.0f;
-                _distanceJointDef.MaxLength = N - 1.0f + extraLength;
+                _distanceJointDef.MinLength = FP.Zero;
+                _distanceJointDef.MaxLength = N - FP.One + extraLength;
                 _distanceJointDef.BodyB = prevBody;
             }
 

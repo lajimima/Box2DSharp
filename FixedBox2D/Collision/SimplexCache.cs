@@ -1,4 +1,5 @@
 using FixedBox2D.Common;
+using TrueSync;
 
 namespace FixedBox2D.Collision
 {
@@ -7,7 +8,7 @@ namespace FixedBox2D.Collision
     public struct SimplexCache
     {
         /// length or area
-        public float Metric;
+        public FP Metric;
 
         public ushort Count;
 

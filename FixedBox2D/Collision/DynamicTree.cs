@@ -3,11 +3,11 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using FixedBox2D.Collision.Collider;
 using FixedBox2D.Common;
 using FixedBox2D.Dynamics.Internal;
+using TrueSync;
 
 namespace FixedBox2D.Collision
 {
@@ -109,7 +109,7 @@ namespace FixedBox2D.Collision
             ref var proxyNode = ref _treeNodes[proxyId];
 
             // Fatten the aabb.
-            var r = new Vector2(Settings.AABBExtension, Settings.AABBExtension);
+            var r = new TSVector2(Settings.AABBExtension, Settings.AABBExtension);
             proxyNode.AABB.LowerBound = aabb.LowerBound - r;
             proxyNode.AABB.UpperBound = aabb.UpperBound + r;
             proxyNode.UserData = userData;
@@ -134,14 +134,14 @@ namespace FixedBox2D.Collision
         /// then the proxy is removed from the tree and re-inserted. Otherwise
         /// the function returns immediately.
         /// @return true if the proxy was re-inserted.
-        public bool MoveProxy(int proxyId, in AABB aabb, in Vector2 displacement)
+        public bool MoveProxy(int proxyId, in AABB aabb, in TSVector2 displacement)
         {
             Debug.Assert(0 <= proxyId && proxyId < _nodeCapacity);
 
             Debug.Assert(_treeNodes[proxyId].IsLeaf());
 
             // Extend AABB
-            var r = new Vector2(Settings.AABBExtension, Settings.AABBExtension);
+            var r = new TSVector2(Settings.AABBExtension, Settings.AABBExtension);
             var fatAABB = new AABB
             {
                 LowerBound = aabb.LowerBound - r,
@@ -151,7 +151,7 @@ namespace FixedBox2D.Collision
             // Predict AABB movement
             var d = Settings.AABBMultiplier * displacement;
 
-            if (d.X < 0.0f)
+            if (d.X < FP.Zero)
             {
                 fatAABB.LowerBound.X += d.X;
             }
@@ -160,7 +160,7 @@ namespace FixedBox2D.Collision
                 fatAABB.UpperBound.X += d.X;
             }
 
-            if (d.Y < 0.0f)
+            if (d.Y < FP.Zero)
             {
                 fatAABB.LowerBound.Y += d.Y;
             }
@@ -178,8 +178,8 @@ namespace FixedBox2D.Collision
                 // The huge AABB is larger than the new fat AABB.
                 var hugeAABB = new AABB
                 {
-                    LowerBound = fatAABB.LowerBound - 4.0f * r,
-                    UpperBound = fatAABB.UpperBound + 4.0f * r
+                    LowerBound = fatAABB.LowerBound - FP.Four * r,
+                    UpperBound = fatAABB.UpperBound + FP.Four * r
                 };
 
                 if (hugeAABB.Contains(treeAABB))
@@ -285,12 +285,12 @@ namespace FixedBox2D.Collision
             var p1 = input.P1;
             var p2 = input.P2;
             var r = p2 - p1;
-            Debug.Assert(r.LengthSquared() > 0.0f);
+            Debug.Assert(r.LengthSquared() > FP.Zero);
             r.Normalize();
 
             // v is perpendicular to the segment.
-            var v = MathUtils.Cross(1.0f, r);
-            var abs_v = Vector2.Abs(v);
+            var v = MathUtils.Cross(FP.One, r);
+            var abs_v = TSVector2.Abs(v);
 
             // Separating axis for segment (Gino, p80).
             // |dot(v, p1 - c)| > dot(|v|, h)
@@ -301,8 +301,8 @@ namespace FixedBox2D.Collision
             var segmentAABB = new AABB();
             {
                 var t = p1 + maxFraction * (p2 - p1);
-                segmentAABB.LowerBound = Vector2.Min(p1, t);
-                segmentAABB.UpperBound = Vector2.Max(p1, t);
+                segmentAABB.LowerBound = TSVector2.Min(p1, t);
+                segmentAABB.UpperBound = TSVector2.Max(p1, t);
             }
 
             var stack = _rayCastStack;
@@ -328,8 +328,8 @@ namespace FixedBox2D.Collision
                 // |dot(v, p1 - c)| > dot(|v|, h)
                 var c = node.AABB.GetCenter();
                 var h = node.AABB.GetExtents();
-                var separation = Math.Abs(Vector2.Dot(v, p1 - c)) - Vector2.Dot(abs_v, h);
-                if (separation > 0.0f)
+                var separation = FP.Abs(TSVector2.Dot(v, p1 - c)) - TSVector2.Dot(abs_v, h);
+                if (separation > FP.Zero)
                 {
                     continue;
                 }
@@ -345,19 +345,19 @@ namespace FixedBox2D.Collision
 
                     var value = inputCallback.RayCastCallback(subInput, nodeId);
 
-                    if (value.Equals(0.0f))
+                    if (value.Equals(FP.Zero))
                     {
                         // The client has terminated the ray cast.
                         return;
                     }
 
-                    if (value > 0.0f)
+                    if (value > FP.Zero)
                     {
                         // Update segment bounding box.
                         maxFraction = value;
                         var t = p1 + maxFraction * (p2 - p1);
-                        segmentAABB.LowerBound = Vector2.Min(p1, t);
-                        segmentAABB.UpperBound = Vector2.Max(p1, t);
+                        segmentAABB.LowerBound = TSVector2.Min(p1, t);
+                        segmentAABB.UpperBound = TSVector2.Max(p1, t);
                     }
                 }
                 else
@@ -427,17 +427,17 @@ namespace FixedBox2D.Collision
         }
 
         /// Get the ratio of the sum of the node areas to the root area.
-        public float GetAreaRatio()
+        public FP GetAreaRatio()
         {
             if (_root == NullNode)
             {
-                return 0.0f;
+                return FP.Zero;
             }
 
             ref readonly var root = ref _treeNodes[_root];
             var rootArea = root.AABB.GetPerimeter();
 
-            var totalArea = 0.0f;
+            var totalArea = FP.Zero;
             for (var i = 0; i < _nodeCapacity; ++i)
             {
                 ref readonly var node = ref _treeNodes[i];
@@ -531,7 +531,7 @@ namespace FixedBox2D.Collision
         /// Shift the world origin. Useful for large worlds.
         /// The shift formula is: position -= newOrigin
         /// @param newOrigin the new origin with respect to the old origin
-        public void ShiftOrigin(in Vector2 newOrigin)
+        public void ShiftOrigin(in TSVector2 newOrigin)
         {
             // Build array of leaves. Free the rest.
             for (var i = 0; i < _nodeCapacity; ++i)
@@ -565,13 +565,13 @@ namespace FixedBox2D.Collision
                 var combinedArea = combinedAABB.GetPerimeter();
 
                 // Cost of creating a new parent for this node and the new leaf
-                var cost = 2.0f * combinedArea;
+                var cost = FP.Two * combinedArea;
 
                 // Minimum cost of pushing the leaf further down the tree
-                var inheritanceCost = 2.0f * (combinedArea - area);
+                var inheritanceCost = FP.Two * (combinedArea - area);
 
                 // Cost of descending into child1
-                float cost1;
+                FP cost1;
                 if (_treeNodes[child1].IsLeaf())
                 {
                     AABB.Combine(leafAABB, _treeNodes[child1].AABB, out var aabb);
@@ -586,7 +586,7 @@ namespace FixedBox2D.Collision
                 }
 
                 // Cost of descending into child2
-                float cost2;
+                FP cost2;
                 if (_treeNodes[child2].IsLeaf())
                 {
                     AABB.Combine(leafAABB, _treeNodes[child2].AABB, out var aabb);

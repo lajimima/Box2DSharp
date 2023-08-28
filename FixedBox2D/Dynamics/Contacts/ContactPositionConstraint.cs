@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 using FixedBox2D.Collision.Collider;
 using FixedBox2D.Common;
 
@@ -9,25 +9,25 @@ namespace FixedBox2D.Dynamics.Contacts
         /// <summary>
         /// Size <see cref="Settings.MaxManifoldPoints"/>
         /// </summary>
-        public FixedArray2<Vector2> LocalPoints;
+        public FixedArray2<TSVector2> LocalPoints;
 
         public int IndexA;
 
         public int IndexB;
 
-        public float InvIa, InvIb;
+        public FP InvIa, InvIb;
 
-        public float InvMassA, InvMassB;
+        public FP InvMassA, InvMassB;
 
-        public Vector2 LocalCenterA, LocalCenterB;
+        public TSVector2 LocalCenterA, LocalCenterB;
 
-        public Vector2 LocalNormal;
+        public TSVector2 LocalNormal;
 
-        public Vector2 LocalPoint;
+        public TSVector2 LocalPoint;
 
         public int PointCount;
 
-        public float RadiusA, RadiusB;
+        public FP RadiusA, RadiusB;
 
         public ManifoldType Type;
     }

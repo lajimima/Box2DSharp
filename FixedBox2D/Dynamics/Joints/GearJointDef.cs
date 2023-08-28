@@ -1,3 +1,5 @@
+using TrueSync;
+
 namespace FixedBox2D.Dynamics.Joints
 {
     /// <summary>
@@ -15,14 +17,14 @@ namespace FixedBox2D.Dynamics.Joints
 
         /// The gear ratio.
         /// @see b2GearJoint for explanation.
-        public float Ratio;
+        public FP Ratio;
 
         public GearJointDef()
         {
             JointType = JointType.GearJoint;
             Joint1 = null;
             Joint2 = null;
-            Ratio = 1.0f;
+            Ratio = FP.One;
         }
     }
 }

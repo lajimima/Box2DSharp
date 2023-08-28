@@ -1,9 +1,9 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using FixedBox2D.Collision.Shapes;
+using TrueSync;
 
 namespace FixedBox2D.Collision
 {
@@ -37,7 +37,7 @@ namespace FixedBox2D.Collision
             {
                 Debug.Assert(0 <= index && index < chain.Count);
                 Count = 2;
-                Vertices = new Vector2[Count];
+                Vertices = new TSVector2[Count];
                 Vertices[0] = chain.Vertices[index];
                 if (index + 1 < chain.Count)
                 {
@@ -54,7 +54,7 @@ namespace FixedBox2D.Collision
 
             case EdgeShape edge:
             {
-                Vertices = new[]
+                Vertices = new TSVector2[]
                 {
                     edge.Vertex1,
                     edge.Vertex2
@@ -71,9 +71,9 @@ namespace FixedBox2D.Collision
 
         /// Initialize the proxy using a vertex cloud and radius. The vertices
         /// must remain in scope while the proxy is in use.
-        public void Set(Vector2[] vertices, int count, float radius)
+        public void Set(TSVector2[] vertices, int count, FP radius)
         {
-            Vertices = new Vector2[vertices.Length];
+            Vertices = new TSVector2[vertices.Length];
             Array.Copy(vertices, Vertices, vertices.Length);
             Count = count;
             Radius = radius;
@@ -82,13 +82,13 @@ namespace FixedBox2D.Collision
         /// Get the supporting vertex index in the given direction.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [Pure]
-        public int GetSupport(in Vector2 d)
+        public int GetSupport(in TSVector2 d)
         {
             var bestIndex = 0;
-            var bestValue = Vector2.Dot(Vertices[0], d);
+            var bestValue = TSVector2.Dot(Vertices[0], d);
             for (var i = 1; i < Count; ++i)
             {
-                var value = Vector2.Dot(Vertices[i], d);
+                var value = TSVector2.Dot(Vertices[i], d);
                 if (value > bestValue)
                 {
                     bestIndex = i;
@@ -100,13 +100,13 @@ namespace FixedBox2D.Collision
         }
 
         /// Get the supporting vertex in the given direction.
-        public ref readonly Vector2 GetSupportVertex(in Vector2 d)
+        public ref readonly TSVector2 GetSupportVertex(in TSVector2 d)
         {
             var bestIndex = 0;
-            var bestValue = Vector2.Dot(Vertices[0], d);
+            var bestValue = TSVector2.Dot(Vertices[0], d);
             for (var i = 1; i < Count; ++i)
             {
-                var value = Vector2.Dot(Vertices[i], d);
+                var value = TSVector2.Dot(Vertices[i], d);
                 if (value > bestValue)
                 {
                     bestIndex = i;
@@ -126,17 +126,17 @@ namespace FixedBox2D.Collision
         /// Get a vertex by index. Used by b2Distance.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [Pure]
-        public ref readonly Vector2 GetVertex(int index)
+        public ref readonly TSVector2 GetVertex(int index)
         {
             Debug.Assert(0 <= index && index < Count);
             return ref Vertices[index];
         }
 
-        public Vector2[] Vertices;
+        public TSVector2[] Vertices;
 
         public int Count;
 
-        public float Radius;
+        public FP Radius;
     }
 
     public class GJkProfile

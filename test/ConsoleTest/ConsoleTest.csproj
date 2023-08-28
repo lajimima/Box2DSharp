@@ -17,4 +17,8 @@
       <DebugType>full</DebugType>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\FixedBox2D\FixedBox2D.csproj" />
+    </ItemGroup>
+
 </Project>

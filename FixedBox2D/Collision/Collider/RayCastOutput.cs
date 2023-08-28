@@ -1,4 +1,4 @@
-using System.Numerics;
+using TrueSync;
 
 namespace FixedBox2D.Collision.Collider
 {
@@ -6,8 +6,8 @@ namespace FixedBox2D.Collision.Collider
     /// come from b2RayCastInput.
     public struct RayCastOutput
     {
-        public Vector2 Normal;
+        public TSVector2 Normal;
 
-        public float Fraction;
+        public FP Fraction;
     }
 }

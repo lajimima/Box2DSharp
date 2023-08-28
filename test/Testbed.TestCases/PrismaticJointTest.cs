@@ -3,7 +3,7 @@ using FixedBox2D.Common;
 using FixedBox2D.Dynamics;
 using FixedBox2D.Dynamics.Joints;
 using Testbed.Abstractions;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 
 namespace Testbed.TestCases
 {
@@ -15,7 +15,7 @@ namespace Testbed.TestCases
     {
         protected PrismaticJoint Joint;
 
-        protected float MotorSpeed;
+        protected FP MotorSpeed;
 
         protected bool EnableMotor;
 
@@ -29,8 +29,8 @@ namespace Testbed.TestCases
                 ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-40.0f, FP.Zero), new TSVector2(40.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
             }
 
             EnableLimit = true;
@@ -39,11 +39,11 @@ namespace Testbed.TestCases
 
             {
                 PolygonShape shape = new PolygonShape();
-                shape.SetAsBox(1.0f, 1.0f);
+                shape.SetAsBox(FP.One, FP.One);
 
                 BodyDef bd = new BodyDef();
                 bd.BodyType = BodyType.DynamicBody;
-                bd.Position.Set(0.0f, 10.0f);
+                bd.Position.Set(FP.Zero, 10.0f);
                 bd.Angle = 0.5f * Settings.Pi;
                 bd.AllowSleep = false;
                 var body = World.CreateBody(bd);
@@ -52,7 +52,7 @@ namespace Testbed.TestCases
                 PrismaticJointDef pjd = new PrismaticJointDef();
 
                 // Horizontal
-                pjd.Initialize(ground, body, bd.Position, new Vector2(1.0f, 0.0f));
+                pjd.Initialize(ground, body, bd.Position, new TSVector2(FP.One, FP.Zero));
 
                 pjd.MotorSpeed = MotorSpeed;
                 pjd.MaxMotorForce = 10000.0f;

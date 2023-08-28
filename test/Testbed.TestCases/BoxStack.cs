@@ -2,7 +2,7 @@ using FixedBox2D.Collision.Shapes;
 using FixedBox2D.Dynamics;
 using Testbed.Abstractions;
 using Debug = System.Diagnostics.Debug;
-using Vector2 = System.Numerics.Vector2;
+using TrueSync;
 
 namespace Testbed.TestCases
 {
@@ -26,16 +26,16 @@ namespace Testbed.TestCases
                 var ground = World.CreateBody(bd);
 
                 var shape = new EdgeShape();
-                shape.SetTwoSided(new Vector2(-40.0f, 0.0f), new Vector2(40.0f, 0.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(-40.0f, FP.Zero), new TSVector2(40.0f, FP.Zero));
+                ground.CreateFixture(shape, FP.Zero);
 
-                shape.SetTwoSided(new Vector2(20.0f, 0.0f), new Vector2(20.0f, 20.0f));
-                ground.CreateFixture(shape, 0.0f);
+                shape.SetTwoSided(new TSVector2(20.0f, FP.Zero), new TSVector2(20.0f, 20.0f));
+                ground.CreateFixture(shape, FP.Zero);
             }
 
-            var xs = new float[5]
+            var xs = new FP[5]
             {
-                0.0f, -10.0f, -5.0f, 5.0f, 10.0f
+                FP.Zero, -10.0f, -5.0f, 5.0f, 10.0f
             };
             for (var j = 0; j < ColumnCount; ++j)
             {
@@ -44,7 +44,7 @@ namespace Testbed.TestCases
 
                 var fd = new FixtureDef
                 {
-                    Shape = shape, Density = 1.0f,
+                    Shape = shape, Density = FP.One,
                     Friction = 0.3f
                 };
 
@@ -57,11 +57,11 @@ namespace Testbed.TestCases
                     _indices[n] = n;
                     bd.UserData = _indices[n];
 
-                    var x = 0.0f;
+                    var x = FP.Zero;
 
                     //var x = RandomFloat(-0.02f, 0.02f);
                     //var x = i % 2 == 0 ? -0.01f : 0.01f;
-                    bd.Position = new Vector2(xs[j] + x, 0.55f + 1.1f * i);
+                    bd.Position = new TSVector2(xs[j] + x, 0.55f + 1.1f * i);
                     var body = World.CreateBody(bd);
 
                     _bodies[n] = body;
@@ -97,13 +97,13 @@ namespace Testbed.TestCases
                     var bd = new BodyDef
                     {
                         BodyType = BodyType.DynamicBody, Bullet = true,
-                        Position = new Vector2(-31.0f, 5.0f)
+                        Position = new TSVector2(-31.0f, 5.0f)
                     };
 
                     _bullet = World.CreateBody(bd);
                     _bullet.CreateFixture(fd);
 
-                    _bullet.SetLinearVelocity(new Vector2(400.0f, 0.0f));
+                    _bullet.SetLinearVelocity(new TSVector2(400.0f, FP.Zero));
                 }
             }
         }

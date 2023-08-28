@@ -35,7 +35,7 @@ namespace Testbed.Gui
 
         private int _windowHeight;
 
-        private readonly System.Numerics.Vector2 _scaleFactor = System.Numerics.Vector2.One;
+        private readonly System.Numerics.TSVector2 _scaleFactor = System.Numerics.TSVector2.One;
 
         /// <summary>
         /// Constructs a new ImGuiController.
@@ -176,7 +176,7 @@ void main()
         /// <summary>
         /// Updates ImGui input and IO configuration state.
         /// </summary>
-        public void Update(Game wnd, float deltaSeconds)
+        public void Update(Game wnd, FP deltaSeconds)
         {
             if (_frameBegun)
             {
@@ -192,12 +192,12 @@ void main()
 
         /// <summary>
         /// Sets per-frame data based on the associated window.
-        /// This is called by Update(float).
+        /// This is called by Update(FP).
         /// </summary>
-        private void SetPerFrameImGuiData(float deltaSeconds)
+        private void SetPerFrameImGuiData(FP deltaSeconds)
         {
             var io = ImGui.GetIO();
-            io.DisplaySize = new System.Numerics.Vector2(
+            io.DisplaySize = new System.Numerics.TSVector2(
                 _windowWidth / _scaleFactor.X,
                 _windowHeight / _scaleFactor.Y);
             io.DisplayFramebufferScale = _scaleFactor;
@@ -214,7 +214,7 @@ void main()
             io.MouseDown[1] = wnd.IsMouseButtonDown(Input.GetMouse(MouseButton.Right));
             io.MouseDown[2] = wnd.IsMouseButtonDown(Input.GetMouse(MouseButton.Middle));
 
-            io.MousePos = new System.Numerics.Vector2(wnd.MousePosition.X, wnd.MousePosition.Y);
+            io.MousePos = new System.Numerics.TSVector2(wnd.MousePosition.X, wnd.MousePosition.Y);
             io.MouseWheel = wnd.Scroll.Y;
             io.MouseWheelH = wnd.Scroll.X;
 
