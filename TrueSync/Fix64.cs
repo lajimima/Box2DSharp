@@ -62,7 +62,7 @@ namespace TrueSync
         public static readonly FP EN6 = FP.One / 1000000;
         public static readonly FP EN7 = FP.One / 10000000;
         public static readonly FP EN8 = FP.One / 100000000;
-        public static readonly FP Epsilon = FP.EN3;
+        public static readonly FP Epsilon = new FP(512L);   // 1.192092896e-7f
 
         /// <summary>
         /// The value of Pi

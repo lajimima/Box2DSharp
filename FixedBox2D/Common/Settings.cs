@@ -6,7 +6,7 @@ namespace FixedBox2D.Common
     {
         public static FP MaxFloat = FP.MaxValue;
 
-        public static FP Epsilon = FP.Epsilon;  // 1.192092896e-7f; ==> 0.001
+        public static FP Epsilon = FP.Epsilon;
 
         public static FP Pi = FP.Pi;
 
