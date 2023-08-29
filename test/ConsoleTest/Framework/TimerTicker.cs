@@ -4,6 +4,7 @@
 
 using System;
 using System.Diagnostics;
+using TrueSync;
 
 namespace NETCoreTest.Framework
 {

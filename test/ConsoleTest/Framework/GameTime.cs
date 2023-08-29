@@ -3,6 +3,7 @@
  */
 
 using System;
+using TrueSync;
 
 namespace NETCoreTest.Framework
 {
