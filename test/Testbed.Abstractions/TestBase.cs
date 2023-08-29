@@ -47,7 +47,7 @@ namespace Testbed.Abstractions
         protected TestBase()
         {
             Regex.Replace(GetType().Name, @"(\B[A-Z])", " $1");
-            World = new World(new TSVector2(0, -10));
+            World = new World(new TSVector2(0, -100));
             World.SetContactListener(this);
             World.DestructionListener = this;
             GroundBody = World.CreateBody(new BodyDef());

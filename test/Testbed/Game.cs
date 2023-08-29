@@ -81,7 +81,17 @@ namespace Testbed
             _controller = new ImGuiController(Size.X, Size.Y);
             DebugDrawer.Create();
 
+            var t = typeof(BodyTypes);
+            _currentTestIndex = Global.Tests.FindIndex((one) =>
+            {
+                if (one.TestType == t)
+                {
+                    return true;
+                }
+                return false;
+            });
             _currentTestIndex = Math.Clamp(_currentTestIndex, 0, Global.Tests.Count - 1);
+
             _testSelected = _currentTestIndex;
             LoadTest(_testSelected);
             base.OnLoad();
