@@ -14,7 +14,7 @@ namespace Testbed.TestCases
 
         private readonly Body[] _bodies = new Body[Count];
 
-        protected FP _force;
+        protected float _force;
 
         private bool[] _touching = new bool[Count];
 

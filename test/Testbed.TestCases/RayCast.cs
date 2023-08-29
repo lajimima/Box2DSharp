@@ -144,7 +144,7 @@ namespace Testbed.TestCases
             new PolygonShape()
         };
 
-        protected FP _degrees;
+        protected float _degrees;
 
         private int _bodyIndex;
 
@@ -210,7 +210,7 @@ namespace Testbed.TestCases
 
             _bodyIndex = 0;
 
-            _degrees = FP.Zero;
+            _degrees = 0.0f;
 
             _mode = Mode.Closest;
         }

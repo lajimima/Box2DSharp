@@ -12,7 +12,7 @@ namespace Testbed.TestCases
     {
         protected WheelJoint Joint;
 
-        protected FP MotorSpeed;
+        protected float MotorSpeed;
 
         protected bool EnableMotor;
 

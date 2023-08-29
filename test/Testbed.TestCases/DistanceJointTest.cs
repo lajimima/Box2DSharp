@@ -12,15 +12,15 @@ namespace Testbed.TestCases
     {
         public DistanceJoint m_joint;
 
-        public FP m_length;
+        public float m_length;
 
-        public FP m_minLength;
+        public float m_minLength;
 
-        public FP m_maxLength;
+        public float m_maxLength;
 
-        public FP m_hertz;
+        public float m_hertz;
 
-        public FP m_dampingRatio;
+        public float m_dampingRatio;
 
         public DistanceJointTest()
         {
@@ -45,13 +45,13 @@ namespace Testbed.TestCases
                 shape.SetAsBox(0.5f, 0.5f);
                 body.CreateFixture(shape, 5.0f);
 
-                m_hertz = FP.One;
+                m_hertz = 1.0f;
                 m_dampingRatio = 0.7f;
 
                 DistanceJointDef jd = new DistanceJointDef();
                 jd.Initialize(ground, body, new TSVector2(FP.Zero, 15.0f), bd.Position);
                 jd.CollideConnected = true;
-                m_length = jd.Length;
+                m_length = jd.Length.AsFloat();
                 m_minLength = m_length;
                 m_maxLength = m_length;
                 JointUtils.LinearStiffness(out jd.Stiffness, out jd.Damping, m_hertz, m_dampingRatio, jd.BodyA, jd.BodyB);

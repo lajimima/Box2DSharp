@@ -2,7 +2,7 @@
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using Testbed.Abstractions;
-using TrueSync;
+using Vector2 = System.Numerics.Vector2;
 
 namespace Testbed.Render
 {
@@ -15,7 +15,7 @@ namespace Testbed.Render
             uniform mat4 projectionMatrix;
             layout(location = 0) in vec2 v_position;
             layout(location = 1) in vec4 v_color;
-            layout(location = 2) in FP v_size;
+            layout(location = 2) in float v_size;
             out vec4 f_color;
             void main(void)
             {
@@ -52,7 +52,7 @@ namespace Testbed.Render
             RenderHelper.CheckGLError();
             GL.VertexAttribPointer(_vertexAttribute, 2, VertexAttribPointerType.Float, false, 0, 0);
             RenderHelper.CheckGLError();
-            GL.BufferData(BufferTarget.ArrayBuffer, SizeCache<TSVector2>.Size * MaxVertices, _vertices, BufferUsageHint.DynamicDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, SizeCache<Vector2>.Size * MaxVertices, _vertices, BufferUsageHint.DynamicDraw);
             RenderHelper.CheckGLError();
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboIds[1]);
@@ -61,7 +61,7 @@ namespace Testbed.Render
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboIds[2]);
             GL.VertexAttribPointer(_sizeAttribute, 1, VertexAttribPointerType.Float, false, 0, 0);
-            GL.BufferData(BufferTarget.ArrayBuffer, sizeof(FP) * MaxVertices, _sizes, BufferUsageHint.DynamicDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * MaxVertices, _sizes, BufferUsageHint.DynamicDraw);
 
             RenderHelper.CheckGLError();
 
@@ -88,7 +88,7 @@ namespace Testbed.Render
             }
         }
 
-        public void Vertex(TSVector2 v, Color4 c, FP size)
+        public void Vertex(Vector2 v, Color4 c, float size)
         {
             if (_count == MaxVertices)
             {
@@ -110,7 +110,7 @@ namespace Testbed.Render
 
             GL.UseProgram(_programId);
 
-            var proj = new FP[16];
+            var proj = new float[16];
             Global.Camera.BuildProjectionMatrix(proj, 0.0f);
 
             GL.UniformMatrix4(_projectionUniform, 1, false, proj);
@@ -118,13 +118,13 @@ namespace Testbed.Render
             GL.BindVertexArray(_vaoId);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboIds[0]);
-            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, _count * SizeCache<TSVector2>.Size, _vertices);
+            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, _count * SizeCache<Vector2>.Size, _vertices);
             RenderHelper.CheckGLError();
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboIds[1]);
             GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, _count * SizeCache<Color4>.Size, _colors);
             RenderHelper.CheckGLError();
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboIds[2]);
-            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, _count * sizeof(FP), _sizes);
+            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, _count * sizeof(float), _sizes);
             RenderHelper.CheckGLError();
             GL.Enable(EnableCap.ProgramPointSize);
             GL.DrawArrays(PrimitiveType.Points, 0, _count);
@@ -141,11 +141,11 @@ namespace Testbed.Render
 
         private const int MaxVertices = 512;
 
-        private readonly TSVector2[] _vertices = new TSVector2[MaxVertices];
+        private readonly Vector2[] _vertices = new Vector2[MaxVertices];
 
         private readonly Color4[] _colors = new Color4[MaxVertices];
 
-        private readonly FP[] _sizes = new FP[MaxVertices];
+        private readonly float[] _sizes = new float[MaxVertices];
 
         private int _count;
 

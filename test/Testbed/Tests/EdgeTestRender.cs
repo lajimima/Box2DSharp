@@ -1,4 +1,4 @@
-﻿using TrueSync;
+﻿using System.Numerics;
 using ImGuiNET;
 using Testbed.TestCases;
 
@@ -10,8 +10,8 @@ namespace Testbed.Tests
         /// <inheritdoc />
         protected override void OnRender()
         {
-            ImGui.SetNextWindowPos(new TSVector2(10.0f, 100.0f));
-            ImGui.SetNextWindowSize(new TSVector2(200.0f, 100.0f));
+            ImGui.SetNextWindowPos(new Vector2(10.0f, 100.0f));
+            ImGui.SetNextWindowSize(new Vector2(200.0f, 100.0f));
             ImGui.Begin("Custom Controls", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
 
             if (ImGui.RadioButton("Boxes", Boxes == true))

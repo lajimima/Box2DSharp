@@ -24,7 +24,7 @@ namespace Testbed.TestCases
 
         protected TSVector2 Position2;
 
-        protected FP Speed;
+        protected float Speed;
 
         static FP L = FP.Half;
         public RopeTest()

@@ -20,7 +20,7 @@ namespace Testbed.TestCases
 
         protected bool EnableMotor = false;
 
-        protected FP MotorSpeed = FP.One;
+        protected float MotorSpeed = 0.0f;
 
         public RevoluteJointTest()
         {
@@ -42,7 +42,7 @@ namespace Testbed.TestCases
 
             EnableLimit = true;
             EnableMotor = false;
-            MotorSpeed = FP.One;
+            MotorSpeed = 1.0f;
 
             {
                 PolygonShape shape = new PolygonShape();

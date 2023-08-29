@@ -2,7 +2,7 @@
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using Testbed.Abstractions;
-using TrueSync;
+using Vector2 = System.Numerics.Vector2;
 
 namespace Testbed.Render
 {
@@ -47,7 +47,7 @@ namespace Testbed.Render
             // Vertex buffer
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboIds[0]);
             GL.VertexAttribPointer(_vertexAttribute, 2, VertexAttribPointerType.Float, false, 0, 0);
-            GL.BufferData(BufferTarget.ArrayBuffer, SizeCache<TSVector2>.Size * MaxVertices, _vertices, BufferUsageHint.DynamicDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, SizeCache<Vector2>.Size * MaxVertices, _vertices, BufferUsageHint.DynamicDraw);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboIds[1]);
             GL.VertexAttribPointer(_colorAttribute, 4, VertexAttribPointerType.Float, false, 0, 0);
@@ -78,7 +78,7 @@ namespace Testbed.Render
             }
         }
 
-        public void Vertex(TSVector2 v, Color4 c)
+        public void Vertex(Vector2 v, Color4 c)
         {
             if (_count == MaxVertices)
             {
@@ -99,7 +99,7 @@ namespace Testbed.Render
 
             GL.UseProgram(_programId);
 
-            var proj = new FP[16];
+            var proj = new float[16];
             Global.Camera.BuildProjectionMatrix(proj, 0.2f);
 
             GL.UniformMatrix4(_projectionUniform, 1, false, proj);
@@ -107,7 +107,7 @@ namespace Testbed.Render
             GL.BindVertexArray(_vaoId);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboIds[0]);
-            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, _count * SizeCache<TSVector2>.Size, _vertices);
+            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, _count * SizeCache<Vector2>.Size, _vertices);
             RenderHelper.CheckGLError();
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboIds[1]);
             GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, _count * SizeCache<Color4>.Size, _colors);
@@ -128,7 +128,7 @@ namespace Testbed.Render
 
         private const int MaxVertices = 3 * 512;
 
-        private readonly TSVector2[] _vertices = new TSVector2[MaxVertices];
+        private readonly Vector2[] _vertices = new Vector2[MaxVertices];
 
         private readonly Color4[] _colors = new Color4[MaxVertices];
 

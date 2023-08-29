@@ -1,4 +1,4 @@
-﻿using TrueSync;
+﻿using System.Numerics;
 using FixedBox2D.Common;
 using FixedBox2D.Ropes;
 using ImGuiNET;
@@ -12,8 +12,8 @@ namespace Testbed.Tests
         /// <inheritdoc />
         protected override void OnRender()
         {
-            ImGui.SetNextWindowPos(new TSVector2(10.0f, 100.0f));
-            ImGui.SetNextWindowSize(new TSVector2(200.0f, 700.0f));
+            ImGui.SetNextWindowPos(new Vector2(10.0f, 100.0f));
+            ImGui.SetNextWindowSize(new Vector2(200.0f, 700.0f));
             ImGui.Begin("Tuning", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
 
             ImGui.Separator();
@@ -47,9 +47,17 @@ namespace Testbed.Tests
                 ImGui.EndCombo();
             }
 
-            ImGui.SliderFloat("Damping##B1", ref Tuning1.BendDamping, 0.0f, 4.0f, "%.1f");
-            ImGui.SliderFloat("Hertz##B1", ref Tuning1.BendHertz, 0.0f, 60.0f, "%.0f");
-            ImGui.SliderFloat("Stiffness##B1", ref Tuning1.BendStiffness, 0.0f, 1.0f, "%.1f");
+            float BendDamping = Tuning1.BendDamping.AsFloat();
+            ImGui.SliderFloat("Damping##B1", ref BendDamping, 0.0f, 4.0f, "%.1f");
+            Tuning1.BendDamping = BendDamping;
+
+            float BendHertz = Tuning1.BendHertz.AsFloat();
+            ImGui.SliderFloat("Hertz##B1", ref BendHertz, 0.0f, 60.0f, "%.0f");
+            Tuning1.BendHertz = BendHertz;
+
+            float BendStiffness = Tuning1.BendStiffness.AsFloat();
+            ImGui.SliderFloat("Stiffness##B1", ref BendStiffness, 0.0f, 1.0f, "%.1f");
+            Tuning1.BendStiffness = BendStiffness;
 
             ImGui.Checkbox("Isometric##1", ref Tuning1.Isometric);
             ImGui.Checkbox("Fixed Mass##1", ref Tuning1.FixedEffectiveMass);
@@ -76,9 +84,17 @@ namespace Testbed.Tests
                 ImGui.EndCombo();
             }
 
-            ImGui.SliderFloat("Damping##S1", ref Tuning1.StretchDamping, 0.0f, 4.0f, "%.1f");
-            ImGui.SliderFloat("Hertz##S1", ref Tuning1.StretchHertz, 0.0f, 60.0f, "%.0f");
-            ImGui.SliderFloat("Stiffness##S1", ref Tuning1.StretchStiffness, 0.0f, 1.0f, "%.1f");
+            float StretchDamping = Tuning1.StretchDamping.AsFloat();
+            ImGui.SliderFloat("Damping##S1", ref StretchDamping, 0.0f, 4.0f, "%.1f");
+            Tuning1.StretchDamping = StretchDamping;
+
+            float StretchHertz = Tuning1.StretchHertz.AsFloat();
+            ImGui.SliderFloat("Hertz##S1", ref StretchHertz, 0.0f, 60.0f, "%.0f");
+            Tuning1.StretchHertz = StretchHertz;
+
+            float StretchStiffness = Tuning1.StretchStiffness.AsFloat();
+            ImGui.SliderFloat("Stiffness##S1", ref StretchStiffness, 0.0f, 1.0f, "%.1f");
+            Tuning1.StretchStiffness = StretchStiffness;
 
             ImGui.SliderInt("Iterations##1", ref Iterations1, 1, 100, "%d");
 
@@ -107,9 +123,17 @@ namespace Testbed.Tests
                 ImGui.EndCombo();
             }
 
-            ImGui.SliderFloat("Damping##", ref Tuning2.BendDamping, 0.0f, 4.0f, "%.1f");
-            ImGui.SliderFloat("Hertz##", ref Tuning2.BendHertz, 0.0f, 60.0f, "%.0f");
-            ImGui.SliderFloat("Stiffness##", ref Tuning2.BendStiffness, 0.0f, 1.0f, "%.1f");
+            float BendDamping2 = Tuning2.BendDamping.AsFloat();
+            ImGui.SliderFloat("Damping##", ref BendDamping2, 0.0f, 4.0f, "%.1f");
+            Tuning2.BendDamping = BendDamping2;
+
+            float BendHertz2 = Tuning2.BendHertz.AsFloat();
+            ImGui.SliderFloat("Hertz##", ref BendHertz2, 0.0f, 60.0f, "%.0f");
+            Tuning2.BendHertz = BendHertz2;
+
+            float BendStiffness2 = Tuning2.BendStiffness.AsFloat();
+            ImGui.SliderFloat("Stiffness##", ref BendStiffness2, 0.0f, 1.0f, "%.1f");
+            Tuning2.BendStiffness = BendStiffness2;
 
             ImGui.Checkbox("Isometric##2", ref Tuning2.Isometric);
             ImGui.Checkbox("Fixed Mass##2", ref Tuning2.FixedEffectiveMass);
@@ -136,9 +160,17 @@ namespace Testbed.Tests
                 ImGui.EndCombo();
             }
 
-            ImGui.SliderFloat("Damping##S2", ref Tuning2.StretchDamping, 0.0f, 4.0f, "%.1f");
-            ImGui.SliderFloat("Hertz##S2", ref Tuning2.StretchHertz, 0.0f, 60.0f, "%.0f");
-            ImGui.SliderFloat("Stiffness##S2", ref Tuning2.StretchStiffness, 0.0f, 1.0f, "%.1f");
+            float StretchDamping2 = Tuning2.StretchDamping.AsFloat();
+            ImGui.SliderFloat("Damping##S2", ref StretchDamping2, 0.0f, 4.0f, "%.1f");
+            Tuning2.StretchDamping = StretchDamping2;
+
+            float StretchHertz2 = Tuning2.StretchHertz.AsFloat();
+            ImGui.SliderFloat("Hertz##S2", ref StretchHertz2, 0.0f, 60.0f, "%.0f");
+            Tuning2.StretchHertz = StretchHertz2;
+
+            float StretchStiffness2 = Tuning2.StretchStiffness.AsFloat();
+            ImGui.SliderFloat("Stiffness##S2", ref StretchStiffness2, 0.0f, 1.0f, "%.1f");
+            Tuning2.StretchStiffness = StretchStiffness2;
 
             ImGui.SliderInt("Iterations##2", ref Iterations2, 1, 100, "%d");
 

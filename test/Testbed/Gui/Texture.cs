@@ -23,7 +23,7 @@ namespace Testbed.Gui
 
         public const GetPName MaxTextureMaxAnisotropy = (GetPName)0x84FF;
 
-        public static readonly FP MaxAniso;
+        public static readonly float MaxAniso;
 
         static Texture()
         {
@@ -158,7 +158,7 @@ namespace Testbed.Gui
             GL.TextureParameter(GLTexture, TextureParameterName.TextureMagFilter, (int)filter);
         }
 
-        public void SetAnisotropy(FP level)
+        public void SetAnisotropy(float level)
         {
             const TextureParameterName TEXTURE_MAX_ANISOTROPY = (TextureParameterName)0x84FE;
             GL.TextureParameter(GLTexture, TEXTURE_MAX_ANISOTROPY, Math.Clamp(level, 1, MaxAniso));

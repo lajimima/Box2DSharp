@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using OpenTK.Graphics.OpenGL4;
+using TrueSync;
 
 namespace Testbed.Gui
 {
@@ -68,5 +69,19 @@ namespace Testbed.Gui
             GL.CreateVertexArrays(1, out vao);
             LabelObject(ObjectLabelIdentifier.VertexArray, vao, $"VAO: {name}");
         }
+    }
+}
+
+internal static class Expend
+{
+    public static System.Numerics.Vector2 ToVector2(this TSVector2 self)
+    {
+        return new System.Numerics.Vector2(self.X.AsFloat(), self.Y.AsFloat());
+    }
+
+    public static void Set(this System.Numerics.Vector2 self, float x, float y)
+    {
+        self.X = x;
+        self.Y = y;
     }
 }

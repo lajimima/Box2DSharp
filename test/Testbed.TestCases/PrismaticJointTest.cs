@@ -15,7 +15,7 @@ namespace Testbed.TestCases
     {
         protected PrismaticJoint Joint;
 
-        protected FP MotorSpeed;
+        protected float MotorSpeed;
 
         protected bool EnableMotor;
 

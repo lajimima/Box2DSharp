@@ -64,7 +64,7 @@ namespace Testbed.Abstractions
             return ps;
         }
 
-        public void BuildProjectionMatrix(FP[] m, FP zBias)
+        public void BuildProjectionMatrix(float[] m, FP zBias)
         {
             FP w = Width;
             FP h = Height;
@@ -75,13 +75,13 @@ namespace Testbed.Abstractions
             var lower = Center - extents;
             var upper = Center + extents;
 
-            m[0] = FP.Two / (upper.X - lower.X);
+            m[0] = (FP.Two / (upper.X - lower.X)).AsFloat();
             m[1] = 0.0f;
             m[2] = 0.0f;
             m[3] = 0.0f;
 
             m[4] = 0.0f;
-            m[5] = FP.Two / (upper.Y - lower.Y);
+            m[5] = (FP.Two / (upper.Y - lower.Y)).AsFloat();
             m[6] = 0.0f;
             m[7] = 0.0f;
 
@@ -90,9 +90,9 @@ namespace Testbed.Abstractions
             m[10] = 1.0f;
             m[11] = 0.0f;
 
-            m[12] = -(upper.X + lower.X) / (upper.X - lower.X);
-            m[13] = -(upper.Y + lower.Y) / (upper.Y - lower.Y);
-            m[14] = zBias;
+            m[12] = -((upper.X + lower.X) / (upper.X - lower.X)).AsFloat();
+            m[13] = -((upper.Y + lower.Y) / (upper.Y - lower.Y)).AsFloat();
+            m[14] = zBias.AsFloat();
             m[15] = 1.0f;
         }
     }
