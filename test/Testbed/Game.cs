@@ -206,9 +206,9 @@ namespace Testbed
                         ImGui.SliderInt("Vel Iters", ref Global.Settings.VelocityIterations, 0, 50);
                         ImGui.SliderInt("Pos Iters", ref Global.Settings.PositionIterations, 0, 50);
 
-                        float Hertz = Global.Settings.Hertz.AsFloat();
+                        float Hertz = Global.Settings.Hertz;
                         ImGui.SliderFloat("Hertz", ref Hertz, 5.0f, 120.0f, "%.0f hz");
-                        Global.Settings.Hertz = Hertz;
+                        Global.Settings.Hertz = (int)Hertz;
 
                         ImGui.Separator();
 

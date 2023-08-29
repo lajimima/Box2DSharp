@@ -129,7 +129,7 @@ namespace Testbed.Abstractions
                 PointsCount = 0;
 
                 PreStep();
-                World.Step(1 / TestSettings.Hertz, TestSettings.VelocityIterations, TestSettings.PositionIterations);
+                World.Step(FP.One / TestSettings.Hertz, TestSettings.VelocityIterations, TestSettings.PositionIterations);
                 PostStep();
                 ++StepCount;
             }

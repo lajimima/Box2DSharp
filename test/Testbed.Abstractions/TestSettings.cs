@@ -16,7 +16,7 @@ namespace Testbed.Abstractions
             TestIndex = 0;
             WindowWidth = 1600;
             WindowHeight = 900;
-            Hertz = 60.0f;
+            Hertz = 60;
             VelocityIterations = 8;
             PositionIterations = 3;
             DrawShapes = true;
@@ -49,7 +49,7 @@ namespace Testbed.Abstractions
         public int WindowHeight;
 
         [DataMember]
-        public FP Hertz;
+        public int Hertz;
 
         [DataMember]
         public int VelocityIterations;
